@@ -78,6 +78,23 @@ VFLUI.BlackDialogBackdrop = {
 	insets = { left = 2, right = 2, top = 2, bottom = 2 },
 };
 
+VFLUI.BlackDialogBackdrop2 = {
+	_border = "none",
+	_backdrop = "none",
+	_bkdtype = 3,
+	br = 0.3,
+	bg = 0.3,
+	bb = 0.3,
+	ba = 1,
+	bors = 2,
+	borl = 1,
+	kr = 0,
+	kg = 0,
+	kb = 0,
+	ka = 1,
+	dl = "ARTWORK",
+};
+
 VFLUI.DefaultDialogBorder = {
 	edgeFile="Interface\\Addons\\VFL\\Skin\\HalBorder", edgeSize = 8,
 	insets = { left = 2, right = 2, top = 2, bottom = 2 },
@@ -353,7 +370,7 @@ local function GenericDestroy(self)
 		pool:OnRelease(self);
 		pool:_Release(self);
 	else
-		DeferredRelease(1, self, self._sourcePool);
+		DeferredRelease(5, self, self._sourcePool);
 	end
 	self._sourcePool = nil;
 	self.Destroy = nil;
@@ -414,7 +431,8 @@ local function CleanupFrame(x)
 	-- Frame specific cleanup
 	x:SetFrameStrata("MEDIUM"); x:SetFrameLevel(1);
 	x:SetScale(1);
-	if(x.SetBackdrop) then x:SetBackdrop(nil) end;
+	--x:SetBackdrop(nil);
+	VFLUI.SetBackdrop(x, nil);
 	-- Perform LayoutFrame cleanup...
 	CleanupLayoutFrame(x);
 end
@@ -794,11 +812,11 @@ function VFLUI.AcquireFrame(frameType, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
 	frame._VFL = true;
 	frame._sourcePool = pool;
 	frame.Destroy = GenericDestroy;
-	if not frame._hookedHideShow then
-		frame._hookedHideShow = true;
-		frame._Hide = TimerHide2;
-		frame._Show = TimerShow2;
-	end
+	--if not frame._hookedHideShow then
+	--	frame._hookedHideShow = true;
+	--	frame._Hide = TimerHide2;
+	--	frame._Show = TimerShow2;
+	--end
 	--frame.AnimationGroup = frame:CreateAnimationGroup();
 	return frame;
 end

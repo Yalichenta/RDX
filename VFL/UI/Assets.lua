@@ -610,7 +610,7 @@ function VFLUI.ApplyBaseBackdrop(bkdp, border, backdrop)
 	end
 end
 
-function VFLUI.SetBackdrop(frame, bkdp)
+local function ASetBackdrop(frame, bkdp)
 	if (type(frame) ~= "table") then return; end
 
 	if frame._fbd then
@@ -624,12 +624,13 @@ function VFLUI.SetBackdrop(frame, bkdp)
 		frame._rdxbf:SetScript("OnSizeChanged", nil);
 		frame._rdxbf:Hide();
 	end
-	frame:SetBackdrop(nil);
+	if(frame.SetBackdrop) then frame:SetBackdrop(nil) end
 
 	if (type(bkdp) == "table") then
 
 		if not bkdp._bkdtype or bkdp._bkdtype == 1 then
 			-- default backdrop
+			Mixin(frame,BackdropTemplateMixin)
 			frame:SetBackdrop(bkdp);
 			if bkdp.br then
 				frame:SetBackdropBorderColor(bkdp.br or 1, bkdp.bg or 1, bkdp.bb or 1, bkdp.ba or 1);
@@ -645,10 +646,12 @@ function VFLUI.SetBackdrop(frame, bkdp)
 			-- double frame backdrop (one background, one sup)
 			if not frame._fbd and not frame._fbb then
 				local fbd = VFLUI.AcquireFrame("Frame");
+				Mixin(fbd,BackdropTemplateMixin)
 				fbd:SetParent(frame);
 				fbd:Show();
 				frame._fbd = fbd;
 				local fbb = VFLUI.AcquireFrame("Frame");
+				Mixin(fbb,BackdropTemplateMixin)
 				fbb:SetParent(frame);
 				fbb:Show();
 				frame._fbb = fbb;
@@ -802,6 +805,12 @@ function VFLUI.SetBackdrop(frame, bkdp)
 			frame._bg:Show();
 		end
 	end
+end
+
+function VFLUI.SetBackdrop(frame, bkdp)
+	VFLT.NextFrame(math.random(100000000), function()
+		ASetBackdrop(frame, bkdp)
+	end);
 end
 
 function VFLUI.SetBackdropColor(frame, r, g, b, a)

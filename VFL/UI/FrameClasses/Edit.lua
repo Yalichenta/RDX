@@ -17,14 +17,14 @@ function VFLUI.Edit:new(parent, overrideFix)
 	end
 
 	-- Appearance
-	self:SetBackdrop(VFLUI.BlackDialogBackdrop);
+	VFLUI.SetBackdrop(self, VFLUI.BlackDialogBackdrop);
 	VFLUI.SetFont(self, Fonts.Default, nil, nil ,true);
 	self:SetTextInsets(5,5,5,5);
 	self:SetAutoFocus(false); self:ClearFocus();
 
 	-- Scripts
 	self:SetScript("OnEscapePressed", function(self) self:ClearFocus(); end);
-	
+
 	-- Fix the dumb edit cursor bug, unless the coder doesn't want it fixed.
 	if not overrideFix then
 		local oldSetText = self.SetText;
@@ -36,7 +36,7 @@ function VFLUI.Edit:new(parent, overrideFix)
 
 		self.Destroy = VFL.hook(function(s) s.SetText = nil; end, self.Destroy);
 	end
-	
+
 	return self;
 end
 

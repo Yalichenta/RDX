@@ -1,4 +1,4 @@
-﻿## Interface: 100105
+## Interface: 100105
 ## Title: |c007ffcffRDX|r - Disk Log
 ## Notes: Disk Log
 ## Author: Sigg / Rashgarroth

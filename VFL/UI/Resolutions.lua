@@ -69,7 +69,6 @@ end
 
 local resolutiondd = {};
 for k,v in pairs(C_VideoOptions.GetGameWindowSizes(0,false)) do
-	print( v.x .."x".. v.y)
 	table.insert(resolutiondd, { text = v.x .."x".. v.y } );
 end
 

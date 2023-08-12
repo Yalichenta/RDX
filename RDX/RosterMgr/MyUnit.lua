@@ -76,6 +76,12 @@ local function ProcessMyUnit(self, elapsed)
 
 	--VFL.print(mapId .. " " .. gcmd);
 
+	--if mapId == cmaId then
+	--	a, a, a, isIndoor, indoorMapFileName = GetMapInfo();
+	--else
+	--	isIndoor = nil;
+	--end
+
 	-- subzone
 	if myunit.szName ~= szName then
 		--SetMapToCurrentZone()
@@ -99,9 +105,70 @@ local function ProcessMyUnit(self, elapsed)
 	myunit.PlyrDir = 360 - facing / 2 / math.pi * 360
 
 	-- Player position and speed (Carbonite)
+	--[[
+	if IsInInstance() then -- instance
+		myunit.InstanceId = mapId
+		myunit.isIndoor = nil;
+		x, y = RDXMAP.APIMap.GetWorldPos (mapId, 0, 0)
+		lvl = max (gcmd, 1)
+		myunit.PlyrX = x + myunit.PlyrRZX * 1002 / 25600
+		myunit.PlyrY = y + myunit.PlyrRZY * 668 / 25600 + (lvl - 1) * 668 / 256
+		myunit.PlyrSpeed = 0
+	elseif isIndoor then -- micro dungeon
+		myunit.InstanceId = nil;
+		myunit.isIndoor = true;
+		lvl = max (gcmd, 1)
+		myunit.PlyrX = myunit.SaveLastX + myunit.PlyrRZX * 1002 / 25600
+		myunit.PlyrY = myunit.SaveLastY + myunit.PlyrRZY * 668 / 25600
+
+	--	myunit.PlyrSpeed = 0
+	else -- external
+		myunit.InstanceId = nil;
+		myunit.isIndoor = nil;
+		x, y = RDXMAP.APIMap.GetWorldPos (mapId, myunit.PlyrRZX, myunit.PlyrRZY)
+
+		if elapsed > 0 then
+			if x == myunit.PlyrX and y == myunit.PlyrY then	-- Not moving?
+				myunit.PlyrSpeedCalcTime = tm
+				myunit.PlyrSpeed = 0
+				myunit.PlyrSpeedX = x
+				myunit.PlyrSpeedY = y
+
+			else
+				tmDif = GetTime() - myunit.PlyrSpeedCalcTime
+				if tmDif > .5 then
+					myunit.PlyrSpeedCalcTime = tm
+					myunit.PlyrSpeed = ((x - myunit.PlyrSpeedX) ^ 2 + (y - myunit.PlyrSpeedY) ^ 2) ^ .5 * 4.575 / tmDif
+					myunit.PlyrSpeedX = x
+					myunit.PlyrSpeedY = y
+				end
+			end
+		end
+		myunit.PlyrX = x
+		myunit.PlyrY = y
+
+		--myunit.MoveLastX = x;
+		--myunit.MoveLastY = y;
+
+		--VFL.print("bliz " .. plZX);
+		--VFL.print("carb " .. x);
+
+	end
+
+	if isIndoor ~= IndoorFlag then
+		--VFL.print("Save Indoor " .. myunit.PlyrX .. " " .. myunit.PlyrY);
+		myunit.SaveLastX = myunit.PlyrX
+		myunit.SaveLastY = myunit.PlyrY
+		IndoorFlag = isIndoor;
+	end
+
+	--VFL.print("carb " .. myunit.PlyrX .. " " .. myunit.PlyrY);
+	--VFL.print("bliz " .. myunit.PlyrX .. " " .. myunit.PlyrY);
+	]]--
 	-- FIXME BETHAN placeholder values
 	myunit.PlyrX = 555
 	myunit.PlyrY = 777
+
 
 	if mapIdsave ~= mapId then
 		--myunit.SaveLastX = myunit.PlyrX
