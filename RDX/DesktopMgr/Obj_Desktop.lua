@@ -194,22 +194,22 @@ function RDXDK.Desktop:new(parent)
 	-- ALERT
 	local function UpdateAlerts(topstack_props, bottomstack_props)
 		if topstack_props then
-			RDXBM.SetAlertsLocation(topstack_props, bottomstack_props);
+			--RDXBM.SetAlertsLocation(topstack_props, bottomstack_props);
 		end
 	end
 	
 	local function LockAlerts()
-		local topstack_props, bottomstack_props = RDXBM.GetStackProps();
-		local ctffont = RDXDK.GetLockCombatTextFont();
-		if framepropsroot then
-			framepropsroot.topstack_props = topstack_props;
-			framepropsroot.bottomstack_props = bottomstack_props;
-			framepropsroot.ctffont = ctffont;
-		end
+		--local topstack_props, bottomstack_props = RDXBM.GetStackProps();
+		--local ctffont = RDXDK.GetLockCombatTextFont();
+		--if framepropsroot then
+		--	framepropsroot.topstack_props = topstack_props;
+		--	framepropsroot.bottomstack_props = bottomstack_props;
+		--	framepropsroot.ctffont = ctffont;
+		--end
 	end
 	
 	local function UnlockAlerts()
-		RDXBM.SetUnlockAlerts();
+		--RDXBM.SetUnlockAlerts();
 	end
 	
 	----------------------------------------------
@@ -228,8 +228,8 @@ function RDXDK.Desktop:new(parent)
 			WorldFrame:ClearAllPoints();
 			WorldFrame:SetPoint("TOPLEFT", left + gleft, 0 - top - gtop);
 			WorldFrame:SetPoint("BOTTOMRIGHT", 0 - right - gright, bottom - gbottom);
-		else
-			WorldFrame:SetAllPoints(RDXParent);
+		--else
+			--WorldFrame:SetAllPoints(RDXParent);
 		end
 		local froot = framePropsList["root"];
 		if froot then

@@ -6,12 +6,12 @@
 -- the pool and releasing items into the pool.
 -- There are two types of Pool:
 -- * nil, simple pool.
--- * key, each object of the pool has a key, you can only acquired the object using the key. If the object is already acquired, you will get a nil. 
+-- * key, each object of the pool has a key, you can only acquired the object using the key. If the object is already acquired, you will get a nil.
 -- Each Pool can additionally have event handlers bound onto it in the forms of functions assigned to slots on the pool object. The following are available:
 -- * pool:OnAcquire(obj) - Called on obj when obj is acquired from the pool by a client.
 -- * pool:OnRelease(obj) - Called on obj when obj is released into the pool by a client.
--- * pool:OnFallback() - Called when :Acquire fails to acquire an object from the actual pool. Should return a new object which will be subsequently added to the pool. 
--- Jail, when releasing a object, you can specify if the object must go into the jail. 
+-- * pool:OnFallback() - Called when :Acquire fails to acquire an object from the actual pool. Should return a new object which will be subsequently added to the pool.
+-- Jail, when releasing a object, you can specify if the object must go into the jail.
 
 VFL.Pool = {};
 VFL.Pool.__index = VFL.Pool;
@@ -25,8 +25,8 @@ function VFL.Pool:new(pooltype, name)
 	self.pool = {};
 	self.jail = {};
 	self.keys = {};
-	self.name = name or "(anonymous)"; 
-	self.fallbacks = 0; 
+	self.name = name or "(anonymous)";
+	self.fallbacks = 0;
 	self.pooltype = pooltype;
 	self.Releaser = function(obj) self:Release(obj); end
 	self.Acquirer = function(arg) return self:Acquire(arg); end
@@ -73,12 +73,10 @@ function VFL.Pool:Acquire(a1, ...)
 	else
 		obj = table.remove(self.pool);
 	end
-	
 	-- check object already aquired from indexed pool
 	if self.pooltype == "key" and (not obj) and self.keys[a1] then
 		return nil;
 	end
-	
 	-- If we couldn't get the object...
 	if not obj then
 		-- If we have a fallback...
@@ -99,7 +97,6 @@ function VFL.Pool:Acquire(a1, ...)
 			return nil;
 		end -- if(self.onFallback)
 	end -- if not obj
-	
 	-- We successfully acquired an object; return it.
 	if(self.OnAcquire) then self:OnAcquire(obj); end
 	return obj;

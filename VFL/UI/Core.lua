@@ -1,5 +1,5 @@
 ﻿-- UI\Core.lua
--- VFL 
+-- VFL
 -- (C)2006 Bill Johnson and the VFL Project.
 --
 -- Core functions for managing dynamic WoW UI primitives.
@@ -16,13 +16,13 @@ VFLP.RegisterCategory("VFL UI");
 --------------------------------------------------
 --- The "default" Dialog backdrop
 
---[[VFLUI.DefaultDialogBackdrop = { 
+--[[VFLUI.DefaultDialogBackdrop = {
 	bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16,
 	edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16,
 	insets = { left = 5, right = 5, top = 4, bottom = 5 }
 };
 
-VFLUI.DarkDialogBackdrop = { 
+VFLUI.DarkDialogBackdrop = {
 	bgFile="Interface\\Addons\\VFL\\Skin\\a80black", tile = true, tileSize = 16,
 	edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16,
 	insets = { left = 5, right = 5, top = 4, bottom = 5 }
@@ -54,19 +54,19 @@ VFLUI.WhiteBackdrop = {
 	insets = { left = 0, right = 0, top = 0, bottom = 0 },
 };
 
-VFLUI.BlizzardDialogBackdrop = { 
+VFLUI.BlizzardDialogBackdrop = {
 	bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16,
 	edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 8,
 	insets = { left = 2, right = 2, top = 2, bottom = 2 },
 };
 
-VFLUI.DefaultDialogBackdrop = { 
+VFLUI.DefaultDialogBackdrop = {
 	bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16,
 	edgeFile="Interface\\Addons\\VFL\\Skin\\HalBorder", edgeSize = 8,
 	insets = { left = 2, right = 2, top = 2, bottom = 2 },
 };
 
-VFLUI.DarkDialogBackdrop = { 
+VFLUI.DarkDialogBackdrop = {
 	bgFile="Interface\\Addons\\VFL\\Skin\\a80black", tile = true, tileSize = 16,
 	edgeFile="Interface\\Addons\\VFL\\Skin\\HalBorder", edgeSize = 8,
 	insets = { left = 2, right = 2, top = 2, bottom = 2 },
@@ -333,8 +333,8 @@ local function _DR()
 	DRTimer = mathdotfloor(GetTime() * 1000), 0;
 	for st, obj in pairs(drot) do
 		if DRTimer > st then
-			if obj.IsProtected and obj:IsProtected() and not obj.nodelete then 
-				obj.jail = true; 
+			if obj.IsProtected and obj:IsProtected() and not obj.nodelete then
+				obj.jail = true;
 				obj:EnableMouse(nil);
 			end
 			drpt[st]:_Release(obj);
@@ -374,7 +374,7 @@ VFLP.RegisterFunc("VFL UI", "Destroy frame", GenericDestroy, true);
 -- @param onAcq the OnAcquire handler for this pool.
 function VFLUI.CreateFramePool(name, onRel, onFallback, onAcq, typepool)
 	local p = VFL.Pool:new(typepool);
-	p.name = name; 
+	p.name = name;
 	p.OnRelease = onRel; p.OnFallback = onFallback; p.OnAcquire = onAcq;
 	objp[name] = p;
 	table.insert(sobjp, p);
@@ -389,7 +389,7 @@ local function CleanupLayoutFrame(x)
 	x:Hide(); x:SetParent(nil);
 	x:ClearAllPoints();
 	x:SetHeight(1); x:SetWidth(1);
-	x:SetAlpha(1); 
+	x:SetAlpha(1);
 end
 VFLUI._CleanupLayoutFrame = CleanupLayoutFrame;
 
@@ -409,12 +409,12 @@ local function CleanupFrame(x)
 	x.isLayoutRoot = nil; x.DialogOnLayout = nil;
 	-- Stop any and all movement
 	x:StopMovingOrSizing();
-	x:SetMovable(nil); x:SetResizable(nil); x:SetClampedToScreen(nil);
-	x:RegisterForDrag(nil);
+	x:SetMovable(false); x:SetResizable(false); x:SetClampedToScreen(false);
+	x:RegisterForDrag("");
 	-- Frame specific cleanup
 	x:SetFrameStrata("MEDIUM"); x:SetFrameLevel(1);
 	x:SetScale(1);
-	x:SetBackdrop(nil);
+	if(x.SetBackdrop) then x:SetBackdrop(nil) end;
 	-- Perform LayoutFrame cleanup...
 	CleanupLayoutFrame(x);
 end
@@ -425,7 +425,7 @@ local function CleanupButton(x)
 	x:SetScript("OnClick", nil); x:SetScript("PreClick", nil); x:SetScript("PostClick", nil);
 	x:SetScript("OnDoubleClick", nil);
 	x:RegisterForClicks("LeftButtonUp");
-	x:SetNormalTexture(nil); x:SetHighlightTexture(nil); x:SetDisabledTexture(nil); x:SetPushedTexture(nil);
+	x:ClearNormalTexture(); x:ClearHighlightTexture(); x:ClearDisabledTexture(); x:ClearPushedTexture();
 	x:Enable(); x:SetButtonState("NORMAL", nil); x:UnlockHighlight();
 	x:SetText("");
 	x:SetNormalFontObject(Fonts.Default);
@@ -461,7 +461,7 @@ local function FixFontObjectNonsense(btn)
 	btn._SetNormalFontObject = btn.SetNormalFontObject;
 	btn._SetDisabledFontObject = btn.SetDisabledFontObject;
 	btn._SetHighlightFontObject = btn.SetHighlightFontObject;
-	btn.SetNormalFontObject = munged_STFO; 
+	btn.SetNormalFontObject = munged_STFO;
 	btn.SetDisabledFontObject = munged_SDFO;
 	btn.SetHighlightFontObject = munged_SHFO;
 end
@@ -473,7 +473,7 @@ VFLUI.CreateFramePool("Frame", function(pool, x)
 	CleanupFrame(x);
 end, function()
 	--if id == 130 then error(); end
-	return CreateFrame("Frame", "Frame_" .. GetNextID());
+	return CreateFrame("Frame", "Frame_" .. GetNextID(), nil, "BackdropTemplate");
 end, function(_, x)
 	--if x:
 	x:EnableMouse(nil);
@@ -484,7 +484,7 @@ VFLUI.CreateFramePool("ArchaeologyDigSiteFrame", function(pool, x)
 	CleanupFrame(x);
 end, function()
 	--if id == 130 then error(); end
-	return CreateFrame("ArchaeologyDigSiteFrame", "ArchaeologyDigSiteFrame_" .. GetNextID());
+	return CreateFrame("ArchaeologyDigSiteFrame", "ArchaeologyDigSiteFrame_" .. GetNextID(), nil, "BackdropTemplate");
 end, function(_, x)
 	--if x:
 	--x:EnableMouse(nil);
@@ -495,7 +495,7 @@ VFLUI.CreateFramePool("SecureFrame", function(pool, x)
 	x:SetAttribute("toggleForVehicle", nil);
 	CleanupFrame(x);
 end, function()
-	local f = CreateFrame("Frame", "SecureFrame_" .. GetNextID(), nil, "SecureFrameTemplate");
+	local f = CreateFrame("Frame", "SecureFrame_" .. GetNextID(), nil, "SecureFrameTemplate", "BackdropTemplate");
 	return f;
 end);
 
@@ -503,7 +503,7 @@ end);
 VFLUI.CreateFramePool("Button", function(pool, x)
 	CleanupButton(x);
 end, function()
-	local f = CreateFrame("Button", "Button_" .. GetNextID());
+	local f = CreateFrame("Button", "Button_" .. GetNextID(),nil,"BackdropTemplate");
 	FixFontObjectNonsense(f);
 	return f;
 end, function(_, x)
@@ -512,11 +512,11 @@ end, function(_, x)
 end);
 
 -- Class: CheckButton
-VFLUI.CreateFramePool("CheckButton", function(pool, x) 
-	x:SetCheckedTexture(nil); x:SetDisabledCheckedTexture(nil); x:SetChecked(nil);
+VFLUI.CreateFramePool("CheckButton", function(pool, x)
+	x:SetCheckedTexture(""); x:SetDisabledCheckedTexture(""); x:SetChecked(false);
 	CleanupButton(x);
 end, function()
-	local f = CreateFrame("CheckButton", "CheckButton_" .. VFL.GetNextID());
+	local f = CreateFrame("CheckButton", "CheckButton_" .. VFL.GetNextID(),nil,"BackdropTemplate");
 	FixFontObjectNonsense(f);
 	return f;
 end);
@@ -525,12 +525,15 @@ end);
 VFLUI.CreateFramePool("SecureUnitButton", function(pool, x)
 	x:SetAttribute("toggleForVehicle", nil);
 	x:SetScript("PreClick", nil); x:SetScript("PostClick", nil);
-	x:SetNormalTexture(nil); x:SetHighlightTexture(nil); x:SetDisabledTexture(nil); x:SetPushedTexture(nil);
+	x:ClearNormalTexture(nil);
+	x:ClearHighlightTexture(nil);
+	x:ClearDisabledTexture(nil);
+	x:ClearPushedTexture(nil);
 	x:Enable(); x:SetButtonState("NORMAL", nil); x:UnlockHighlight();
 	x:SetText("");
 	CleanupFrame(x);
 end, function()
-	local f = CreateFrame("Button", "SecureUnitButton" .. GetNextID(), nil, "SecureUnitButtonTemplate");
+	local f = CreateFrame("Button", "SecureUnitButton" .. GetNextID(), nil, "SecureUnitButtonTemplate","BackdropTemplate");
 	FixFontObjectNonsense(f);
 	f.nodelete = true;
 	return f;
@@ -547,7 +550,7 @@ end);
 
 
 -- Class: EditBox
-VFLUI.CreateFramePool("EditBox", function(pool, x) 
+VFLUI.CreateFramePool("EditBox", function(pool, x)
 	x:SetScript("OnEditFocusGained", nil); x:SetScript("OnEditFocusLost", nil);
 	x:SetScript("OnEnterPressed", nil);	x:SetScript("OnEscapePressed", nil);
 	x:SetScript("OnTabPressed", nil);
@@ -556,53 +559,53 @@ VFLUI.CreateFramePool("EditBox", function(pool, x)
 	x:SetNumeric(nil); x:SetPassword(nil); x:SetMultiLine(nil);
 	x:SetText(""); x:SetTextColor(1,1,1,1);
 	CleanupFrame(x);
-end, function() 
-	local f = CreateFrame("EditBox", "EditBox_" .. VFL.GetNextID());
+end, function()
+	local f = CreateFrame("EditBox", "EditBox_" .. VFL.GetNextID(),nil,"BackdropTemplate");
 	f.SetFontObject = VFL_SetFontObject;
 	return f;
 end);
 
 -- Class: Slider
-VFLUI.CreateFramePool("Slider", function(pool, x) 
+VFLUI.CreateFramePool("Slider", function(pool, x)
 	x:SetScript("OnValueChanged", nil);
 	x:SetOrientation("VERTICAL");
-	x:SetThumbTexture(nil);	x:SetMinMaxValues(0,0); x:SetValue(0);
+	x:SetThumbTexture("");	x:SetMinMaxValues(0,0); x:SetValue(0);
 	CleanupFrame(x);
-end, function() return CreateFrame("Slider", "Slider_" .. VFL.GetNextID()); end);
+end, function() return CreateFrame("Slider", "Slider_" .. VFL.GetNextID(),nil,"BackdropTemplate"); end);
 
 -- Class: ScrollFrame
-VFLUI.CreateFramePool("ScrollFrame", function(pool, x) 
-	x:SetScrollChild(nil);
+VFLUI.CreateFramePool("ScrollFrame", function(pool, x)
+	--x:SetScrollChild(nil);
 	x:SetScript("OnScrollRangeChanged", nil);
 	x:SetScript("OnVerticalScroll", nil); x:SetScript("OnHorizontalScroll", nil);
 	x:SetHorizontalScroll(0); x:SetVerticalScroll(0);
 	CleanupFrame(x);
-end, function() return CreateFrame("ScrollFrame", "ScrollFrame_" .. VFL.GetNextID()); end);
+end, function() return CreateFrame("ScrollFrame", "ScrollFrame_" .. VFL.GetNextID(),nil,"BackdropTemplate"); end);
 
 -- Class: StatusBar
-VFLUI.CreateFramePool("StatusBar", function(pool, x) 
-	x:SetMinMaxValues(0,1);	
+VFLUI.CreateFramePool("StatusBar", function(pool, x)
+	x:SetMinMaxValues(0,1);
 	x:SetStatusBarTexture(nil);
 	CleanupFrame(x);
-end, function() return CreateFrame("StatusBar", "StatusBar_" .. VFL.GetNextID()); end);
+end, function() return CreateFrame("StatusBar", "StatusBar_" .. VFL.GetNextID(),nil,"BackdropTemplate"); end);
 
 -- Class: CoolDown
 VFLUI.CreateFramePool("Cooldown", function(pool, x)
 	x:SetCooldown(0,0);
 	CleanupFrame(x);
-end, function() return CreateFrame("Cooldown", "Cooldown_" .. VFL.GetNextID(), nil, "CooldownFrameTemplate"); end);
+end, function() return CreateFrame("Cooldown", "Cooldown_" .. VFL.GetNextID(), nil, "CooldownFrameTemplate","BackdropTemplate"); end);
 
 -- Class: PlayerModel
 VFLUI.CreateFramePool("PlayerModel", function(pool, x)
 	x:ClearModel();
 	CleanupFrame(x);
-end, function() return CreateFrame("PlayerModel", "PlayerModel_" .. VFL.GetNextID()); end);
+end, function() return CreateFrame("PlayerModel", "PlayerModel_" .. VFL.GetNextID(),nil,"BackdropTemplate"); end);
 
 -- Class: MessageFrame
 VFLUI.CreateFramePool("MessageFrame", function(pool, x)
 	x:Clear();
 	CleanupFrame(x);
-end, function() return CreateFrame("MessageFrame", "MessageFrame_" .. VFL.GetNextID()); end);
+end, function() return CreateFrame("MessageFrame", "MessageFrame_" .. VFL.GetNextID(),nil,"BackdropTemplate"); end);
 
 -- Class: Minimap
 -- working so badly
@@ -614,8 +617,8 @@ VFLUI.CreateFramePool("Minimap",
 		--x:SetMaskTexture("Textures\\MinimapMask");
 		x:SetScript('OnMouseWheel', nil);
 		VFLUI._CleanupLayoutFrame(x);
-	end, 
-	function() 
+	end,
+	function()
 		return CreateFrame("Minimap");
 	end,
 	function(_, f) -- on acquired
@@ -662,7 +665,7 @@ local function HideUpdate(self, elapsed)
 end
 
 local function TimerHide2(f, t, z, fhide)
-	if not t then 
+	if not t then
 		f:Hide();
 		if type(fhide) == "function" then
 			fhide();
@@ -713,8 +716,8 @@ local function ShowUpdate(self, elapsed)
 end
 
 local function TimerShow2(f, t, z, fshow)
-	if not t then 
-		f:Show(); 
+	if not t then
+		f:Show();
 		if type(fshow) == "function" then
 			fshow();
 		end
@@ -776,7 +779,7 @@ local function moveFrame(frame, x, y, t)
     if not frame or not x or not y then
         return;
     end
-    
+
 end
 
 local pool, frame;
@@ -807,7 +810,7 @@ function VFLUI.ReleaseFrame(frame)
 	-- Sanity check
 	if not frame then return; end
 	-- Try for the Destroy method
-	if frame.Destroy then 
+	if frame.Destroy then
 		frame:Destroy();
 	else
 		VFLUI:Debug(1, "VFLUI: Error: VFLUI.ReleaseFrame() called on object without a Destroy method.");
@@ -823,12 +826,12 @@ local acquire_parent = nil;
 
 ---------------------- FONTSTRING POOL
 local p_fs = VFL.Pool:new();
-p_fs.name = "FontStrings"; 
-p_fs.OnRelease = function(pool, x) 
+p_fs.name = "FontStrings";
+p_fs.OnRelease = function(pool, x)
 	x:Hide(); x:SetParent(VFLOrphan); x:ClearAllPoints(); x:SetAlpha(1);
 	x:SetHeight(0); x:SetWidth(0);
 --	x:SetFontObject(GameFontNormal);
-	x:SetTextColor(1,1,1,1); 
+	x:SetTextColor(1,1,1,1);
 --	x:SetAlphaGradient(0,0);
 	x:SetShadowColor(0,0,0,0); x:SetShadowOffset(0,0);
 	x:SetJustifyH("CENTER"); x:SetJustifyV("CENTER");
@@ -837,7 +840,7 @@ end;
 p_fs.OnFallback = function()
 	local fs = acquire_parent:CreateFontString();
 	fs.SetFontObject = VFL_SetFontObject;
-	return fs; 
+	return fs;
 end
 
 local function DestroyFontString(x)
@@ -865,13 +868,13 @@ end
 
 -------------------- TEXTURE POOL
 local p_tex = VFL.Pool:new();
-p_tex.name = "Textures"; 
-p_tex.OnRelease = function(pool, x) 
+p_tex.name = "Textures";
+p_tex.OnRelease = function(pool, x)
 	x:Hide(); x:SetTexture(nil); x:SetColorTexture(0,0,0,0);
 	x:SetParent(VFLOrphan); x:ClearAllPoints(); x:SetAlpha(1);
 	x:SetDesaturated(nil);
 	x:SetTexCoord(0,1,0,1);
-	x:SetBlendMode("BLEND"); x:SetDrawLayer("ARTWORK", 1); 
+	x:SetBlendMode("BLEND"); x:SetDrawLayer("ARTWORK", 1);
 	x:SetVertexColor(1,1,1,1);
 end;
 p_tex.OnFallback = function()
@@ -908,13 +911,13 @@ function VFLUI.ReleaseRegion(rgn)
 end
 
 --------------------------------------------------------
--- Animation Group Pool WoW3.1 
+-- Animation Group Pool WoW3.1
 -- NOT USE... erf
 -- an AG is link to his parent object and can not be reused
 --------------------------------------------------------
 local p_ag = VFL.Pool:new();
-p_ag.name = "AnimationGroups"; 
-p_ag.OnRelease = function(pool, x) 
+p_ag.name = "AnimationGroups";
+p_ag.OnRelease = function(pool, x)
 	x:Hide();
 	x:Stop();
 	x:SetLooping("NONE");
@@ -975,7 +978,7 @@ local anip = {};
 -- @param onAcq the OnAcquire handler for this pool.
 function VFLUI.CreateAnimationPool(name, onRel, onFallback, onAcq)
 	local p = VFL.Pool:new();
-	p.name = name; 
+	p.name = name;
 	p.OnRelease = onRel; p.OnFallback = onFallback; p.OnAcquire = onAcq;
 	anip[name] = p;
 end

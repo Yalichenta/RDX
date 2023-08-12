@@ -16,7 +16,7 @@ VFLUI.Window.SetDefaultFraming(bsp, 20);
 bsp:SetText("Button Skin Picker"); bsp:SetTitleColor(0,0,.6);
 bsp:SetWidth(290); bsp:SetHeight(335);
 bsp:SetPoint("CENTER", VFLParent, "CENTER");
-bsp:SetMovable(true); bsp:SetToplevel(nil);
+bsp:SetMovable(true); bsp:SetToplevel(false);
 VFLUI.Window.StdMove(bsp, bsp:GetTitleBar());
 bsp:Hide();
 bsp:SetClampedToScreen(true);
@@ -186,20 +186,20 @@ UpdateButtonSkinPicker = function()
 		chk_bcolor:SetChecked(true);
 		cs_bcolor:SetColor(curButtonSkin.br, curButtonSkin.bg, curButtonSkin.bb, curButtonSkin.ba);
 	else
-		chk_bcolor:SetChecked(nil);
+		chk_bcolor:SetChecked(false);
 		cs_bcolor:SetColor(1,1,1,1);
 	end
 	
 	if curButtonSkin.showflash then
 		chk_showflash:SetChecked(true);
 	else
-		chk_showflash:SetChecked(nil);
+		chk_showflash:SetChecked(false);
 	end
 	
 	if curButtonSkin.showgloss then
 		chk_showgloss:SetChecked(true);
 	else
-		chk_showgloss:SetChecked(nil);
+		chk_showgloss:SetChecked(false);
 	end
 end
 

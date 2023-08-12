@@ -12,7 +12,7 @@ local mouseOutDelay = 2;
 local emptyMenu = {
 	{ text = "|c00888888(Empty menu)|r" }
 };
-local menuFrame = CreateFrame("Frame", "VFL_DropDownFrame", VFLFULLSCREEN_DIALOG, "UIDropDownMenuTemplate");
+local menuFrame = CreateFrame("Frame", "VFL_DropDownFrame", VFLFULLSCREEN_DIALOG, "UIDropDownMenuTemplate","BackdropTemplate");
 
 function VFLUI.PopUpMenu(data, point, parent, relpoint, x, y)
 	if (point) then

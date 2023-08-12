@@ -35,7 +35,7 @@ function VFLUI.DisjointRadioGroup:new(allownull)
 	function self:SetValue(v)
 		if allownull and value == v then
 			for idx,button in ipairs(buttons) do
-				button:SetChecked(nil);
+				button:SetChecked(false);
 				if button.tex then
 					button.tex:SetVertexColor(VFL.explodeColor(self.c1));
 				end
@@ -50,7 +50,7 @@ function VFLUI.DisjointRadioGroup:new(allownull)
 						button.tex:SetVertexColor(VFL.explodeColor(self.c2));
 					end
 				else
-					button:SetChecked(nil);
+					button:SetChecked(false);
 					if button.tex then
 						button.tex:SetVertexColor(VFL.explodeColor(self.c1));
 					end

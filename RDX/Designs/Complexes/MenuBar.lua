@@ -11,8 +11,8 @@
 
 RDXUpdateMicroButtonsParent = UpdateMicroButtonsParent
 RDXMoveMicroButtons = MoveMicroButtons
-RDXUpdateMicroButtonsParent(UIParent)
-RDXMoveMicroButtons("TOP", UIParent, "TOP", 0, 22)
+--RDXUpdateMicroButtonsParent(UIParent)
+--RDXMoveMicroButtons("TOP", UIParent, "TOP", 0, 22)
 
 UpdateMicroButtonsParent = VFL.Noop;
 MoveMicroButtons = VFL.Noop;

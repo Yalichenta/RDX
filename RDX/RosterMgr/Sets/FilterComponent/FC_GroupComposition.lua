@@ -57,7 +57,7 @@ RDXDAL.RegisterFilterComponent({
 		local checks = VFLUI.CheckGroup:new(ui);
 		ui:SetChild(checks);
 		checks:SetLayout(8, 2);
-		for i=1,8 do 
+		for i=1,8 do
 			checks.checkBox[i]:SetText(VFLI.i18n("Group") .. " " .. i);
 			if desc[i + 1] then checks.checkBox[i]:SetChecked(true); end
 		end
@@ -120,7 +120,7 @@ RDXDAL.RegisterFilterComponent({
 		local checks = VFLUI.CheckGroup:new(ui);
 		ui:SetChild(checks);
 		checks:SetLayout(4, 2);
-		for i=1,4 do 
+		for i=1,4 do
 			checks.checkBox[i]:SetText(VFLI.i18n("Member") .. " " .. i);
 			if desc[i + 1] then checks.checkBox[i]:SetChecked(true); end
 		end
@@ -164,18 +164,18 @@ RDXDAL.RegisterFilterComponent({
 		ui:SetText(VFLI.i18n("Classes"));
 		local checks = VFLUI.CheckGroup:new(ui);
 		ui:SetChild(checks);
-		checks:SetLayout(13, 2);
+		checks:SetLayout(14, 2);
 		-- Populate checkboxes
-		for i=1,12 do 
-			checks.checkBox[i]:SetText(VFL.strtcolor(RDXMD.GetClassColor(i)) .. RDXMD.GetClassMnemonic(i) .. "|r"); 
+		for i=1,13 do
+			checks.checkBox[i]:SetText(VFL.strtcolor(RDXMD.GetClassColor(i)) .. RDXMD.GetClassMnemonic(i) .. "|r");
 			if desc[i + 1] then checks.checkBox[i]:SetChecked(true); end
 		end
-		checks.checkBox[13]:SetText(VFL.strcolor(.5,.5,.5) .. VFLI.i18n("Unknown") .. "|r");
-		if desc[14] then checks.checkBox[13]:SetChecked(true); end
+		checks.checkBox[14]:SetText(VFL.strcolor(.5,.5,.5) .. VFLI.i18n("Unknown") .. "|r");
+		if desc[15] then checks.checkBox[14]:SetChecked(true); end
 
 		ui.GetDescriptor = function(x)
 			local ret = {"classes"};
-			for i=1,13 do
+			for i=1,14 do
 				if checks.checkBox[i]:GetChecked() then ret[i+1] = true; else ret[i+1] = nil; end
 			end
 			return ret;
@@ -188,10 +188,10 @@ RDXDAL.RegisterFilterComponent({
 		-- Build the filtration array
 		local v = RDXDAL.GenerateFilterUpvalue();
 		local script = v .. "={};";
-		for i=2,13 do
+		for i=2,14 do
 			if desc[i] then script = script .. v .. "[" .. i-1 .. "]=true;"; end
 		end
-		if desc[13] then script = script .. v .. "[0]=true;"; end
+		if desc[14] then script = script .. v .. "[0]=true;"; end
 		table.insert(metadata, { class = "CLOSURE", name = v, script = script });
 		-- Now, our filter expression is just a check on the closure array against the unit's class
 		return "(" .. v .. "[unit:GetClassID()])";
@@ -213,13 +213,13 @@ RDXDAL.RegisterFilterComponent({
 		checks:SetLayout(2,2);
 		checks.checkBox[1]:SetText(VFLI.i18n("(L) Leader")); if desc[2] then checks.checkBox[1]:SetChecked(true); end
 		checks.checkBox[2]:SetText(VFLI.i18n("(A) Assistant")); if desc[3] then checks.checkBox[2]:Setchecked(true); end
-		
+
 		ui.GetDescriptor = function(x)
 			local ret = {"rl"};
 			for i=1,2 do if checks.checkBox[i]:GetChecked() then ret[i+1] = true; end end
 			return ret;
 		end
-		
+
 		return ui;
 	end,
 	GetBlankDescriptor = function() return {"rl"}; end,
@@ -444,7 +444,7 @@ RDXDAL.RegisterFilterComponent({
 		checks.checkBox[2]:SetText(VFLI.i18n("Rage"));
 		checks.checkBox[3]:SetText(VFLI.i18n("Energy"));
 		checks.checkBox[4]:SetText(VFLI.i18n("Rune"));
-		for i=1,4 do 
+		for i=1,4 do
 			if desc[i + 1] then checks.checkBox[i]:SetChecked(true); end
 		end
 		ui.GetDescriptor = function(x)
@@ -490,7 +490,7 @@ RDXDAL.RegisterFilterComponent({
 		checks.checkBox[2]:SetText(VFLI.i18n("DPS"));
 		checks.checkBox[3]:SetText(VFLI.i18n("Healer"));
 		checks.checkBox[4]:SetText(VFLI.i18n("Unknown"));
-		for i=1,4 do 
+		for i=1,4 do
 			if desc[i + 1] then checks.checkBox[i]:SetChecked(true); end
 		end
 		ui.GetDescriptor = function(x)
@@ -510,7 +510,7 @@ RDXDAL.RegisterFilterComponent({
 		local script = v .. "={};";
 		if desc[2] then script = script .. v .. "[1]=true;"; end
 		if desc[3] then script = script .. v .. "[2]=true;"; end
-		if desc[4] then script = script .. v .. "[3]=true;"; end 
+		if desc[4] then script = script .. v .. "[3]=true;"; end
 		if desc[5] then script = script .. v .. "[4]=true;"; end
 		table.insert(metadata, { class = "CLOSURE", name = v, script = script });
 		return "(" .. v .. "[unit:GetRoleType()])";

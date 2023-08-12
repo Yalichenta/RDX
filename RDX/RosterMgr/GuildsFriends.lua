@@ -21,16 +21,16 @@ local function OnFriendguild_update()
 
 	local i = 1
 
-	for n = 1, GetNumFriends() do
+	for n = 1, C_FriendList.GetNumFriends() do
 
-		local name, lvl, class, area, con, status = GetFriendInfo (n)
-		if con then
+		local finfo = C_FriendList.GetFriendInfoByIndex (n)
+		if finfo["connected"] then
 
 			if not RDXDAL.PalNames[name] then
 
 --				VFL.vprint ("Add friend %s", name)
 
-				RDXDAL.Friends[i] = name
+				RDXDAL.Friends[i] = finfo["name"]
 				i = i + 1
 			end
 		end

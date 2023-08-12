@@ -26,7 +26,7 @@ cp:SetText("Cooldown Picker");
 cp:SetTitleColor(0,0,.6);
 cp:SetWidth(330); cp:SetHeight(285);
 cp:SetPoint("CENTER", VFLParent, "CENTER");
-cp:SetMovable(true); cp:SetToplevel(nil);
+cp:SetMovable(true); cp:SetToplevel(false);
 VFLUI.Window.StdMove(cp, cp:GetTitleBar());
 cp:Hide();
 cp:SetClampedToScreen(true);

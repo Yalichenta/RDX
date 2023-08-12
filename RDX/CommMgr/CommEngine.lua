@@ -167,7 +167,8 @@ function RDX.ImbueAddonChannel(preChannel, prefix, chType)
 
 	-- Send a message on this channel.
 	function ch:Send(msg)
-		SendAddonMessage(prefix, msg, chType);
+		-- Bethan : disabled this function as it's no longer supported
+		--SendAddonMessage(prefix, msg, chType);
 	end
 
 	-- Check the reference count for this channel.

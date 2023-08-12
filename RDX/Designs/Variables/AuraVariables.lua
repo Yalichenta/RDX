@@ -16,7 +16,7 @@ function __rdxloadbuff(uid, buffname, auracache, playerauras, othersauras, petau
 	else
 		bn = buffname;
 	end
-	name, _, icon, apps, _, dur, expirationTime, caster, isStealable = UnitAura(uid, bn);
+	name, icon, apps, _, dur, expirationTime, caster, isStealable = AuraUtil.FindAuraByName(bn, uid);
 	if (name == bn) then
 		possible = true;
 		if dur and dur > 0 then

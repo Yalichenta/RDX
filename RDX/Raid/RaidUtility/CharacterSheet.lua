@@ -39,10 +39,10 @@ local function MakeCharSheet()
 	x2 = PaperDollFrame_GetArmorReduction(x1, UnitLevel("player"));
 	table.insert(ret, "  Armor: " .. x1 .. " (" .. string.format("%0.2f%%", x2) .. " DR)");
 	-- Def
-	x1, x2 = UnitDefense("player"); 
+	--x1, x2 = UnitDefense("player");
 	--x3 = GetDodgeBlockParryChanceFromDefense(); 
 	x4 = GetCombatRating(CR_DEFENSE_SKILL); x5 = GetCombatRatingBonus(CR_DEFENSE_SKILL);
-	table.insert(ret, "  Defense: " .. (x1+x2));
+	--table.insert(ret, "  Defense: " .. (x1+x2));
 	table.insert(ret, "    Rating: " .. x4 .. " (+" .. x5 .. " def)");
 	--table.insert(ret, "    Bonus: +" .. string.format("%0.2f", x3) .. "% blk/dg/pry");
 	-- Dodge/Parry/Block
@@ -54,15 +54,15 @@ local function MakeCharSheet()
 	--x2 = math.min(GetCombatRatingBonus(CR_CRIT_TAKEN_MELEE), GetCombatRatingBonus(CR_CRIT_TAKEN_RANGED), GetCombatRatingBonus(CR_CRIT_TAKEN_SPELL));
 	--table.insert(ret, "  Resil: " .. x1 .. " (-" .. string.format("%0.2f%%", x2) .. " crit, -" .. string.format("%0.2f%%", x2*2) .. " dmg)");
 	-- Resists
-	x1, x2, x3, x4, x5 = Logistics.GetResists();
-	table.insert(ret, "  Resist: " .. VFL.strcolor(1,0,0)..x1.." "..VFL.strcolor(.2,.2,1)..x2.." "..VFL.strcolor(1,1,1)..x4.." "..VFL.strcolor(0.5,0,0.8)..x5 );
+	--x1, x2, x3, x4, x5 = Logistics.GetResists();
+	--table.insert(ret, "  Resist: " .. VFL.strcolor(1,0,0)..x1.." "..VFL.strcolor(.2,.2,1)..x2.." "..VFL.strcolor(1,1,1)..x4.." "..VFL.strcolor(0.5,0,0.8)..x5 );
 
 
 	-- Base Stats
-	x1,x2,x3,x4,x5=9999,9999,9999,9999,9999;
-	local stats = {"Str","Agi","Sta","Int","Spi"};
+	x1,x2,x3,x4,x5=999999,999999,999999,999999,999999;
+	local stats = {"Str","Agi","Sta","Int"};
 	table.insert(ret, "|cFFCCDBA4Base Stats:|r");
-	for i=1,5 do 
+	for i=1,4 do
 		x1,x2,x3,x4 = UnitStat("player", i);
 		x1=min(x5, x1);
 		x2=min(x5, x2);
@@ -72,21 +72,56 @@ local function MakeCharSheet()
 	end
 	stats = nil;
 
+	-- Secondary Stats
+	x1,x2,x3,x4,x5=999999,999999,999999,999999,999999;
+	table.insert(ret, "|cFFCCDBA4Secondary Stats:|r");
+	x1 = GetCritChance();
+	x1 = min(x5, x1);
+	table.insert(ret, "   Crit: "..string.format("%0.2f%%", x1));
+	x1 = GetHaste();
+	x1 = min(x5, x1);
+	table.insert(ret, "   Haste: "..string.format("%0.2f%%", x1));
+	x1 = GetMasteryEffect();
+	x1 = min(x5, x1);
+	table.insert(ret, "   Mastery: "..string.format("%0.2f%%", x1));
+	x1 = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
+	x1 = min(x5, x1);
+	x2 = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+	x2 = min(x5, x2);
+	table.insert(ret, "   Versatility: "..string.format("%0.2f%%", x1).."/"..string.format("%0.2f%%", x2));
+
+	-- Tertiary Stats
+	x1,x2,x3,x4,x5=999999,999999,999999,999999,999999;
+	table.insert(ret, "|cFFCCDBA4Tertiary Stats:|r");
+	x2 = GetSpeed();
+	x2 = min(x5, x2);
+	_, x1, _, _ = GetUnitSpeed("player");
+	x1 = x1/BASE_MOVEMENT_SPEED*100;
+	x1 = min(x5, x1);
+	table.insert(ret, "   Running Speed: "..string.format("%0.2f%%", x1) .. "(+".. x2 ..")");
+	x1 = GetLifesteal();
+	x1 = min(x5, x1);
+	table.insert(ret, "   Lifesteal: "..string.format("%0.2f%%", x1));
+	x1 = GetAvoidance();
+	x1 = min(x5, x1);
+	table.insert(ret, "   Avoidance: "..string.format("%0.2f%%", x1));
+
+
 	-- Melee info
 	table.insert(ret, "|cFFDC6C6CMelee Stats|r");
-	x5 = 9999;
+	x5 = 999999;
 	x1,x2,x3 = UnitAttackPower("player");
 	x1 = min(x5, x1);
 	x2 = min(x5, x2);
 	x3 = min(x5, x3);
 	x4 = x1+x2;
 	table.insert(ret, "   AP: ".. x4 .. " ("..x1..VFL.strcolor(0,1,0).."+"..x2..VFL.strcolor(1,0,0).."-"..x3..VFL.strcolor(1,1,1)..")");
-	x1, x2, x3, x4 = UnitAttackBothHands("player");
-	x1 = min(x5, x1);
-	x2 = min(x5, x2);
-	x3 = min(x5, x3);
-	x4 = min(x5, x4);
-	table.insert(ret, "   Skill: MH: ".. x1..VFL.strcolor(0,1,0).."+"..x2..VFL.strcolor(1,1,1).." OH: "..x3..VFL.strcolor(0,1,0).."+"..x4);
+	--x1, x2, x3, x4 = UnitAttackBothHands("player");
+	--x1 = min(x5, x1);
+	--x2 = min(x5, x2);
+	--x3 = min(x5, x3);
+	--x4 = min(x5, x4);
+	--table.insert(ret, "   Skill: MH: ".. x1..VFL.strcolor(0,1,0).."+"..x2..VFL.strcolor(1,1,1).." OH: "..x3..VFL.strcolor(0,1,0).."+"..x4);
 	x1 = GetCritChance();
 	x1 = min(x5, x1);
 	table.insert(ret, "   Crit: "..string.format("%0.2f%%", x1));
@@ -102,7 +137,7 @@ local function MakeCharSheet()
 
 	-- Spellpower
 	table.insert(ret, "|cFFFFFFFFSpellpower|r");
-	x1 = 999;
+	x1 = 99999;
 	table.insert(ret, "  |cFFFFFFFFTree     Dmg      Crit:|r ");
 	local school = {"Holy:    ","Fire:     ","Nature: ","Frost:   ","Shadow:","Arcane: "};
 	local dmg = {};
@@ -122,7 +157,7 @@ local function MakeCharSheet()
 
 	-- Regen / healing shit
 	table.insert(ret, "|cFF00E305Healing and Regen|r");
-	x1 = 9999; x2 = 9999; x3 = 9999;
+	x1 = 999999; x2 = 999999; x3 = 999999;
 	x1 = min(x1, GetSpellBonusHealing());
 	x4,x5 = GetManaRegen()
 	x2 = min(x2, (x4*5));

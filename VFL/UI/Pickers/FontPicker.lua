@@ -15,7 +15,7 @@ fp:SetText("Font Picker");
 fp:SetTitleColor(0,0,.6);
 fp:SetWidth(330); fp:SetHeight(301);
 fp:SetPoint("CENTER", VFLParent, "CENTER");
-fp:SetMovable(true); fp:SetToplevel(nil);
+fp:SetMovable(true); fp:SetToplevel(false);
 VFLUI.Window.StdMove(fp, fp:GetTitleBar());
 fp:Hide();
 fp:SetClampedToScreen(true);
@@ -43,7 +43,7 @@ local pvw = VFLUI.CreateFontString(pvwf);
 pvw:SetDrawLayer("OVERLAY");
 pvw:SetPoint("TOPLEFT", pvwf, "TOPLEFT", 5, -5);
 pvw:SetWidth(110); pvw:SetHeight(170); pvw:Show();
-VFLUI.SetFont(pvw, Fonts.Default, nil, true);
+VFLUI.SetFont(pvw, Fonts.Default);
 pvw:SetText("Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?, daniel ly");
 
 -------- Face selector
@@ -68,7 +68,7 @@ fs:SetDataSource(function(cell, data, pos)
 		cell:Unselect();
 	end
 	-- Apply the text
-	cell.text:SetFont(data.path, 12);
+	cell.text:SetFont(data.path, 12, "");
 	cell.text:SetText(data.name);
 	cell:SetScript("OnClick", function()
 		curFont.face = data.path;
@@ -204,7 +204,7 @@ rg.buttons[1]:SetWidth(50);
 rg.buttons[2]:SetWidth(70);
 rg.buttons[3]:SetWidth(100);
 rg.buttons[4]:SetWidth(100);
-rg.buttons[1]:SetText(VFLI.i18n("None")); 
+rg.buttons[1]:SetText(VFLI.i18n("None"));
 rg.buttons[2]:SetText(VFLI.i18n("OUTLINE"));
 rg.buttons[3]:SetText(VFLI.i18n("THICKOUTLINE"));
 rg.buttons[4]:SetText(VFLI.i18n("OUTLINEMONOCHROME"));
@@ -223,7 +223,7 @@ function FlagsUpdate()
 	elseif rg:GetValue() == 4 then
 		curFont.flags = "MONOCHROME";
 	end
-	
+
 	UpdateFontPicker();
 end
 
@@ -237,14 +237,14 @@ function UpdateFontPicker()
 		chk_ds:SetChecked(true);
 		cs_ds:SetColor(curFont.sr, curFont.sg, curFont.sb, curFont.sa);
 	else
-		chk_ds:SetChecked(nil);
+		chk_ds:SetChecked(false);
 		cs_ds:SetColor(0,0,0,1);
 	end
 	if curFont.cr then
 		chk_dcolor:SetChecked(true);
 		cs_dcolor:SetColor(curFont.cr, curFont.cg, curFont.cb, curFont.ca);
 	else
-		chk_dcolor:SetChecked(nil);
+		chk_dcolor:SetChecked(false);
 		cs_dcolor:SetColor(1,1,1,1);
 	end
 	if curFont.flags then
@@ -347,7 +347,7 @@ function VFLUI.CloseFontPicker() ClosePicker(); end
 -- when the font is changed.
 local function GetFontInfoString(font)
 	if font.face then
-		if not VFLUI.GetFontFaceName(font.face) then return ""; end 
+		if not VFLUI.GetFontFaceName(font.face) then return ""; end
 		return VFLUI.GetFontFaceName(font.face) .. " " .. font.size;
 	else
 		return "(unknown)";
@@ -367,16 +367,16 @@ function VFLUI.MakeFontSelectButton(parent, font, fnOK, flaganchor)
 	function self:SetSelectedFont(f) font = VFL.copy(f); self:SetText(GetFontInfoString(f)); end
 
 	self:SetScript("OnClick", function()
-		VFLUI.FontPicker(parent, function(newFont) 
+		VFLUI.FontPicker(parent, function(newFont)
 			font = newFont;
 			self:SetText(GetFontInfoString(font));
-			fnOK(font); 
+			fnOK(font);
 		end, VFL.Noop, font, flaganchor);
 	end);
 
 	self.Destroy = VFL.hook(function(s)
 		font = nil;
-		s.GetSelectedFont = nil; 
+		s.GetSelectedFont = nil;
 		s.SetSelectedFont = nil;
 	end, self.Destroy);
 	return self;

@@ -21,7 +21,7 @@ local isAggro = true;
 		else
 			code:AppendCode([[
 local isAggro = false;
-local threatSituation = UnitThreatSituation(uid, 'target');
+local threatSituation = UnitThreatSituation(uid);
 if threatSituation == 3 then
 	isAggro = true;
 end

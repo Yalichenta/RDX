@@ -193,7 +193,7 @@ end
 -----------------------------------------------
 -- GLUE STREAMING RPC TO DEFAULT CODE
 -----------------------------------------------
-RegisterAddonMessagePrefix("RDX");
+C_ChatInfo.RegisterAddonMessagePrefix("RDX");
 
 RPC_Guild = RDX.ImbueAddonChannel(nil, "RDX", "GUILD");
 RPC.StreamingRPCMixin(RPC_Guild);

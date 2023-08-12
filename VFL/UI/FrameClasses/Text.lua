@@ -4,8 +4,8 @@ VFLUI.SimpleText = {};
 function VFLUI.SimpleText:new(parent, nblines, width)
 	local self = VFLUI.AcquireFrame("Frame");
 	if parent then
-		self:SetParent(parent); 
-		self:SetFrameStrata(parent:GetFrameStrata()); 
+		self:SetParent(parent);
+		self:SetFrameStrata(parent:GetFrameStrata());
 		self:SetFrameLevel(parent:GetFrameLevel() + 1);
 	end
 
@@ -33,12 +33,12 @@ VFLUI.StaticText = {};
 function VFLUI.StaticText:new(parent, tt)
 	local self = VFLUI.AcquireFrame("Frame");
 	if parent then
-		self:SetParent(parent); 
-		self:SetFrameStrata(parent:GetFrameStrata()); 
+		self:SetParent(parent);
+		self:SetFrameStrata(parent:GetFrameStrata());
 		self:SetFrameLevel(parent:GetFrameLevel() + 1);
 	end
 
-	--self:SetHeight(12 * nblines); self:SetWidth(width); 
+	--self:SetHeight(12 * nblines); self:SetWidth(width);
 	self:Show();
 
 	local txt = VFLUI.CreateFontString(self);
@@ -63,8 +63,8 @@ VFLUI.SeparatorText = {};
 function VFLUI.SeparatorText:new(parent, nblines, width)
 	local self = VFLUI.AcquireFrame("Button");
 	if parent then
-		self:SetParent(parent); 
-		self:SetFrameStrata(parent:GetFrameStrata()); 
+		self:SetParent(parent);
+		self:SetFrameStrata(parent:GetFrameStrata());
 		self:SetFrameLevel(parent:GetFrameLevel() + 1);
 	end
 
@@ -76,10 +76,10 @@ function VFLUI.SeparatorText:new(parent, nblines, width)
 	txt:SetJustifyV("TOP"); txt:SetJustifyH("LEFT");
 	txt:SetText(""); txt:Show();
 	self.text = txt;
-	
+
 	local tex = VFLUI.CreateTexture(self);
 	tex:SetAllPoints(self);
-	tex:SetColorTexture(0,0,0.6); tex:SetGradient("HORIZONTAL", 1,1,1,0.1,0.1,0.1);
+	tex:SetColorTexture(0,0,0.6); tex:SetGradient("HORIZONTAL", WHITE_FONT_COLOR, VERY_DARK_GRAY_COLOR);
 	tex:Show();
 	self.tex = tex;
 

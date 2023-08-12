@@ -34,7 +34,7 @@ sbp:SetText("StatusBar Picker");
 sbp:SetTitleColor(0,0,.6);
 sbp:SetWidth(330); sbp:SetHeight(500);
 sbp:SetPoint("CENTER", VFLParent, "CENTER");
-sbp:SetMovable(true); sbp:SetToplevel(nil);
+sbp:SetMovable(true); sbp:SetToplevel(false);
 VFLUI.Window.StdMove(sbp, sbp:GetTitleBar());
 sbp:Hide();
 sbp:SetClampedToScreen(true);

@@ -13,7 +13,7 @@ profw:SetText("VFL Profiler");
 profw:SetTitleColor(0,0,.6);
 profw:SetWidth(570); profw:SetHeight(380);
 profw:SetPoint("CENTER", VFLParent, "CENTER");
-profw:SetMovable(true); profw:SetToplevel(nil);
+profw:SetMovable(true); profw:SetToplevel(false);
 VFLUI.Window.StdMove(profw, profw:GetTitleBar());
 profw:Hide();
 profw:SetClampedToScreen(true);

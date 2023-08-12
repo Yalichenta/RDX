@@ -8,7 +8,7 @@ VFLUI.CreateFramePool("SecureHandlerBase", function(pool, frame)
 	UnregisterStateDriver(frame, "visibility");
 	VFLUI._CleanupLayoutFrame(frame);
 end, function()
-	local f = CreateFrame("Frame", "SHB" .. VFL.GetNextID(), nil, "SecureHandlerBaseTemplate");
+	local f = CreateFrame("Frame", "SHB" .. VFL.GetNextID(), nil, "SecureHandlerBaseTemplate","BackdropTemplate");
 	return f;
 end);
 
@@ -18,7 +18,7 @@ VFLUI.CreateFramePool("SecureHandlerAttribute", function(pool, frame)
 	frame:SetAttribute("_onattributechanged", "");
 	VFLUI._CleanupLayoutFrame(frame);
 end, function()
-	local f = CreateFrame("Frame", "SHA" .. VFL.GetNextID(), nil, "SecureHandlerAttributeTemplate");
+	local f = CreateFrame("Frame", "SHA" .. VFL.GetNextID(), nil, "SecureHandlerAttributeTemplate","BackdropTemplate");
 	return f;
 end);
 

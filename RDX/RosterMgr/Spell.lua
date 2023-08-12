@@ -508,7 +508,7 @@ end
 
 local subVal, spellId, spellName, spellSchool, rank, norank;
 
-local function __RDXParser(timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2, ...)
+local function __RDXParser_(timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2, ...)
 	subVal = strsub(event, 1, 5);
 	spellId, spellName, spellSchool = nil, nil, nil;
 	norank = nil;
@@ -583,6 +583,10 @@ local function __RDXParser(timestamp, event, hideCaster, sourceGUID, sourceName,
 			obj.data[spellName] = spellId;
 		end
 	end
+end
+
+local function __RDXParser()
+	__RDXParser_(CombatLogGetCurrentEventInfo())
 end
 
 VFLP.RegisterFunc("RDXSS: Spell System", "Parser", __RDXParser, true);

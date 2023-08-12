@@ -18,9 +18,9 @@ function VFLUI.Edit:new(parent, overrideFix)
 
 	-- Appearance
 	self:SetBackdrop(VFLUI.BlackDialogBackdrop);
-	VFLUI.SetFont(self, Fonts.Default);
+	VFLUI.SetFont(self, Fonts.Default, nil, nil ,true);
 	self:SetTextInsets(5,5,5,5);
-	self:SetAutoFocus(nil); self:ClearFocus();
+	self:SetAutoFocus(false); self:ClearFocus();
 
 	-- Scripts
 	self:SetScript("OnEscapePressed", function(self) self:ClearFocus(); end);

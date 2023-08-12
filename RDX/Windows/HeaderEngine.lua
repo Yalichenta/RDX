@@ -68,7 +68,7 @@ function headerAPI:SetNameList(list)
 end
 
 local function CleanupHeader(x)
-	x:Hide(); x:SetScale(1); x:SetBackdrop(nil);
+	x:Hide(); x:SetScale(1); if(x.SetBackdrop) then x:SetBackdrop(nil) end;
 	-- Set default attributes
 	x:SetAttribute("showRaid", true); x:SetAttribute("showParty", true); x:SetAttribute("showSolo", true); x:SetAttribute("showPlayer", true);
 	x:SetAttribute("nameList", nil); x:SetAttribute("groupFilter", nil); x:SetAttribute("strictFiltering", nil);
@@ -86,7 +86,7 @@ end
 VFLUI.CreateFramePool("SecureGroupHeader", function(pool, frame)
 	CleanupHeader(frame);
 end, function()
-	local f = CreateFrame("Frame", "SGH" .. VFL.GetNextID(), nil, "SecureGroupHeaderTemplate");
+	local f = CreateFrame("Frame", "SGH" .. VFL.GetNextID(), nil, "SecureGroupHeaderTemplate","BackdropTemplate");
 	f:SetAttribute("_ignore", "RDXIgnore");
 	CleanupHeader(f);
 	-- Mixin the API
@@ -98,7 +98,7 @@ VFLUI.CreateFramePool("SecureGroupPetHeader", function(pool, frame)
 	CleanupHeader(frame);
 	frame:SetAttribute("useOwnerUnit", nil); frame:SetAttribute("filterOnPet", nil);
 end, function()
-	local f = CreateFrame("Frame", "SGHP" .. VFL.GetNextID(), nil, "SecureGroupPetHeaderTemplate");
+	local f = CreateFrame("Frame", "SGHP" .. VFL.GetNextID(), nil, "SecureGroupPetHeaderTemplate","BackdropTemplate");
 	CleanupHeader(f);
 	f:SetAttribute("useOwnerUnit", nil); f:SetAttribute("filterOnPet", nil);
 	-- Mixin the API
@@ -657,7 +657,7 @@ function RDXUI.ApplyHeaderDescriptor(hdr, hdef)
 	hdr:SetAttribute("unitsPerColumn", hdef.h);
 	hdr:SetAttribute("maxColumns", hdef.w or 1);
 	if hdef.groupType == 2 then
-		hdr:SetAttribute("groupingOrder", "PRIEST,DRUID,PALADIN,SHAMAN,WARRIOR,WARLOCK,MAGE,ROGUE,HUNTER,DEATHKNIGHT,MONK,DEMONHUNTER");
+		hdr:SetAttribute("groupingOrder", "PRIEST,DRUID,PALADIN,SHAMAN,WARRIOR,WARLOCK,MAGE,ROGUE,HUNTER,DEATHKNIGHT,MONK,DEMONHUNTER,EVOKER");
 		hdr:SetAttribute("groupBy", "CLASS");
 	elseif hdef.groupType == 3 then
 		hdr:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8");
@@ -680,7 +680,7 @@ function RDXUI.ApplyHeaderDescriptor(hdr, hdef)
 			for i=1,8 do if hdef.groups[i] then gf = gf .. i .. ","; end end
 		end
 		if hdef.classes then
-			for i=1,12 do if hdef.classes[i] then gf = gf .. RDXMD.GetClassMnemonic(i) .. ","; end end
+			for i=1,13 do if hdef.classes[i] then gf = gf .. RDXMD.GetClassMnemonic(i) .. ","; end end
 		end
 		--if hdef.roles then
 		--	for i=1,4 do if hdef.roles[i] then gf = gf .. RDXMD.GetRoleName(i) .. ","; end end

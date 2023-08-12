@@ -183,7 +183,7 @@ end);
 
 -- Watch for my death. If I have a soulstone up, then broadcast me as "recoverable."
 WoWEvents:Bind("PLAYER_DEAD", nil, function()
-	if HasSoulstone() then
+	if GetSortedSelfResurrectOptions() then
 		-- Wait 1 sec for lag, if the other end doesn't think we're dead this won't work.
 		VFLT.schedule(1.5, RPC_Group.Invoke, RPC_Group, "rez_ss");
 	end

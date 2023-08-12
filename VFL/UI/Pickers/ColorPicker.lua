@@ -208,7 +208,9 @@ local function RGBSlider(self, arg1, arg2, arg3)
 	b_b:SetText(string.format("%0.3f", b));	
 	-- Set colored things
 	swatch:SetVertexColor(r, g, b, cur_a);
-	as_bkg:SetGradientAlpha("VERTICAL",r,g,b,0,r,g,b,1);
+	-- bethan > SetGradientAlpha no longer exist so replace it with SetGradient
+	-- as_bkg:SetGradientAlpha("VERTICAL",r,g,b,0,r,g,b,1);
+	as_bkg:SetGradient("VERTICAL",CreateColor(r,g,b,0),CreateColor(r,g,b,1));
 	recurse_flag = nil;
 	onChange(cur_r, cur_g, cur_b, cur_a);
 end
@@ -226,7 +228,9 @@ local function RGBText()
 	disable_slider_update = true;
 	cs:SetColorRGB(r,g,b);
 	swatch:SetVertexColor(r,g,b,cur_a);
-	as_bkg:SetGradientAlpha("VERTICAL",r,g,b,0,r,g,b,1);
+	-- bethan > SetGradientAlpha no longer exist so replace it with SetGradient
+	-- as_bkg:SetGradientAlpha("VERTICAL",r,g,b,0,r,g,b,1);
+	as_bkg:SetGradient("VERTICAL",CreateColor(r,g,b,0),CreateColor(r,g,b,1));
 	onChange(cur_r, cur_g, cur_b, cur_a);
 end
 
@@ -246,7 +250,9 @@ local function SetColor_All(r,g,b,a)
 	-- Setup widgets
 	cs:SetColorRGB(r,g,b);
 	swatch:SetVertexColor(r,g,b,a);
-	as_bkg:SetGradientAlpha("VERTICAL",r,g,b,0,r,g,b,1);
+	-- bethan > SetGradientAlpha no longer exist so replace it with SetGradient
+	-- as_bkg:SetGradientAlpha("VERTICAL",r,g,b,0,r,g,b,1);
+	as_bkg:SetGradient("VERTICAL",CreateColor(r,g,b,0),CreateColor(r,g,b,1));
 	as:SetValue(1-a);
 	cur_r = r; cur_g = g; cur_b = b; cur_a = a;
 	recurse_flag = nil;

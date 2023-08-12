@@ -128,7 +128,7 @@ end
 -- Hide the moving box
 -- return all data to desktop
 function RDXDK.GetLockGameTooltip()
-	btn:SetMovable(nil);
+	btn:SetMovable(false);
 	btn:SetScript("OnMouseDown", nil);
 	btn:SetScript("OnMouseUp", nil);
 	btn:Hide();
@@ -173,7 +173,7 @@ end
 -- Hide the moving box
 -- return all data to desktop
 function RDXDK.GetLockRealid()
-	btnrid:SetMovable(nil);
+	btnrid:SetMovable(false);
 	btnrid:SetScript("OnMouseDown", nil);
 	btnrid:SetScript("OnMouseUp", nil);
 	btnrid:Hide();

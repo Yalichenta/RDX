@@ -14,7 +14,7 @@ VFLUI.Window.SetDefaultFraming(picker, 20);
 picker:SetText("Sound Picker"); picker:SetTitleColor(0,0,.6);
 picker:SetWidth(280); picker:SetHeight(320);
 picker:SetPoint("CENTER", VFLParent, "CENTER");
-picker:SetMovable(true); picker:SetToplevel(nil);
+picker:SetMovable(true); picker:SetToplevel(false);
 VFLUI.Window.StdMove(picker, picker:GetTitleBar());
 picker:Hide();
 picker:SetClampedToScreen(true);

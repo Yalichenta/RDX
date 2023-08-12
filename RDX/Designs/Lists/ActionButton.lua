@@ -22,6 +22,7 @@ VFLUI.CreateFramePool("SecureActionButtonBar",
 		local f = nil;
 		if key > 0 and key < 146 then
 			f = CreateFrame("CheckButton", "VFLButton" .. key, nil, "SecureActionButtonTemplate");
+			Mixin(f,BackdropTemplateMixin)
 			VFLUI._FixFontObjectNonsense(f);
 		end
 		return f;
@@ -47,7 +48,7 @@ VFLUI.CreateFramePool("SecureActionButtonBarTmp",
 		x:Hide(); x:SetParent(RDXParent); x:ClearAllPoints();
 	end,
 	function(_, key)
-		local f = CreateFrame("CheckButton", "VFLButton" .. GetTmpId(), nil, "SecureActionButtonTemplate");
+		local f = CreateFrame("CheckButton", "VFLButton" .. GetTmpId(), nil, "SecureActionButtonTemplate","BackdropTemplate");
 		VFLUI._FixFontObjectNonsense(f);
 		return f;
 	end, 
@@ -1182,7 +1183,7 @@ VFLUI.CreateFramePool("SecureActionButtonPet",
 	function(_, key)
 		local f = nil;
 		if key > 0 and key < 11 then
-			f = CreateFrame("CheckButton", "VFLPetButton" .. key, nil, "SecureActionButtonTemplate");
+			f = CreateFrame("CheckButton", "VFLPetButton" .. key, nil, "SecureActionButtonTemplate","BackdropTemplate");
 			VFLUI._FixFontObjectNonsense(f);
 		end
 		return f;
@@ -1202,7 +1203,7 @@ VFLUI.CreateFramePool("AutoCastShine",
 		x:Hide(); x:SetParent(RDXParent); x:ClearAllPoints();
 		end,
 	function()
-		local f = CreateFrame("Frame", "ACS" .. VFL.GetNextID(), nil, "AutoCastShineTemplate");
+		local f = CreateFrame("Frame", "ACS" .. VFL.GetNextID(), nil, "AutoCastShineTemplate","BackdropTemplate");
 		return f;
 	end, 
 	function(_, f) -- on acquired
@@ -1572,7 +1573,7 @@ VFLUI.CreateFramePool("SecureActionButtonStance", function(pool, x)
 end, function(_, key)
 	local f = nil;
 	if key > 0 and key < 11 then
-		f = CreateFrame("CheckButton", "VFLStanceButton" .. key, nil, "SecureActionButtonTemplate");
+		f = CreateFrame("CheckButton", "VFLStanceButton" .. key, nil, "SecureActionButtonTemplate","BackdropTemplate");
 		VFLUI._FixFontObjectNonsense(f);
 	end
 	return f;
@@ -1933,7 +1934,7 @@ VFLUI.CreateFramePool("ButtonVehicle",
 	function(_, key)
 		local f = nil;
 		if key > 0 and key < 11 then
-			f = CreateFrame("Button", "VFLVehicleButton" .. key);
+			f = CreateFrame("Button", "VFLVehicleButton" .. key,nil,"BackdropTemplate");
 			VFLUI._FixFontObjectNonsense(f);
 		end
 		return f;

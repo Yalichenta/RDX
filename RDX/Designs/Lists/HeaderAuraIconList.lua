@@ -143,7 +143,7 @@ RDX.RegisterFeature({
 				btn.filter = "]] .. filter .. [[";
 				child.btn = btn;
 			end
-			_bn, _, _tex, _apps, _dispelt, _dur, _et = UnitAura(SecureButton_GetModifiedUnit(frame) or "player",child:GetID(), "]] .. filter .. [[");
+			_bn, _tex, _apps, _dispelt, _dur, _et = AuraUtil.FindAuraByName(child:GetID(), SecureButton_GetModifiedUnit(frame) or "player", "]] .. filter .. [[");
 			if _bn then
 				child.btn.tex:SetTexture(_tex);
 				if _dispelt and DebuffTypeColor[_dispelt] then

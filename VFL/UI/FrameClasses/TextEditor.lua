@@ -17,7 +17,7 @@ VFLUI.CreateFramePool("LuaEditBox", function(pool, x)
 	x:SetText(""); x:SetTextColor(1,1,1,1);
 	VFLUI._CleanupFrame(x);
 end, function()
-	local f = CreateFrame("EditBox");
+	local f = CreateFrame("EditBox",nil,nil,"BackdropTemplate");
 	return f;
 end, function(_, f)
 	IndentationLib.enable(f, nil, 2);

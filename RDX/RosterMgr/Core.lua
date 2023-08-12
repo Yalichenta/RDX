@@ -68,9 +68,9 @@ local function LoadDebuffFromUnit(uid, i, castable, cache)
 	end
 	
 	if cache then
-		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = testUnit:GetDeBuffCache(i);
+		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = testUnit:GetDeBuffCache(i);
 	else
-		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitDebuff(uid, i, castable);
+		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitDebuff(uid, i, castable);
 	end
 	
 	if (not name) then return nil; end
@@ -113,9 +113,9 @@ local function LoadBuffFromUnit(uid, i, castable, cache)
 	end
 	
 	if cache then
-		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = testUnit:GetBuffCache(i);
+		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = testUnit:GetBuffCache(i);
 	else
-		name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitBuff(uid, i, castable);
+		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitBuff(uid, i, castable);
 	end
 	
 	if (not name) then return nil; end

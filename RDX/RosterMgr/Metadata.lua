@@ -13,7 +13,7 @@ RDXMD = RegisterVFLModule({
 local idToClass = { 
 	"PRIEST", "DRUID", "PALADIN", 
 	"SHAMAN", "WARRIOR", "WARLOCK", 
-	"MAGE", "ROGUE", "HUNTER", "DEATHKNIGHT", "MONK", "DEMONHUNTER"
+	"MAGE", "ROGUE", "HUNTER", "DEATHKNIGHT", "MONK", "DEMONHUNTER","EVOKER"
 };
 local classToID = VFL.invert(idToClass);
 
@@ -21,7 +21,7 @@ local idToLocalName = {
 	VFLI.i18n("Priest"), VFLI.i18n("Druid"), VFLI.i18n("Paladin"), 
 	VFLI.i18n("Shaman"), VFLI.i18n("Warrior"), VFLI.i18n("Warlock"), 
 	VFLI.i18n("Mage"), VFLI.i18n("Rogue"), VFLI.i18n("Hunter"), 
-	VFLI.i18n("DeathKnight"), VFLI.i18n("Monk"), VFLI.i18n("DemonHunter"),
+	VFLI.i18n("DeathKnight"), VFLI.i18n("Monk"), VFLI.i18n("DemonHunter"), VFLI.i18n("Evoker"),
 };
 local localNameToID = VFL.invert(idToLocalName);
 
@@ -46,6 +46,7 @@ local classIcons = {
 	["DEATHKNIGHT"]	= {0.25, .5, 0.5, .75},
 	["MONK"]		= {0.5, 0.73828125, 0.5, .75},
 	["DEMONHUNTER"]	= {0.7421875, 0.98828125, 0.5, 0.75},
+	["EVOKER"]	= {0.5, 0.5, 0.5, 0.75},
 	["PETS"] = {0, 1, 0, 1},
 	["MAINTANK"] = {0, 1, 0, 1},
 	["MAINASSIST"] = {0, 1, 0, 1}
@@ -146,6 +147,7 @@ talentIndex["HUNTER"] = 26;
 talentIndex["DEATHKNIGHT"] = 29;
 talentIndex["MONK"] = 32;
 talentIndex["DEMONHUNTER"] = 35;
+talentIndex["EVOKER"] = 37;
 
 local idToSubClassColor = { 
 	RAID_CLASS_COLORS["PRIEST"], RAID_CLASS_COLORS["PRIEST"], RAID_CLASS_COLORS["PRIEST"],
@@ -160,6 +162,7 @@ local idToSubClassColor = {
 	RAID_CLASS_COLORS["DEATHKNIGHT"], RAID_CLASS_COLORS["DEATHKNIGHT"], RAID_CLASS_COLORS["DEATHKNIGHT"],
 	RAID_CLASS_COLORS["MONK"], RAID_CLASS_COLORS["MONK"], RAID_CLASS_COLORS["MONK"],
 	RAID_CLASS_COLORS["DEMONHUNTER"], RAID_CLASS_COLORS["DEMONHUNTER"], RAID_CLASS_COLORS["DEMONHUNTER"],
+	RAID_CLASS_COLORS["EVOKER"], RAID_CLASS_COLORS["EVOKER"], RAID_CLASS_COLORS["EVOKER"],
 };
 local localSubClassColorToID = VFL.invert(idToSubClassColor);
 local _unsbColor = { r=.5, g=.5, b=.5};
@@ -205,6 +208,8 @@ idToTexture[34] = "Interface\\Icons\\Spell_Monk_WindWalker_Spec";
 idToTexture[35] = "Interface\\Icons\\Spell_Monk_Brewmaster_Spec";
 idToTexture[36] = "Interface\\Icons\\Spell_Monk_MistWeaver_Spec";
 idToTexture[37] = "Interface\\Icons\\Spell_Monk_WindWalker_Spec";
+idToTexture[38] = "Interface\\Icons\\Spell_Monk_MistWeaver_Spec";
+idToTexture[39] = "Interface\\Icons\\Spell_Monk_WindWalker_Spec";
 
 local _unsbTex = "Interface\\InventoryItems\\WoWUnknownItem01.blp";
 

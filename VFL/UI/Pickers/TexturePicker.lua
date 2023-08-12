@@ -27,7 +27,7 @@ tp:SetText("Texture Picker");
 tp:SetTitleColor(0,0,.6);
 tp:SetWidth(650); tp:SetHeight(465);
 tp:SetPoint("CENTER", VFLParent, "CENTER");
-tp:SetMovable(true); tp:SetToplevel(nil);
+tp:SetMovable(true); tp:SetToplevel(false);
 VFLUI.Window.StdMove(tp, tp:GetTitleBar());
 tp:Hide();
 tp:SetClampedToScreen(true);
@@ -65,7 +65,7 @@ pathEdit:SetScript("OnTextChanged", function(self)
 		self:SetTextColor(1,0,0);
 	else
 		self:SetTextColor(1,1,1);
-		chk_sc:SetChecked(nil);
+		chk_sc:SetChecked(false);
 		BaseTextureUpdate();
 	end
 end);
@@ -126,7 +126,7 @@ chk_vc:SetHeight(16); chk_vc:SetWidth(120);
 chk_vc:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", 0, -8);
 chk_vc:SetText("Use vertex color"); chk_vc:Show();
 chk_vc.check:SetScript("OnClick", function(self)
-	if self:GetChecked() then chk_grad:SetChecked(nil); end
+	if self:GetChecked() then chk_grad:SetChecked(false); end
 	VCUpdate(); 
 end);
 
@@ -140,7 +140,7 @@ chk_grad:SetHeight(16); chk_grad:SetWidth(100);
 chk_grad:SetPoint("TOPLEFT", chk_vc, "BOTTOMLEFT", 0, -5);
 chk_grad:SetText("Use gradient:"); chk_grad:Show();
 chk_grad.check:SetScript("OnClick", function(self) 
-	if self:GetChecked() then chk_vc:SetChecked(nil); end
+	if self:GetChecked() then chk_vc:SetChecked(false); end
 	VCUpdate(); 
 end);
 
@@ -173,7 +173,7 @@ chk_transform:SetHeight(16); chk_transform:SetWidth(200);
 chk_transform:SetPoint("TOPLEFT", dd_gradDir, "BOTTOMLEFT", 0, -5);
 chk_transform:SetText("Use transform (l,r,b,t):"); chk_transform:Show();
 chk_transform.check:SetScript("OnClick", function(self) 
-	if self:GetChecked() then chk_tr2:SetChecked(nil); end
+	if self:GetChecked() then chk_tr2:SetChecked(false); end
 	VCUpdate(); 
 end);
 
@@ -216,7 +216,7 @@ chk_tr2:SetHeight(16); chk_tr2:SetWidth(200);
 chk_tr2:SetPoint("TOPLEFT", tlEdit, "BOTTOMLEFT", 0, -5);
 chk_tr2:SetText("Use (ULx, ULy, LLx, LLy, URx, URy, LRx, LRy):"); chk_tr2:Show();
 chk_tr2.check:SetScript("OnClick", function(self) 
-	if self:GetChecked() then chk_transform:SetChecked(nil); end
+	if self:GetChecked() then chk_transform:SetChecked(false); end
 	VCUpdate(); 
 end);
 
@@ -480,11 +480,11 @@ end
 ----------- Init
 local function InitPicker()
 	if curTex.path and curTex.path ~= "" then
-		chk_sc:SetChecked(nil);
+		chk_sc:SetChecked(false);
 		pathEdit:SetText(curTex.path);
 		pathIDEdit:SetText("");
 	elseif curTex.pathid and curTex.pathid ~= 0 then
-		chk_sc:SetChecked(nil);
+		chk_sc:SetChecked(false);
 		pathEdit:SetText("");
 		pathIDEdit:SetText(curTex.pathid);
 	elseif curTex.color then

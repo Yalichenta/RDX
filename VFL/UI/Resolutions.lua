@@ -68,8 +68,9 @@ function VFLUI.GetCurrentResolutionString()
 end
 
 local resolutiondd = {};
-for k,v in pairs({GetScreenResolutions()}) do
-	table.insert(resolutiondd, { text = v } );
+for k,v in pairs(C_VideoOptions.GetGameWindowSizes(0,false)) do
+	print( v.x .."x".. v.y)
+	table.insert(resolutiondd, { text = v.x .."x".. v.y } );
 end
 
 function VFLUI.ResolutionsDropdownFunction() return resolutiondd; end

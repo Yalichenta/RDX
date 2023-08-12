@@ -142,7 +142,7 @@ end
 VFLUI.CreateFramePool("SecureAuraHeader", function(pool, frame)
 	CleanupHeader(frame);
 end, function()
-	local f = CreateFrame("Frame", "SAH" .. VFL.GetNextID(), nil, "SecureAuraHeaderTemplate");
+	local f = CreateFrame("Frame", "SAH" .. VFL.GetNextID(), nil, "SecureAuraHeaderTemplate","BackdropTemplate");
 	CleanupHeader(f);
 	-- Mixin the API
 	VFL.mixin(f, headerAuraAPI);

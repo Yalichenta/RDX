@@ -308,7 +308,12 @@ local function AddLogRow(timestamp, event, hideCaster, sourceGUID, sourceName, s
 	lr.t = destName;
 	if sourceGUID then unitsrc = GetUnitByGUIDIfInGroup(sourceGUID); end
 	if destGUID then unittgt = GetUnitByGUIDIfInGroup(destGUID); end
-	subVal = strsub(event, 1, 5);
+	subVal = ""
+	if(nil ~= event) then
+		subVal = strsub(event, 1, 5);
+		--VFL.print(event)
+	else
+	end
 	if (subVal == "SWING") then
 		if (event == "SWING_DAMAGE") then
 			if unitsrc then lr.y = 2; 

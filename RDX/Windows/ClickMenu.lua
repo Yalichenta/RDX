@@ -27,6 +27,11 @@ RDX.AddPopupButton = function(label, _func)
 end
 
 local function _RDX_UnitPopup(dropdownMenu, which, unit, name, userData)
+	if( UIDROPDOWNMENU_MENU_LEVEL > 1) then
+		-- only add button when adding main menu, not in submenus
+		return
+	end
+
 	if(dropdownMenu.which == "RAID" or dropdownMenu.which == "SELF" or dropdownMenu.which == "PLAYER" or dropdownMenu.which == "PARTY") then
 		for k, button in pairs(buttonList) do
 			UIDropDownMenu_AddButton(button);

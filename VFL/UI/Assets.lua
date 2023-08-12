@@ -49,7 +49,7 @@ function VFLUI.RegisterFont(tbl)
 
 	-- Also create a font object for use with buttons.
 	local fo = CreateFont("zzz_" .. tbl.name);
-	fo:SetFont(tbl.face, tbl.size, tbl.flags);
+	fo:SetFont(tbl.face, tbl.size, tbl.flags or "");
 	if tbl.color then
 		fo:SetTextColor(VFL.explodeRGBA(tbl.color));
 	elseif tbl.cr then
@@ -65,10 +65,10 @@ end
 function VFLUI._GetFontIndex() return FontIndex; end
 
 --- Apply a font descriptor to a FontInstance.
-function VFLUI.SetFont(obj, descr, sz, justify)
+function VFLUI.SetFont(obj, descr, sz, justify, extra)
 	if type(descr) ~= "table" then descr = Fonts.Default;	end
 	if not VFLUI.isFacePathExist(descr.face) then descr.face = "Interface\\Addons\\VFL\\Fonts\\LiberationSans-Regular.ttf"; end
-	obj:SetFont(descr.face, (sz or descr.size or 10), descr.flags);
+	obj:SetFont(descr.face, (sz or descr.size or 10), descr.flags or "");
 	if descr.sx then
 		obj:SetShadowOffset(descr.sx or 0, descr.sy or 0);
 		obj:SetShadowColor(descr.sr or 0, descr.sg or 0, descr.sb or 0, descr.sa or 1);
@@ -89,7 +89,7 @@ function VFLUI.GenerateSetFontCode(obj, descr, sz, justify)
 	if not VFLUI.isFacePathExist(descr.face) then descr.face = "Interface\\Addons\\VFL\\Fonts\\LiberationSans-Regular.ttf"; end
 	local ret = [[
 ]] .. obj .. ":SetFont(" .. string.format("%q", descr.face) .. ", " .. (sz or descr.size or 10);
-	if descr.flags then ret = ret .. ", " .. string.format("%q", descr.flags); end
+	if descr.flags then ret = ret .. ", " .. string.format("%q", descr.flags or ""); end
 	ret = ret.. [[);
 ]];
 	if descr.sx then
@@ -132,8 +132,8 @@ function VFLUI.RegisterTexture(tbl, fast)
 	if not tbl.dx then tbl.dx = 32; end
 	if not tbl.dy then tbl.dy = 32; end
 	if not tbl.blendMode then tbl.blendMode = "BLEND"; end
-	if not texCategories[tbl.category] then 
-		texCategories[tbl.category] = true; 
+	if not texCategories[tbl.category] then
+		texCategories[tbl.category] = true;
 		table.insert(tcSorted, tbl.category); table.sort(tcSorted);
 	end
 	textures[tbl.name] = tbl;
@@ -198,7 +198,9 @@ function VFLUI.SetTexture(obj, descr)
 			obj:SetVertexColor(VFL.explodeRGBA(descr.vertexColor));
 		elseif descr.gradDir then
 			local c = descr.grad1
-			obj:SetGradientAlpha(descr.gradDir, c.r, c.g, c.b, c.a, VFL.explodeRGBA(descr.grad2));
+			-- bethan > SetGradientAlpha no longer exist so replace it with SetGradient
+			--obj:SetGradientAlpha(descr.gradDir, c.r, c.g, c.b, c.a, VFL.explodeRGBA(descr.grad2));
+			obj:SetGradient(descr.gradDir, CreateColor(c.r, c.g, c.b, c.a),CreateColor(VFL.explodeRGBA(descr.grad2)))
 		else
 			obj:SetVertexColor(1,1,1,1);
 		end
@@ -234,7 +236,9 @@ function VFLUI.GenerateSetTextureCode(obj, descr)
 ]];
 	elseif descr.gradDir then
 		local c,c2 = descr.grad1, descr.grad2;
-		ret = ret .. obj .. ":SetGradientAlpha('" .. descr.gradDir .. "'," .. c.r .. "," .. c.g .. "," .. c.b .. "," .. c.a .. "," .. c2.r .. "," .. c2.g .. "," .. c2.b .. "," .. c2.a .. [[);
+		-- bethan > SetGradientAlpha no longer exist so replace it with SetGradient
+		--ret = ret .. obj .. ":SetGradientAlpha('" .. descr.gradDir .. "'," .. c.r .. "," .. c.g .. "," .. c.b .. "," .. c.a .. "," .. c2.r .. "," .. c2.g .. "," .. c2.b .. "," .. c2.a .. [[);
+		ret = ret .. obj .. ":SetGradient('" .. descr.gradDir .. "',CreateColor(" .. c.r .. "," .. c.g .. "," .. c.b .. "," .. c.a .. "),CreateColor(" .. c2.r .. "," .. c2.g .. "," .. c2.b .. "," .. c2.a .. [[));
 ]];
 
 	else
@@ -288,7 +292,7 @@ VFLUI.RegisterButtonSkin({ name = "bs_default"; title = "None"; });
 
 function VFLUI.SetButtonSkin(frame, bsp)
 	if (type(frame) ~= "table") then return; end
-	
+
 	if frame.framesup and not bsp then
 		VFLUI.SetTexture(frame._texBackdrop, nil);
 		frame._texBackdrop:Hide();
@@ -306,10 +310,10 @@ function VFLUI.SetButtonSkin(frame, bsp)
 		frame:SetHighlightTexture(frame._texHighlight);
 		VFLUI.SetTexture(frame._texGloss, nil);
 		frame._texGloss:Hide();
-		
+
 		frame.framesup:Hide();
 	end
-	
+
 	if (type(bsp) == "table") then
 		if not frame.framesup then
 			local framesup = VFLUI.AcquireFrame("Frame");
@@ -319,52 +323,52 @@ function VFLUI.SetButtonSkin(frame, bsp)
 			framesup:SetAllPoints(frame);
 			framesup:Show();
 			frame.framesup = framesup;
-			
+
 			local _texBackdrop = VFLUI.CreateTexture(frame);
 			_texBackdrop:SetAllPoints(frame);
 			_texBackdrop:Hide();
 			frame._texBackdrop = _texBackdrop;
-			
+
 			local _texBorder = VFLUI.CreateTexture(framesup);
 			_texBorder:SetAllPoints(framesup);
 			_texBorder:Hide();
 			frame._texBorder = _texBorder;
-			
+
 			local _texFlash = VFLUI.CreateTexture(framesup);
 			_texFlash:SetAllPoints(framesup);
 			_texFlash:Hide();
 			frame._texFlash = _texFlash;
-			
+
 			-- normal
 			local _texNormal = VFLUI.CreateTexture(frame);
 			_texNormal:SetAllPoints(frame);
 			frame._texNormal = _texNormal;
-			
+
 			-- pushed
 			local _texPushed = VFLUI.CreateTexture(frame);
 			_texPushed:SetAllPoints(frame);
 			frame._texPushed = _texPushed;
-			
+
 			-- disabled
 			local _texDisabled = VFLUI.CreateTexture(frame);
 			_texDisabled:SetAllPoints(frame);
 			frame._texDisabled = _texDisabled;
-			
+
 			-- checked
 			local _texChecked = VFLUI.CreateTexture(frame);
 			_texChecked:SetAllPoints(frame);
 			frame._texChecked = _texChecked;
-			
+
 			-- highlights
 			local _texHighlight = VFLUI.CreateTexture(frame);
 			_texHighlight:SetAllPoints(frame);
 			frame._texHighlight = _texHighlight;
-			
+
 			-- gloss
 			local _texGloss = VFLUI.CreateTexture(frame);
 			_texGloss:SetAllPoints(frame);
 			frame._texGloss = _texGloss;
-			
+
 			frame.Destroy = VFL.hook(function(s)
 				VFLUI.ReleaseRegion(s._texBackdrop); s._texBackdrop = nil;
 				VFLUI.ReleaseRegion(s._texBorder); s._texBorder = nil;
@@ -378,7 +382,7 @@ function VFLUI.SetButtonSkin(frame, bsp)
 				s.framesup:Destroy(); s.framesup = nil;
 			end, frame.Destroy);
 		end
-		
+
 		local desc = VFLUI.GetButtonSkin(bsp.name);
 		if not desc then return; end
 		if desc.backdrop then
@@ -427,15 +431,15 @@ function VFLUI.SetButtonSkin(frame, bsp)
 			frame._texGloss:SetDrawLayer("ARTWORK", 4);
 			frame._texGloss:Show();
 		end
-		
+
 		if not bsp.showflash then
 			VFLUI.SetTexture(frame._texFlash, nil);
 		end
-		
+
 		if not bsp.showgloss then
 			VFLUI.SetTexture(frame._texGloss, nil);
 		end
-		
+
 		if bsp.br then
 			frame._texBorder:SetVertexColor(bsp.br or 1, bsp.bg or 1, bsp.bb or 1, bsp.ba or 1);
 			frame._texGloss:SetVertexColor(bsp.br or 1, bsp.bg or 1, bsp.bb or 1, bsp.ba or 1);
@@ -560,7 +564,7 @@ end
 
 local backdrops = {};
 local backdropList = {};
-function VFLUI.GetBackdropTitle(name) 
+function VFLUI.GetBackdropTitle(name)
 	local x = backdrops[name or "none"]; if not x then return "None"; end
 	return x.title;
 end
@@ -608,7 +612,7 @@ end
 
 function VFLUI.SetBackdrop(frame, bkdp)
 	if (type(frame) ~= "table") then return; end
-	
+
 	if frame._fbd then
 		frame._fbd:SetBackdrop(nil);
 		frame._fbb:SetBackdrop(nil);
@@ -621,7 +625,7 @@ function VFLUI.SetBackdrop(frame, bkdp)
 		frame._rdxbf:Hide();
 	end
 	frame:SetBackdrop(nil);
-	
+
 	if (type(bkdp) == "table") then
 
 		if not bkdp._bkdtype or bkdp._bkdtype == 1 then
@@ -655,36 +659,36 @@ function VFLUI.SetBackdrop(frame, bkdp)
 					s._fbd = nil;
 				end, frame.Destroy);
 			end
-			
+
 			if not bkdp.boff then bkdp.boff = 1; end
 			if not bkdp.borl then bkdp.borl = 2; end
-			
+
 			frame._fbd:ClearAllPoints();
 			frame._fbd:SetPoint("CENTER", frame, "CENTER");
-			frame._fbd:SetWidth(frame:GetWidth() + bkdp.boff); 
+			frame._fbd:SetWidth(frame:GetWidth() + bkdp.boff);
 			frame._fbd:SetHeight(frame:GetHeight() + bkdp.boff);
 			frame._fbd:SetFrameLevel(frame:GetFrameLevel());
 			frame._fbd:Show();
-			
+
 			frame._fbb:ClearAllPoints();
 			frame._fbb:SetPoint("CENTER", frame, "CENTER");
-			frame._fbb:SetWidth(frame:GetWidth() + bkdp.boff); 
+			frame._fbb:SetWidth(frame:GetWidth() + bkdp.boff);
 			frame._fbb:SetHeight(frame:GetHeight() + bkdp.boff);
 			frame._fbb:SetFrameLevel(frame:GetFrameLevel() + bkdp.borl);
 			frame._fbb:Show();
-			
+
 			local bkdp_bd = VFL.copy(bkdp);
 			bkdp_bd.edgeFile = nil;
 			bkdp_bd.edgeSize = nil;
 			--bkdp_bd.insets = nil;
 			frame._fbd:SetBackdrop(bkdp_bd);
-			
+
 			local bkdp_bb = VFL.copy(bkdp);
 			bkdp_bb.bgFile = nil;
 			bkdp_bb.tile = nil;
 			bkdp_bb.tileSize = nil;
 			frame._fbb:SetBackdrop(bkdp_bb);
-			
+
 			if bkdp.br then
 				frame._fbb:SetBackdropBorderColor(bkdp.br or 1, bkdp.bg or 1, bkdp.bb or 1, bkdp.ba or 1);
 			else
@@ -697,7 +701,7 @@ function VFLUI.SetBackdrop(frame, bkdp)
 			end
 		elseif bkdp._bkdtype == 3 then
 			-- Texture backdrop
-			if not frame._rdxbf then 
+			if not frame._rdxbf then
 				local _f = VFLUI.AcquireFrame("Frame");
 				_f:SetParent(frame);
 				_f:SetAllPoints(frame);
@@ -710,18 +714,18 @@ function VFLUI.SetBackdrop(frame, bkdp)
 				_t:Show();
 				_r:Show();
 				_b:Show();
-				
+
 				_f._l = _l;
 				_f._t = _t;
 				_f._r = _r;
 				_f._b = _b;
-				
+
 				local _bg = VFLUI.CreateTexture(frame);
 				_bg:Show();
 				frame._bg = _bg;
-				
+
 				frame._rdxbf = _f;
-				
+
 				frame.Destroy = VFL.hook(function(s)
 					s._rdxbf.rsize = nil;
 					s._rdxbf.bors = nil;
@@ -739,13 +743,13 @@ function VFLUI.SetBackdrop(frame, bkdp)
 					s._rdxbf = nil;
 				end, frame.Destroy);
 			end
-			
+
 			frame._rdxbf:Show();
 			frame._rdxbf:SetFrameLevel(frame:GetFrameLevel() + bkdp.borl);
-			
+
 			-- store the border sise
 			frame._rdxbf.bors = bkdp.bors;
-			
+
 			local function rsize(self)
 				self._l:ClearAllPoints();
 				self._t:ClearAllPoints();
@@ -760,11 +764,11 @@ function VFLUI.SetBackdrop(frame, bkdp)
 				self._r:SetWidth(self.bors or 1); self._r:SetHeight(self:GetHeight());
 				self._b:SetWidth(self:GetWidth()); self._b:SetHeight(self.bors or 1);
 			end
-			
+
 			frame._rdxbf.rsize = rsize;
 			frame._rdxbf:SetScript("OnSizeChanged", rsize);
 			frame._rdxbf:rsize();
-			
+
 			if bkdp.br then
 				frame._rdxbf._l:SetColorTexture(bkdp.br or 1, bkdp.bg or 1, bkdp.bb or 1, bkdp.ba or 1);
 				frame._rdxbf._t:SetColorTexture(bkdp.br or 1, bkdp.bg or 1, bkdp.bb or 1, bkdp.ba or 1);
@@ -784,14 +788,14 @@ function VFLUI.SetBackdrop(frame, bkdp)
 			--frame._rdxbf._t:SetVertexColor(1,1,1,1);
 			--frame._rdxbf._r:SetVertexColor(1,1,1,1);
 			--frame._rdxbf._b:SetVertexColor(1,1,1,1);
-			
+
 			if bkdp.kr then
 				frame._bg:SetColorTexture(bkdp.kr or 1, bkdp.kg or 1, bkdp.kb or 1, bkdp.ka or 1);
 			else
 				frame._bg:SetTexture(nil);
 				frame._bg:SetColorTexture(0, 0, 0, 0);
 			end
-			
+
 			frame._bg:SetDrawLayer(bkdp.dl, bkdp.bgl or 1);
 			--frame._bg:SetVertexColor(1,1,1,1);
 			frame._bg:SetAllPoints(frame);
@@ -832,7 +836,7 @@ function VFLUI.SetBackdropRDX(frame, bkdp, offset, borderlevel)
 	if (type(frame) ~= "table") or (type(bkdp) ~= "table") then return; end
 	if not offset then offset = 0; end
 	if not borderlevel then borderlevel = 1; end
-	
+
 	if not frame._fbd then
 		local fbd = VFLUI.AcquireFrame("Frame");
 		fbd:SetParent(frame);
@@ -841,10 +845,10 @@ function VFLUI.SetBackdropRDX(frame, bkdp, offset, borderlevel)
 	end
 	frame._fbd:ClearAllPoints();
 	frame._fbd:SetPoint("CENTER", frame, "CENTER");
-	frame._fbd:SetWidth(frame:GetWidth() + offset); 
+	frame._fbd:SetWidth(frame:GetWidth() + offset);
 	frame._fbd:SetHeight(frame:GetHeight() + offset);
 	frame._fbd:SetFrameLevel(frame:GetFrameLevel() - 1);
-	
+
 	if not frame._fbb then
 		local fbb = VFLUI.AcquireFrame("Frame");
 		fbb:SetParent(frame);
@@ -853,22 +857,22 @@ function VFLUI.SetBackdropRDX(frame, bkdp, offset, borderlevel)
 	end
 	frame._fbb:ClearAllPoints();
 	frame._fbb:SetPoint("CENTER", frame, "CENTER");
-	frame._fbb:SetWidth(frame:GetWidth() + offset); 
+	frame._fbb:SetWidth(frame:GetWidth() + offset);
 	frame._fbb:SetHeight(frame:GetHeight() + offset);
 	frame._fbb:SetFrameLevel(frame:GetFrameLevel() + borderlevel);
-	
+
 	local bkdp_bd = VFL.copy(bkdp);
 	bkdp_bd.edgeFile = nil;
 	bkdp_bd.edgeSize = nil;
 	bkdp_bd.insets = nil;
 	frame._fbd:SetBackdrop(bkdp_bd);
-	
+
 	local bkdp_bb = VFL.copy(bkdp);
 	bkdp_bb.bgFile = nil;
 	bkdp_bb.tile = nil;
 	bkdp_bb.tileSize = nil;
 	frame._fbb:SetBackdrop(bkdp_bb);
-	
+
 	if bkdp.br then
 		frame._fbb:SetBackdropBorderColor(bkdp.br or 1, bkdp.bg or 1, bkdp.bb or 1, bkdp.ba or 1);
 	else
@@ -893,11 +897,11 @@ function VFLUI.ResizeBackdropRDX(frame, offset)
 	if not offset then offset = 0; end
 	frame._fbd:ClearAllPoints();
 	frame._fbd:SetPoint("CENTER", frame, "CENTER");
-	frame._fbd:SetWidth(frame:GetWidth() + offset); 
+	frame._fbd:SetWidth(frame:GetWidth() + offset);
 	frame._fbd:SetHeight(frame:GetHeight() + offset);
 	frame._fbb:ClearAllPoints();
 	frame._fbb:SetPoint("CENTER", frame, "CENTER");
-	frame._fbb:SetWidth(frame:GetWidth() + offset); 
+	frame._fbb:SetWidth(frame:GetWidth() + offset);
 	frame._fbb:SetHeight(frame:GetHeight() + offset);
 end
 -- deprecated
@@ -948,17 +952,17 @@ function VFLUI.SetBackdropBorderRDX(frame, color, drawlayer, sublevel, size, bgc
 	_t:SetWidth(frame:GetWidth()); _t:SetHeight(size or 1);
 	_r:SetWidth(size or 1); _r:SetHeight(frame:GetHeight());
 	_b:SetWidth(frame:GetWidth()); _b:SetHeight(size or 1);
-	
+
 	_l:Show();
 	_t:Show();
 	_r:Show();
 	_b:Show();
-	
+
 	frame._rdxbl = _l;
 	frame._rdxbt = _t;
 	frame._rdxbr = _r;
 	frame._rdxbb = _b;
-	
+
 	if bgcolor then
 		local _bg = VFLUI.CreateTexture(frame);
 		_bg:SetColorTexture(VFL.explodeRGBA(bgcolor));
@@ -968,7 +972,7 @@ function VFLUI.SetBackdropBorderRDX(frame, color, drawlayer, sublevel, size, bgc
 		_bg:Show();
 		frame._rdxbbg = _bg;
 	end
-	
+
 	frame.Destroy = VFL.hook(function(s)
 		if s._rdxbbg then
 			s._rdxbbg:Destroy();

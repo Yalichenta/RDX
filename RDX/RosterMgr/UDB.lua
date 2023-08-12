@@ -995,7 +995,7 @@ local function ProcessRoster()
 				-- init the myunit
 				if nunit.me then
 					myunit = nunit;
-					myunit.contId = GetCurrentMapContinent();
+					myunit.contId = 8 --GetCurrentMapContinent();
 					myunit.mapId = 14;
 					myunit.PlyrRZX = 0;
 					myunit.PlyrRZY = 0;
@@ -1727,7 +1727,7 @@ WoWEvents:Bind("UNIT_MAXHEALTH", nil, UnitHealthPropagator);
 WoWEvents:Bind("UNIT_ABSORB_AMOUNT_CHANGED", nil, UnitHealPredictionPropagator);
 WoWEvents:Bind("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", nil, UnitHealPredictionPropagator);
 WoWEvents:Bind("UNIT_HEAL_PREDICTION", nil, UnitHealPredictionPropagator);
-WoWEvents:Bind("UNIT_POWER", nil, UnitPowerPropagator);
+WoWEvents:Bind("UNIT_POWER_UPDATE", nil, UnitPowerPropagator);
 WoWEvents:Bind("UNIT_MAXPOWER", nil, UnitPowerPropagator);
 --WoWEvents:Bind("UNIT_DISPLAYPOWER", nil, UnitPowerPropagator);
 
@@ -1775,11 +1775,12 @@ WoWEvents:Bind("PLAYER_TARGET_CHANGED", nil, function(arg1)
 		_sig_rdx_unit_combo_points:Raise(myunit, myunit.nid, myunit.uid);
 	end
 end);
-
+--[[
 WoWEvents:Bind("UNIT_COMBO_POINTS", nil, function(arg1)
 	local x = id2num[arg1];
 	if x then _sig_rdx_unit_combo_points:Raise(ubi[x], x, arg1); end
 end);
+]]--
 
 --------------------------------------------
 -- RUNES EVENTS
@@ -1790,13 +1791,13 @@ WoWEvents:Bind("RUNE_POWER_UPDATE", nil, function(arg1)
 		_sig_rdx_unit_rune_power_update:Raise(myunit, myunit.nid, myunit.uid);
 	end
 end);
-
+--[[
 WoWEvents:Bind("RUNE_TYPE_UPDATE", nil, function(arg1)
 	if myunit then
 		_sig_rdx_unit_rune_type_update:Raise(myunit, myunit.nid, myunit.uid);
 	end
 end);
-
+]]--
 --------------------------------------------
 -- BUFF WEAPON EVENTS
 --------------------------------------------
@@ -1875,7 +1876,7 @@ local function flagprop(arg1)
 	if x then _sig_rdx_unit_flags:Raise(ubi[x], x, arg1); end
 end
 WoWEvents:Bind("UNIT_FLAGS", nil, flagprop);
-WoWEvents:Bind("UNIT_DYNAMIC_FLAGS", nil, flagprop);
+--WoWEvents:Bind("UNIT_DYNAMIC_FLAGS", nil, flagprop);
 
 -- Rangedamage
 local function rangeprop(arg1)

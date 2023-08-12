@@ -233,22 +233,22 @@ function RDXDK.GetLockBlizzard()
 	--watchframebtn:SetScript("OnMouseUp", nil);
 	--watchframebtn:Hide();
 	
-	vehicleseatbtn:SetMovable(nil);
+	vehicleseatbtn:SetMovable(false);
 	vehicleseatbtn:SetScript("OnMouseDown", nil);
 	vehicleseatbtn:SetScript("OnMouseUp", nil);
 	vehicleseatbtn:Hide();
 	
-	durabilitybtn:SetMovable(nil);
+	durabilitybtn:SetMovable(false);
 	durabilitybtn:SetScript("OnMouseDown", nil);
 	durabilitybtn:SetScript("OnMouseUp", nil);
 	durabilitybtn:Hide();
 	
-	extrabtn:SetMovable(nil);
+	extrabtn:SetMovable(false);
 	extrabtn:SetScript("OnMouseDown", nil);
 	extrabtn:SetScript("OnMouseUp", nil);
 	extrabtn:Hide();
 	
-	playerpowerbaraltbtn:SetMovable(nil);
+	playerpowerbaraltbtn:SetMovable(false);
 	playerpowerbaraltbtn:SetScript("OnMouseDown", nil);
 	playerpowerbaraltbtn:SetScript("OnMouseUp", nil);
 	playerpowerbaraltbtn:Hide();

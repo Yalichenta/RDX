@@ -116,7 +116,7 @@ function VFLUI.Framing.Default(self, titleHeight, bkdp)
     
 	local tx2 = VFLUI.CreateTexture(titleBar);
 	tx2:SetDrawLayer("ARTWORK");
-	tx2:SetColorTexture(1,1,1,1); tx2:SetGradient("VERTICAL",1,1,1,0.3,0.3,0.3);
+	tx2:SetColorTexture(1,1,1,1); tx2:SetGradient("VERTICAL",WHITE_FONT_COLOR, DARKGRAY_COLOR);
 	tx2:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5);
 	tx2:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -5, -titleHeight);
 	tx2:Show();

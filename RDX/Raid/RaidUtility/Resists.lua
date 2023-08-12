@@ -7,6 +7,8 @@
 --
 -- Resist checking.
 
+-- no longer exists as of 8.0.0
+--[[
 function Logistics.GetResists()
 	local _,fire = UnitResistance("player", 2);
 	local _,nature = UnitResistance("player", 3);
@@ -15,6 +17,7 @@ function Logistics.GetResists()
 	local _,arcane = UnitResistance("player", 6);
 	return fire, frost, nature, arcane, shadow;
 end
+]]--
 
 ----------------------------------------------
 -- RESPONDER
@@ -66,7 +69,7 @@ local function RCWin_ApplyData(win, frame, icv, data)
 	frame.text1:SetText(VFL.strtcolor(RDXMD.GetClassColor(row.class)) .. row.name .. "|r");
 	if (not row.resp) then -- no resp
 		frame.text2:SetText("|cFF444444(No resp)|r");
-		return; 
+		return;
 	end
 	frame.text2:SetText(VFL.strcolor(1,0,0)..row.fire.." "..VFL.strcolor(0,1,0)..row.nature.." "..VFL.strcolor(0,0,1)..row.frost.." "..VFL.strcolor(1,1,1)..row.arcane.." "..VFL.strcolor(0.4,0.4,0.4)..row.shadow);
 end
@@ -86,8 +89,8 @@ function Logistics.ResistCheck_Start()
 	for _,unit in RDXDAL.Group() do
 		if unit:IsValid() then
 			totalCount = totalCount + 1;
-			nameMap[unit.name] = { 
-				name = unit:GetProperName(); 
+			nameMap[unit.name] = {
+				name = unit:GetProperName();
 				class = unit:GetClassID();
 				fire=0; frost=0; nature=0; arcane=0; shadow=0; total=0;
 			};

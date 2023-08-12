@@ -34,7 +34,7 @@ VFLUI.CreateFramePool("ChatFrame",
 	end,
 	function() -- on fallback
 		local id = VFL.GetNextID()
-		local f = CreateFrame("ScrollingMessageFrame", "SMF" .. id, nil, "VFLChatFrameTemplate");
+		local f = CreateFrame("ScrollingMessageFrame", "SMF" .. id, nil, "VFLChatFrameTemplate", "BackdropTemplate");
 		f:UnregisterEvent("UPDATE_CHAT_WINDOWS");
 		--f:UnregisterEvent("UPDATE_CHAT_COLOR");
 		f:SetScript("OnMouseWheel", scroll);
@@ -77,7 +77,7 @@ VFLUI.CreateFramePool("ChatFrame2",
 		f.ebbg:Show();
 		
 		-- the chatframe
-		f.cf = CreateFrame("ScrollingMessageFrame", "SMF" .. VFL.GetNextID(), nil, "VFLChatFrameTemplate");
+		f.cf = CreateFrame("ScrollingMessageFrame", "SMF" .. VFL.GetNextID(), nil, "VFLChatFrameTemplate", "BackdropTemplate");
 		f.cf:SetParent(f.cfbg);
 		f.cf:SetWidth(f:GetWidth() - 10); f.cf:SetHeight(f:GetHeight() - 36);
 		f.cf:SetPoint("TOPLEFT", f.cfbg, "TOPLEFT", 5, -5);
@@ -161,7 +161,7 @@ VFLUI.CreateFramePool("ChatFrameEditBox",
 		x:Hide();
 	end,
 	function(_, key) -- on fallback
-		--local f = CreateFrame("EditBox", "EB" .. key, nil, "ChatFrameEditBoxTemplate");
+		--local f = CreateFrame("EditBox", "EB" .. key, nil, "ChatFrameEditBoxTemplate", "BackdropTemplate");
 		local f = _G["ChatFrame1EditBox"];
 		return f;
 	end, 

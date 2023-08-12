@@ -319,6 +319,12 @@ RDXDB.RegisterSymLinkClass({
 		ff12:Show();
 		ui:InsertFrame(ff12);
 
+		local ff13 = RDXDB.ObjectFinder:new(parent, function(d,p,f,md) return (md and type(md) == "table"); end);
+		ff13:SetLabel(VFLI.i18n("EVOKER"));
+		if desc and desc.targetpath_13 then ff13:SetPath(desc.targetpath_13); end
+		ff13:Show();
+		ui:InsertFrame(ff13);
+
 		ui.GetDescriptor = function(x)
 			return {
 				class = "class", 
@@ -334,6 +340,7 @@ RDXDB.RegisterSymLinkClass({
 				targetpath_10 = ff10:GetPath(),
 				targetpath_11 = ff11:GetPath(),
 				targetpath_12 = ff12:GetPath(),
+				targetpath_13 = ff13:GetPath(),
 			};
 		end;
 

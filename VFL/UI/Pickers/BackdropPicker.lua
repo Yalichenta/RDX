@@ -32,7 +32,7 @@ VFLUI.Window.SetDefaultFraming(bdp, 20);
 bdp:SetText("Backdrop Picker"); bdp:SetTitleColor(0,0,.6);
 bdp:SetWidth(290); bdp:SetHeight(375);
 bdp:SetPoint("CENTER", VFLParent, "CENTER");
-bdp:SetMovable(true); bdp:SetToplevel(nil);
+bdp:SetMovable(true); bdp:SetToplevel(false);
 VFLUI.Window.StdMove(bdp, bdp:GetTitleBar());
 bdp:Hide();
 bdp:SetClampedToScreen(true);
@@ -67,7 +67,7 @@ dd_border = VFLUI.Dropdown:new(ca, VFLUI.GetBackdropBorderList, function(selecte
 	VFLUI.ApplyBaseBackdrop(curBackdrop, selectedBorder);
 	UpdateBackdropPicker();
 end);
-dd_border:SetWidth(190); 
+dd_border:SetWidth(190);
 dd_border:SetPoint("LEFT", lbl2, "RIGHT");
 dd_border:Show();
 
@@ -175,7 +175,7 @@ dd_backdrop = VFLUI.Dropdown:new(ca, VFLUI.GetBackdropList, function(selectedBac
 	VFLUI.ApplyBaseBackdrop(curBackdrop, nil, selectedBackdrop);
 	UpdateBackdropPicker();
 end);
-dd_backdrop:SetWidth(190); 
+dd_backdrop:SetWidth(190);
 dd_backdrop:SetPoint("LEFT", lbl, "RIGHT");
 dd_backdrop:Show();
 
@@ -209,7 +209,7 @@ function TileUpdate()
 		end
 	end
 end
- 
+
 ----------- Backdrop color
 local BackdropColorUpdate;
 
@@ -291,7 +291,7 @@ function bkdp2Update()
 	-- Clamp ranges
 	boff = math.floor(VFL.clamp(boff, 0, 1024));
 	borl = math.floor(VFL.clamp(borl, 0, 1024));
-	bors = math.floor(VFL.clamp(bors, 0, 1024));     
+	bors = math.floor(VFL.clamp(bors, 0, 1024));
 	bgl = math.floor(VFL.clamp(bgl, 0, 1024));
 	-- Apply settings
 	local changed = nil;
@@ -313,7 +313,7 @@ rg:SetLayout(3,3);
 rg.buttons[1]:SetWidth(70);
 rg.buttons[2]:SetWidth(70);
 rg.buttons[3]:SetWidth(70);
-rg.buttons[1]:SetText(VFLI.i18n("Default")); 
+rg.buttons[1]:SetText(VFLI.i18n("Default"));
 rg.buttons[2]:SetText(VFLI.i18n("Double"));
 rg.buttons[3]:SetText(VFLI.i18n("Texture"));
 rg.buttons[1].button:HookScript("OnClick", function() FlagsUpdate(); end);
@@ -321,7 +321,7 @@ rg.buttons[2].button:HookScript("OnClick", function() FlagsUpdate(); end);
 rg.buttons[3].button:HookScript("OnClick", function() FlagsUpdate(); end);
 
 function FlagsUpdate()
-	if rg:GetValue() ~= curBackdrop._bkdtype then 
+	if rg:GetValue() ~= curBackdrop._bkdtype then
 		curBackdrop._bkdtype = rg:GetValue();
 		UpdateBackdropPicker();
 	end
@@ -349,7 +349,7 @@ UpdateBackdropPicker = function()
 		chk_tile:SetChecked(true);
 		if ed_tile:GetNumber() ~= curBackdrop.tileSize then ed_tile:SetText(curBackdrop.tileSize or ""); end
 	else
-		chk_tile:SetChecked(nil); ed_tile:SetText("");
+		chk_tile:SetChecked(false); ed_tile:SetText("");
 	end
 
 	-- Insets
@@ -366,7 +366,7 @@ UpdateBackdropPicker = function()
 		chk_bcolor:SetChecked(true);
 		cs_bcolor:SetColor(curBackdrop.br, curBackdrop.bg, curBackdrop.bb, curBackdrop.ba);
 	else
-		chk_bcolor:SetChecked(nil);
+		chk_bcolor:SetChecked(false);
 		cs_bcolor:SetColor(1,1,1,1);
 	end
 	-- BackdropColor
@@ -374,25 +374,25 @@ UpdateBackdropPicker = function()
 		chk_kcolor:SetChecked(true);
 		cs_kcolor:SetColor(curBackdrop.kr, curBackdrop.kg, curBackdrop.kb, curBackdrop.ka);
 	else
-		chk_kcolor:SetChecked(nil);
+		chk_kcolor:SetChecked(false);
 		cs_kcolor:SetColor(1,1,1,1);
 	end
-	
+
 	-- bkdp2
-	--if e_boff:GetNumber() ~= curBackdrop.boff then 
-		e_boff:SetText(curBackdrop.boff); 
+	--if e_boff:GetNumber() ~= curBackdrop.boff then
+		e_boff:SetText(curBackdrop.boff);
 	--end
-	--if e_borl:GetNumber() ~= curBackdrop.borl then 
-		e_borl:SetText(curBackdrop.borl); 
+	--if e_borl:GetNumber() ~= curBackdrop.borl then
+		e_borl:SetText(curBackdrop.borl);
 	--end
-	--if e_bors:GetNumber() ~= curBackdrop.bors then 
+	--if e_bors:GetNumber() ~= curBackdrop.bors then
 		e_bors:SetText(curBackdrop.bors);
 	--end
 		e_bgl:SetText(curBackdrop.bgl);
-	--if rg:GetValue() ~= curBackdrop._bkdtype then 
+	--if rg:GetValue() ~= curBackdrop._bkdtype then
 		rg:SetValue(curBackdrop._bkdtype);
 	--end
-	
+
 end
 
 ----------- Buttons
@@ -425,13 +425,13 @@ local function ClosePicker(nosmooth)
 		bdp:Hide();
 		curBackdrop = {};
 		bdp_owner = nil;
-		onCancel = VFL.Noop; 
+		onCancel = VFL.Noop;
 		onOK = VFL.Noop;
 	--else
 	--	bdp:_Hide(.2, nil, function()
 	--		curBackdrop = {};
 	--		bdp_owner = nil;
-	--		onCancel = VFL.Noop; 
+	--		onCancel = VFL.Noop;
 	--		onOK = VFL.Noop;
 	--	end);
 	--end
@@ -468,7 +468,7 @@ function VFLUI.BackdropPicker(owner, fnOK, fnCancel, backdrop, flaganchor)
 	-- Cancel any preexisting picker.
 	if bdp:IsShown() then CancelPicker(true); end
 	onOK = fnOK or VFL.Noop; onCancel = fnCancel or VFL.Noop;
-	bdp_owner = owner; 
+	bdp_owner = owner;
 	if flaganchor then bdp:SetPoint("LEFT", bdp_owner, "RIGHT", 10, 0); end
 	curBackdrop = VFL.copy(backdrop);
 	UpdateBackdropPicker();
@@ -511,7 +511,7 @@ function VFLUI.MakeBackdropSelectButton(parent, backdrop, fnOK, flaganchor)
 	end
 
 	self:SetScript("OnClick", function()
-		VFLUI.BackdropPicker(parent, function(new) 
+		VFLUI.BackdropPicker(parent, function(new)
 			backdrop = new;
 			self:SetText(GetBackdropInfoString(backdrop));
 			fnOK(backdrop);
@@ -520,7 +520,7 @@ function VFLUI.MakeBackdropSelectButton(parent, backdrop, fnOK, flaganchor)
 
 	self.Destroy = VFL.hook(function(s)
 		backdrop = nil;
-		s.GetSelectedBackdrop = nil; 
+		s.GetSelectedBackdrop = nil;
 		s.SetSelectedBackdrop = nil;
 	end, self.Destroy);
 	return self;

@@ -69,35 +69,35 @@ function RDXUI.ClassFilterUI:new(parent)
 
 	local checks = VFLUI.CheckGroup:new(self);
 	self:SetClient(checks); checks:Show();
-	checks:SetLayout(12, 3);
-	for i=1,12 do 
-		checks.checkBox[i]:SetText(VFL.strtcolor(RDXMD.GetClassColor(i)) .. RDXMD.GetClassName(i) .. "|r" ); 
+	checks:SetLayout(13, 3);
+	for i=1,13 do
+		checks.checkBox[i]:SetText(VFL.strtcolor(RDXMD.GetClassColor(i)) .. RDXMD.GetClassName(i) .. "|r" );
 	end
 
 	local all = VFLUI.Button:new(self);
 	all:SetBackdrop(VFLUI.BorderlessDialogBackdrop);
 	all:SetHeight(16); all:SetWidth(35); all:SetText(VFLI.i18n("All"));
 	all:SetPoint("RIGHT", self:GetCaptionArea(), "RIGHT"); all:Show();
-	all:SetScript("OnClick", function() for i=1,12 do checks.checkBox[i]:SetChecked(true); end end);
+	all:SetScript("OnClick", function() for i=1,13 do checks.checkBox[i]:SetChecked(true); end end);
 	self:AddDecoration(all);
 
 	local none = VFLUI.Button:new(self);
 	none:SetBackdrop(VFLUI.BorderlessDialogBackdrop);
 	none:SetHeight(16); none:SetWidth(35); none:SetText(VFLI.i18n("None"));
 	none:SetPoint("RIGHT", all, "LEFT"); none:Show();
-	none:SetScript("OnClick", function() for i=1,12 do checks.checkBox[i]:SetChecked(); end end);
+	none:SetScript("OnClick", function() for i=1,13 do checks.checkBox[i]:SetChecked(); end end);
 	self:AddDecoration(none);
 
 	function self:GetClasses()
 		local grps = {};
-		for i=1,12 do
+		for i=1,13 do
 			if checks.checkBox[i]:GetChecked() then grps[i] = true; end
 		end
 		return grps;
 	end
 	function self:SetClasses(grps)
 		if type(grps) ~= "table" then grps = nil; end
-		for i=1,12 do
+		for i=1,13 do
 			if grps and grps[i] then checks.checkBox[i]:SetChecked(true); else checks.checkBox[i]:SetChecked(); end
 		end
 	end
@@ -122,8 +122,8 @@ function RDXUI.RoleFilterUI:new(parent)
 	local checks = VFLUI.CheckGroup:new(self);
 	self:SetClient(checks); checks:Show();
 	checks:SetLayout(4, 2);
-	for i=1,4 do 
-		checks.checkBox[i]:SetText(VFL.strtcolor(RDXMD.GetRoleColor(i)) .. RDXMD.GetRoleName(i) .. "|r" ); 
+	for i=1,4 do
+		checks.checkBox[i]:SetText(VFL.strtcolor(RDXMD.GetRoleColor(i)) .. RDXMD.GetRoleName(i) .. "|r" );
 	end
 
 	local all = VFLUI.Button:new(self);

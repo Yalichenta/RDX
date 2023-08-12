@@ -105,7 +105,7 @@ function(pool, x) -- onrelease
 	VFLUI._CleanupButton(x);
 end, 
 function() -- onfallback
-	local f = CreateFrame("Button");
+	local f = CreateFrame("Button",nil,nil,"BackdropTemplate");
 	VFLUI._FixFontObjectNonsense(f);
 	return f;
 end,

@@ -158,6 +158,9 @@ function RDXDB.ExplorerInstance:new(parent)
 	dkList:Rebuild(); dkList:Show();
 	
 	dkList:SetDataSource(function(cell, data, pos)
+		if (not cell.text) then
+			return
+		end
 		cell.text:SetText(data);
 		if(data == activeDk) then
 			cell.selTexture:SetVertexColor(0,0,1); cell.selTexture:Show();
@@ -220,6 +223,9 @@ function RDXDB.ExplorerInstance:new(parent)
 	pkgList:Rebuild(); pkgList:Show();
 
 	pkgList:SetDataSource(function(cell, data, pos)
+		if (not cell.text) then
+			return
+		end
 		cell.text:SetText(data);
 		if(data == activePkg) then
 			cell.selTexture:SetVertexColor(0,0,1); cell.selTexture:Show();

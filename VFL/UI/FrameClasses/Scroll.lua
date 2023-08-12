@@ -15,7 +15,7 @@ local function CreateScrollButton(nrm, psh, dis, hlt)
 	self:SetNormalTexture(nrm);
 	self:SetPushedTexture(psh);
 	self:SetDisabledTexture(dis);
-	
+
 	-- Highlight texture requires special handling (for blend mode)
 	local hltTex = VFLUI.CreateTexture(self);
 	hltTex:SetAllPoints(self); hltTex:Show();
@@ -24,7 +24,7 @@ local function CreateScrollButton(nrm, psh, dis, hlt)
 	self:SetHighlightTexture(hltTex);
 	self.hltTex = hltTex;
 
-	self.Destroy = VFL.hook(function(s) 
+	self.Destroy = VFL.hook(function(s)
 		VFLUI.ReleaseRegion(s.hltTex);
 		s.hltTex = nil;
 	end, self.Destroy);
@@ -51,39 +51,39 @@ end
 
 --- Create a button with the VFL "Scroll up" skin.
 function VFLUI.CreateScrollUpButton()
-	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_up", 
-		"Interface\\Addons\\VFL\\Skin\\sb_up_pressed", 
+	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_up",
+		"Interface\\Addons\\VFL\\Skin\\sb_up_pressed",
 		"Interface\\Addons\\VFL\\Skin\\sb_up_disabled",
 		"Interface\\Addons\\VFL\\Skin\\sb_up_hlt");
 end
 
 --- Create a button with the VFL "Scroll down" skin.
 function VFLUI.CreateScrollDownButton()
-	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_down", 
-		"Interface\\Addons\\VFL\\Skin\\sb_down_pressed", 
+	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_down",
+		"Interface\\Addons\\VFL\\Skin\\sb_down_pressed",
 		"Interface\\Addons\\VFL\\Skin\\sb_down_disabled",
 		"Interface\\Addons\\VFL\\Skin\\sb_down_hlt");
 end
 
 --- Create a button with the "Scroll right" skin
 function VFLUI.CreateScrollRightButton()
-	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_right", 
-		"Interface\\Addons\\VFL\\Skin\\sb_right_pressed", 
+	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_right",
+		"Interface\\Addons\\VFL\\Skin\\sb_right_pressed",
 		"Interface\\Addons\\VFL\\Skin\\sb_right_disabled",
 		"Interface\\Addons\\VFL\\Skin\\sb_right_hlt");
 end
 
 --- Create a button with the "Scroll left" skin
 function VFLUI.CreateScrollLeftButton()
-	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_left", 
-		"Interface\\Addons\\VFL\\Skin\\sb_left_pressed", 
+	return CreateScrollButton("Interface\\Addons\\VFL\\Skin\\sb_left",
+		"Interface\\Addons\\VFL\\Skin\\sb_left_pressed",
 		"Interface\\Addons\\VFL\\Skin\\sb_left_disabled",
 		"Interface\\Addons\\VFL\\Skin\\sb_left_hlt");
 end
 
 local vsb_backdrop = {
-	bgFile="Interface\\Addons\\VFL\\Skin\\sb_vgutter"; 
-	insets = { left = 0; right = 0; top = 0; bottom = 0; }; 
+	bgFile="Interface\\Addons\\VFL\\Skin\\sb_vgutter";
+	insets = { left = 0; right = 0; top = 0; bottom = 0; };
 	tile = true; tileSize = 16;
 };
 
@@ -138,7 +138,7 @@ function VFLUI.VScrollBar:new(parent)
 		local p = x:GetParent();
 		if p and p.SetVerticalScroll then p:SetVerticalScroll(val); end
 	end);
-	
+
 	-- Page size handling
 	local pageSize = nil;
 	function self:SetPageSize(n) pageSize = tonumber(n); end
@@ -165,6 +165,7 @@ end
 -- A class similar to a Blizzard ScrollFrame, preloaded with VFL-themed
 -- scrollbars and appropriate scripts.
 ---------------------------------------
+
 VFLUI.VScrollFrame = {};
 function VFLUI.VScrollFrame:new(parent)
 	local self = VFLUI.AcquireFrame("ScrollFrame");
@@ -216,7 +217,9 @@ function VFLUI.VScrollFrame:new(parent)
 		end
 		-- Point to the new scroll child
 		s._scrollChild = sc;
-		BlizzSetScrollChild(s, sc);
+		if(sc) then
+			BlizzSetScrollChild(s, sc);
+		end
 		-- If the new scroll child is extant...
 		if sc then
 			-- Apply a new SizeChanged script.
@@ -228,9 +231,13 @@ function VFLUI.VScrollFrame:new(parent)
 				s:UpdateScrollChildRect();
 				OnScrollRangeChanged();
 			end);
+			-- jail everything for now, as BlizzSetScrollChild can't be undone now as far as I understand it
+			sc.jail = true
 		end
+		-- jail everything for now, as BlizzSetScrollChild can't be undone now as far as I understand it
+		s.jail = true
 	end
-	
+
 	-- Enable mousewheel scrolling
 	self:EnableMouseWheel(true)
 	self:SetScript("OnMouseWheel", function(self, delta)
@@ -258,8 +265,8 @@ end
 -- A horizontal slider.
 ---------------------------------------------------
 local hsb_backdrop = {
-	bgFile="Interface\\Addons\\VFL\\Skin\\sb_hgutter"; 
-	insets = { left = 0; right = 0; top = 0; bottom = 0; }; 
+	bgFile="Interface\\Addons\\VFL\\Skin\\sb_hgutter";
+	insets = { left = 0; right = 0; top = 0; bottom = 0; };
 	tile = true; tileSize = 16;
 };
 VFLUI.HScrollBar = {};
@@ -273,7 +280,7 @@ function VFLUI.HScrollBar:new(parent, noButtons, onSelChanged)
 		self:SetFrameStrata(parent:GetFrameStrata());
 		self:SetFrameLevel(parent:GetFrameLevel()+ 1);
 	end
-	
+
 	-- rewrite the SetValue function
 	self._SetValue = self.SetValue;
 	self.SetValue = function(self, value, flag)

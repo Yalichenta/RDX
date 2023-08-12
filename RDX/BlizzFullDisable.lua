@@ -21,8 +21,8 @@ local function DisableAll()
 		ChatFrame1Tab:Hide();
 		ChatFrame1Tab:SetScript("OnShow", ChatFrame1Tab.Hide);
 		ChatFrame1:UnregisterAllEvents();
-		FriendsMicroButton:Hide();
-		FriendsMicroButton:UnregisterAllEvents();
+		--FriendsMicroButton:Hide();
+		--FriendsMicroButton:UnregisterAllEvents();
 		ChatFrameMenuButton:Hide();
 		ChatFrameMenuButton:UnregisterAllEvents();
 		ChatFrameMenuButton:SetScript("OnShow", ChatFrameMenuButton.Hide);
@@ -91,7 +91,7 @@ local function DisableAll()
 			
 			"MainMenuExpBar",
 			"ExhaustionTick",
-			"MainMenuBarMaxLevelBar",
+			-- "MainMenuBarMaxLevelBar",
 			---"MainMenuBar", --bug extrabar
 			
 			"MultiBarBottomLeftButton1",
@@ -246,7 +246,7 @@ local function DisableAll()
 		
 		MainMenuBarBackpackButton_UpdateFreeSlots = VFL.Noop;
 		
-		MainMenuBarMaxLevelBar.ignoreFramePositionManager = true;
+		--MainMenuBarMaxLevelBar.ignoreFramePositionManager = true;
 		MultiBarBottomLeft.ignoreFramePositionManager = true;
 		MultiBarRight.ignoreFramePositionManager = true;
 		StanceBarFrame.ignoreFramePositionManager = true;
@@ -806,7 +806,7 @@ local efdb = nil;
 
 VFLEvents:Bind("PLAYER_COMBAT", nil, function()
 	if efdb then
-		DisableAll();
+		--DisableAll();
 		efdb = nil;
 	end
 end);
@@ -814,7 +814,7 @@ end);
 RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 	opt = RDXG.RDXopt;
 	if not InCombatLockdown() then
-		DisableAll();
+		--DisableAll();
 	else
 		efdb = true;
 	end
