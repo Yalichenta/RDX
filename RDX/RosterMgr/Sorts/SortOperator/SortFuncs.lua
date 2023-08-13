@@ -27,6 +27,68 @@ RDXDAL.RegisterSortOperator({
 	GetBlankDescriptor = function() return {op = "nid"}; end;
 });
 
+TA_LIQUID_ID = {}
+TA_LIQUID_ID["burnÃ«r"] = 70
+TA_LIQUID_ID["skeptagram"] = 80
+TA_LIQUID_ID["tiraÃªl"] = 90
+TA_LIQUID_ID["pillouse"] = 100
+TA_LIQUID_ID["kana"] = 110
+TA_LIQUID_ID["adriflapflap"] = 120
+TA_LIQUID_ID["skeptagrumz"] = 125
+TA_LIQUID_ID["starlettjoh"] = 128
+TA_LIQUID_ID["bethan"] = 130
+TA_LIQUID_ID["seal"] = 140
+TA_LIQUID_ID["Ã­ro"] = 145
+TA_LIQUID_ID["yillara"] = 150
+TA_LIQUID_ID["angÃ«rfirst"] = 160
+TA_LIQUID_ID["dendrolith"] = 170
+TA_LIQUID_ID["kÃ©raz"] = 180
+TA_LIQUID_ID["skyzÃ¸u"] = 190
+TA_LIQUID_ID["arueshalae"] = 200
+TA_LIQUID_ID["brewrea"] = 210
+TA_LIQUID_ID["milotem"] = 220
+TA_LIQUID_ID["sarislava"] = 230
+TA_LIQUID_ID["delmothounet"] = 240
+TA_LIQUID_ID["astelar"] = 250
+TA_LIQUID_ID["hÃ¸lyfuk"] = 260
+
+
+
+-- Liquid sort.
+RDXDAL.RegisterSortOperator({
+	name = "liquid";
+	title = VFLI.i18n("Liquid sort");
+	category = VFLI.i18n("Basic");
+	EmitLocals = function(desc, code, vars)
+		if not vars["liquidid"] then
+			vars["liquidid"] = true;
+			code:AppendCode([[
+local classid1,classid2 = TA_LIQUID_ID[u1.name] or 0, TA_LIQUID_ID[u2.name] or 0;
+]]);
+		end
+	end;
+	EmitCode = function(desc, code, context)
+		code:AppendCode([[
+if classid1 == classid2 then
+]]);
+		RDXDAL._SortContinuation(context);
+		code:AppendCode([[
+else
+]]);
+		if desc.reversed then
+			code:AppendCode([[return classid1 > classid2;]]);
+		else
+			code:AppendCode([[return classid1 < classid2;]]);
+		end
+code:AppendCode([[
+end
+]]);
+
+	end;
+	GetUI = RDXDAL.TrivialSortUI("liquid", VFLI.i18n("Liquid sort"));
+	GetBlankDescriptor = function() return {op = "liquid"}; end;
+});
+
 -- Alpha sort.
 RDXDAL.RegisterSortOperator({
 	name = "alpha";
@@ -47,7 +109,7 @@ else
 		end
 code:AppendCode([[
 end
-]]);	
+]]);
 	end;
 	GetUI = RDXDAL.TrivialSortUI("alpha", VFLI.i18n("Alphabetical"));
 	GetBlankDescriptor = function() return {op = "alpha"}; end;
@@ -81,7 +143,7 @@ else
 		end
 code:AppendCode([[
 end
-]]);	
+]]);
 	end;
 	GetUI = RDXDAL.TrivialSortUI("class", VFLI.i18n("Class"));
 	GetBlankDescriptor = function() return {op = "class"}; end;
@@ -115,7 +177,7 @@ else
 		end
 code:AppendCode([[
 end
-]]);	
+]]);
 	end;
 	Events = function(desc, ev) ev["ROSTER_UPDATE"] = true; end;
 	GetUI = RDXDAL.TrivialSortUI("group", VFLI.i18n("Group"));
@@ -309,10 +371,10 @@ local function CreateElevatorWidget(parent)
 		upbtn:SetScript("OnClick", onUp);
 		dnbtn:SetScript("OnClick", onDn);
 	end;
-	self.SetText = function(s, t) 
-		label:SetText(t); 
+	self.SetText = function(s, t)
+		label:SetText(t);
 	end
-	
+
 	self.Destroy = VFL.hook(function(s)
 		s.SetupButtons = nil; s.SetText = nil;
 		upbtn:Destroy(); upbtn = nil; dnbtn:Destroy(); dnbtn = nil;
@@ -336,7 +398,7 @@ RDXDAL.RegisterSortOperator({
             end
 		end
 	end;
-	
+
 	EmitLocals = function(desc, code, vars)
 		if not vars["classid"] then
 			vars["class2id"] = true;
@@ -344,7 +406,7 @@ RDXDAL.RegisterSortOperator({
 local class2id1,class2id2 = ]] .. desc.vname .. [[[u1:GetClassID()], ]] .. desc.vname .. [[[u2:GetClassID()] ]]);
 		end
 	end;
-	
+
 	EmitCode = function(desc, code, context)
 		code:AppendCode([[
 if class2id1 == class2id2 then
@@ -360,16 +422,16 @@ else
 		end
 code:AppendCode([[
 end
-]]);	
+]]);
 	end;
-	
+
 	GetUI = function(parent, desc)
 		local ui = VFLUI.SortDialogFrame:new(parent);
 		ui:SetText(VFLI.i18n("Specified Class Order")); ui:Show();
-		
+
 		local container = VFLUI.CompoundFrame:new(ui);
 		ui:SetChild(container); container:Show();
-				
+
 		local function Move(frame, dxn)
 			local x,y = container:LocateFrame(frame);
 			if not x then return; end
@@ -382,28 +444,28 @@ end
 			-- Relayout
 			VFLUI.UpdateDialogLayout(container);
 		end
-		
+
 		local i;
 		for i = 1,10 do
 			local cls = CreateElevatorWidget(container);
 			cls:SetupButtons(function()	Move(cls, -1); end, function() Move(cls, 1); end);
 			cls.classID = desc[i];
-			cls:SetText(VFL.strtcolor(RDXMD.GetClassColor(desc[i])) .. RDXMD.GetClassName(desc[i]) .. "|r"); 
+			cls:SetText(VFL.strtcolor(RDXMD.GetClassColor(desc[i])) .. RDXMD.GetClassName(desc[i]) .. "|r");
 			container:InsertFrame(cls);
 			cls:Show();
 		end
-		
-		ui.GetDescriptor = function() 
+
+		ui.GetDescriptor = function()
 			local ret = { op = "class2"; vname = desc.vname or ("cls" .. math.random(1,10000000)) };
 			for i=1,10 do
 				ret[i] = container.cells[1][i].classID;
 			end
 			return ret;
 		end;
-	
+
 		return ui;
 	end;
-	
+
 	GetBlankDescriptor = function()
 		local ret = { op = "class2"; vname = "cls" .. math.random(1, 10000000) };
 		for i=1,10 do

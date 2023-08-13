@@ -434,6 +434,7 @@ local function CleanupFrame(x)
 	--x:SetBackdrop(nil);
 	VFLUI.SetBackdrop(x, nil);
 	-- Perform LayoutFrame cleanup...
+	if(x.vfl_anchorID) then C_UnitAuras.RemovePrivateAuraAnchor(x.vfl_anchorID); x.vfl_anchorID = nil end
 	CleanupLayoutFrame(x);
 end
 VFLUI._CleanupFrame = CleanupFrame;
