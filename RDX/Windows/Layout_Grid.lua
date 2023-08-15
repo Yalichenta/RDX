@@ -34,6 +34,9 @@ RDX.RegisterFeature({
 		state:AddSlot("TotalPostPaintAdvice", true);
 		state:AddSlot("AcclimatizeAdvice", true);
 		state:AddSlot("DeacclimatizeAdvice", true);
+		if(desc.secure) then
+			state:AddSlot("SecureDataSource");
+		end
 		return true;
 	end;
 	ApplyFeature = function(desc, state)
@@ -70,7 +73,7 @@ RDX.RegisterFeature({
 		local fp = VFL.Pool:new();
 		fp.OnRelease = function(_,frame)
 			frame._paintmask = defaultPaintMask;
-			frame:Hide(); 
+			frame:Hide();
 		end
 		fp.OnFallback = function(pool, grid)
 			-- Create the unit frame
@@ -78,7 +81,7 @@ RDX.RegisterFeature({
 			frame:SetParent(grid); frame:SetFrameLevel(grid:GetFrameLevel() + 1);
 			-- Imbue it with unit-frame-hood.
 			local succ,err = pcall(genUF, frame);
-			if not succ then 
+			if not succ then
 				RDXDK.PrintError(w, "genUF", err);
 				frame.txterror = VFLUI.SimpleText:new(nil, 5, 100);
 				frame.txterror:SetPoint("CENTER", frame, "CENTER");
@@ -88,19 +91,19 @@ RDX.RegisterFeature({
 				frame.Destroy = VFL.hook(function(frame)
 					frame.txterror:Destroy(); frame.txterror = nil;
 				end, frame.Destroy);
-			end 
+			end
 			if not frame.Cleanup then
 				frame.Cleanup = VFL.Noop;
 				frame.SetData = VFL.Noop;
 				frame.GetHotspot = VFL.Noop;
 				frame.SetHotspot = VFL.Noop;
 				frame.Destroy = VFL.hook(function(frame)
-					frame.Cleanup = nil; frame.SetData = nil; 
+					frame.Cleanup = nil; frame.SetData = nil;
 					frame.GetHotspot = nil; frame.SetHotspot = nil;
 					frame._paintmask = nil;
 				end, frame.Destroy);
 			end
-			frame:Cleanup(); 
+			frame:Cleanup();
 			acca(nil, nil, frame);
 			-- Apply default paintmask
 			frame._paintmask = defaultPaintMask;
@@ -128,25 +131,35 @@ RDX.RegisterFeature({
 			maskmod = maskmod or 0;
 			tprepa(win); -- Invoke pre paint advice
 
-			local grid_i_func, grid_i_state, grid_i_ctl = grid:StatelessIterator(dxn);
-			local index, cell = 0, nil;
-
-			-- Invalidate the unit map if reshuffling
+			local grid_i_func, grid_i_state, grid_i_ctl;
 			local isReshuffle = (band(maskmod,1) ~= 0);
-			if isReshuffle then
-				for k in pairs(umap) do umap[k] = nil; end
+			local index, cell = 0, nil;
+			-- If secure and in combat, do not change layout
+			if not ((win.secure or desc.secure) and InCombatLockdown()) then
+				grid_i_func, grid_i_state, grid_i_ctl = grid:StatelessIterator(dxn);
+				-- Invalidate the unit map if reshuffling
+				if isReshuffle then
+					for k in pairs(umap) do umap[k] = nil; end
+				end
 			end
 			-- Iterate over the datasource
 			for ctl,uid,rdxUnit,a1,a2,a3,a4,a5,a6,a7 in iFunc() do
 				index = index + 1;
 				-- Iterate to the next cell in the grid
-				grid_i_ctl, cell = grid_i_func(grid_i_state, grid_i_ctl);
-				if not cell then break; end
-				cell._paintmask = bor(cell._paintmask or 0, maskmod);
-				cell:Show();
-				-- Associate the unit with this cell.
-				if rdxUnit and isReshuffle then
-					cell:SetAttribute("unit", uid);	umap[rdxUnit.nid] = cell;
+				if ((win.secure or desc.secure) and InCombatLockdown()) then
+					--reuse previous location
+					cell = umap[rdxUnit.nid]
+					if not cell then break; end
+					cell._paintmask = bor(cell._paintmask or 0, maskmod);
+				else
+					grid_i_ctl, cell = grid_i_func(grid_i_state, grid_i_ctl);
+					if not cell then break; end
+					cell._paintmask = bor(cell._paintmask or 0, maskmod);
+					cell:Show();
+					-- Associate the unit with this cell.
+					if rdxUnit and isReshuffle then
+						cell:SetAttribute("unit", uid);	umap[rdxUnit.nid] = cell;
+					end
 				end
 				-- Apply the data to the cell.
 				prePaintAdvice(win, cell, index, ctl, uid, rdxUnit, a1, a2, a3, a4, a5, a6, a7);
@@ -156,12 +169,14 @@ RDX.RegisterFeature({
 				-- Reset the paintmask
 				cell._paintmask = defaultPaintMask;
 			end
-			-- Hide remaining cells
-			if cell then
-				grid_i_ctl, cell = grid_i_func(grid_i_state, grid_i_ctl);
-				while cell do
-					cell:Hide();
+			-- Hide remaining cells if not secure or not in combat
+			if not ((win.secure or desc.secure) and InCombatLockdown()) then
+				if cell then
 					grid_i_ctl, cell = grid_i_func(grid_i_state, grid_i_ctl);
+					while cell do
+						cell:Hide();
+						grid_i_ctl, cell = grid_i_func(grid_i_state, grid_i_ctl);
+					end
 				end
 			end
 			tpostpa(win); -- Invoke post paint advice
@@ -180,7 +195,7 @@ RDX.RegisterFeature({
 			if not desc.countTitle then setTitle(" (" .. n .. ")"); end
 			n = math.min(limit, n);
 			-- Burning Crusade: Do not attempt to resize a secure window while in combat.
-			if not win.secure or (win.secure and not InCombatLockdown()) then
+			if not ((win.secure or desc.secure) and InCombatLockdown()) then
 				local height = math.ceil(n/cols);
 				local eff_cols = math.max(math.min(cols, n), 1);
 				-- Resize the grid element
@@ -223,10 +238,10 @@ RDX.RegisterFeature({
 		local function destroy()
 			if win then
 				-- Remove profiler hooks
-				if win._path and VFLP.IsEnabled() then 
+				if win._path and VFLP.IsEnabled() then
 					--	VFLT.AdaptiveUnschedule2("Perf" .. win._path);
-					-- VFLP.UnregisterCategory("Win: " .. win._path); 
-					VFLP.UnregisterObject(update); 
+					-- VFLP.UnregisterCategory("Win: " .. win._path);
+					VFLP.UnregisterObject(update);
 				end
 				-- Remove API
 				win.LookupUnit = nil;
@@ -237,8 +252,8 @@ RDX.RegisterFeature({
 			if faux then faux:Destroy(); faux = nil; end
 			-- Quash framepool
 			if umap then VFL.empty(umap); end
-			if fp then fp:Shunt(function(x) 
-				x:Destroy(); 
+			if fp then fp:Shunt(function(x)
+				x:Destroy();
 			end); end
 			win = nil;
 		end
@@ -255,7 +270,7 @@ RDX.RegisterFeature({
 			local succ,err = pcall(relayout);
 			if not succ then RDXDK.PrintError(win, "RepaintAll", err); end
 		end);
-		state:Attach("RepaintSort", nil, function() 
+		state:Attach("RepaintSort", nil, function()
 			local succ,err = pcall(update, 1);
 			if not succ then RDXDK.PrintError(win, "RepaintSort", err);	end
 		end);
@@ -299,10 +314,10 @@ RDX.RegisterFeature({
 		ed_limit:SetHeight(25); ed_limit:SetWidth(50); ed_limit:SetPoint("RIGHT", chk_limit, "RIGHT");
 		chk_limit.Destroy = VFL.hook(function() ed_limit:Destroy(); end, chk_limit.Destroy);
 		chk_limit:SetText(VFLI.i18n("Limit number of displayed frames to:"));
-		if desc and desc.limit then 
-			chk_limit:SetChecked(true); 
+		if desc and desc.limit then
+			chk_limit:SetChecked(true);
 			ed_limit:SetText(desc.limit);
-		else 
+		else
 			chk_limit:SetChecked();
 			ed_limit:SetText("1");
 		end
@@ -318,25 +333,31 @@ RDX.RegisterFeature({
 		if desc then chk_title:SetChecked(desc.countTitle); end
 		ui:InsertFrame(chk_title);
 
+		local make_secure = VFLUI.Checkbox:new(ui); make_secure:Show();
+		make_secure:SetText(VFLI.i18n("Design has hotspot or secure subframes"));
+		if desc then make_secure:SetChecked(desc.secure); end
+		ui:InsertFrame(make_secure);
+
 		function ui:GetDescriptor()
 			local cols = VFL.clamp(ed_width.editBox:GetNumber(), 1, 10);
-			local limit = nil; 
+			local limit = nil;
 			if chk_limit:GetChecked() then
 				limit = VFL.clamp(ed_limit:GetNumber(), 1, 100);
 			end
-			return { 
-				feature = "Grid Layout"; 
+			return {
+				feature = "Grid Layout";
 				axis = axis:GetValue(); cols = cols; dxn = rg_dxn:GetValue(); limit = limit;
 				--autoShowHide = chk_ash:GetChecked();
 				countTitle = chk_title:GetChecked();
+				secure = make_secure:GetChecked();
 			};
 		end
 
 		return ui;
 	end;
-	CreateDescriptor = function() 
+	CreateDescriptor = function()
 		return {
 			feature = "Grid Layout", axis = 1, cols = 1, dxn = 1
-		}; 
+		};
 	end;
 });

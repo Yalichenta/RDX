@@ -35,7 +35,7 @@ end
 RDX.RegisterFeature({
 	name = "header"; version = 1;
 	--deprecated = true;
-	title = VFLI.i18n("Header"); 
+	title = VFLI.i18n("Header");
 	category = VFLI.i18n("Data Source and Layout");
 	IsPossible = function(state)
 		if not state:Slot("Frame") then return nil; end
@@ -115,7 +115,7 @@ RDX.RegisterFeature({
 		-- "Acclimatize" a secure button to this window.
 		local function Acclimatize(hdr, frame)
 			local succ,err = pcall(genUF, frame);
-			if not succ then 
+			if not succ then
 				RDXDK.PrintError(w, "genUF", err);
 				frame.txterror = VFLUI.SimpleText:new(nil, 5, 100);
 				frame.txterror:SetPoint("CENTER", frame, "CENTER");
@@ -125,14 +125,14 @@ RDX.RegisterFeature({
 				frame.Destroy = VFL.hook(function(frame)
 					frame.txterror:Destroy(); frame.txterror = nil;
 				end, frame.Destroy);
-			end 
+			end
 			if not frame.Cleanup then
 				frame.Cleanup = VFL.Noop;
 				frame.SetData = VFL.Noop;
 				frame.GetHotspot = VFL.Noop;
 				frame.SetHotspot = VFL.Noop;
 				frame.Destroy = VFL.hook(function(frame)
-					frame.Cleanup = nil; frame.SetData = nil; 
+					frame.Cleanup = nil; frame.SetData = nil;
 					frame.GetHotspot = nil; frame.SetHotspot = nil;
 					frame._paintmask = nil;
 				end, frame.Destroy);
@@ -140,7 +140,7 @@ RDX.RegisterFeature({
 			frame:Cleanup();
 			acca(nil, hdr, frame);
 			frame._paintmask = defaultPaintMask;
-			frame:SetAttribute("unitsuffix", "target");
+			--frame:SetAttribute("unitsuffix", "target");
 		end
 
 		-- "De-acclimatize" a secure button from this window
@@ -221,10 +221,10 @@ RDX.RegisterFeature({
 		local function create(w)
 			win = w;
 			-- Make the grid
-			grid = RDX.SmartHeader:new(htype, hdef.switchvehicle, w._path); 
+			grid = RDX.SmartHeader:new(htype, hdef.switchvehicle, w._path);
 			grid:Hide(); grid:SetMovable(true);
 			w:SetClient(grid);
-			
+
 			-- The desktop is able to set the number of unit per column
 			win.SetLayoutRaid = SetLayoutRaid;
 
@@ -250,7 +250,7 @@ RDX.RegisterFeature({
 				grid:SetNameList(nlist);
 				nset.SigNamesChanged:Connect(nil, NominativeSetUpdate, win);
 			end
-			
+
 			-- clearpoints bug
 			for _,child in grid:AllChildren() do
 				child:ClearAllPoints();
@@ -261,7 +261,7 @@ RDX.RegisterFeature({
 			grid:SetAttribute("toto", "ok");
 			-- desactivate update
 			grid:SetAttribute("_ignore", "RDXIgnore");
-			
+
 			grid:Show();
 
 			if w._path then
@@ -291,10 +291,10 @@ RDX.RegisterFeature({
 		-- Tear down all this
 		local function destroy()
 			grid:SetAttribute("toto", nil);
-			if win._path and VFLP.IsEnabled() then 
+			if win._path and VFLP.IsEnabled() then
 				--	VFLT.AdaptiveUnschedule2("Perf" .. win._path);
-				--VFLP.UnregisterCategory("Win: " .. win._path); 
-				VFLP.UnregisterObject(paintData); 
+				--VFLP.UnregisterCategory("Win: " .. win._path);
+				VFLP.UnregisterObject(paintData);
 			end
 			win:SetClient(nil); -- BUGFIX: remember to remove client refs before destroying client..
 			-- Unbind events
@@ -353,7 +353,7 @@ RDX.RegisterFeature({
 		ui:InsertFrame(hdef);
 
 		function ui:GetDescriptor()
-			return { 
+			return {
 				feature = "header"; version = 1;
 				header = hdef:GetDescriptor();
 			};
@@ -361,7 +361,7 @@ RDX.RegisterFeature({
 
 		return ui;
 	end;
-	CreateDescriptor = function() 
+	CreateDescriptor = function()
 		return {
 			feature = "header"; version = 1;
 		};
