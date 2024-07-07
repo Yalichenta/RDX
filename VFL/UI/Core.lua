@@ -853,7 +853,7 @@ p_fs.OnRelease = function(pool, x)
 	x:SetTextColor(1,1,1,1);
 --	x:SetAlphaGradient(0,0);
 	x:SetShadowColor(0,0,0,0); x:SetShadowOffset(0,0);
-	x:SetJustifyH("CENTER"); x:SetJustifyV("CENTER");
+	x:SetJustifyH("CENTER"); x:SetJustifyV("MIDDLE");
 	x:SetText("");
 end;
 p_fs.OnFallback = function()

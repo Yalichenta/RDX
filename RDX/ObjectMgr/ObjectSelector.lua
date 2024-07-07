@@ -13,7 +13,7 @@ RDXDB.ObjectFinder = {};
 
 function RDXDB.ObjectFinder:new(parent, fileFilter)
 	local obj = VFLUI.AcquireFrame("Frame");
-	if parent then 
+	if parent then
 		obj:SetParent(parent);
 		obj:SetFrameStrata(parent:GetFrameStrata()); obj:SetFrameLevel(parent:GetFrameLevel());
 	end
@@ -22,7 +22,7 @@ function RDXDB.ObjectFinder:new(parent, fileFilter)
 	--------------------------- Controls
 	local btn = VFLUI.Button:new(obj);
 	btn:SetHeight(24); btn:SetWidth(24);
-	btn:SetPoint("RIGHT", obj, "RIGHT"); 
+	btn:SetPoint("RIGHT", obj, "RIGHT");
 	btn:SetText("...");
 	btn:Show();
 
@@ -35,7 +35,7 @@ function RDXDB.ObjectFinder:new(parent, fileFilter)
 	txt:SetPoint("TOPLEFT", obj, "TOPLEFT");
 	txt:SetPoint("BOTTOMRIGHT", editBox, "BOTTOMLEFT");
 	txt:SetFontObject(VFLUI.GetFont(Fonts.Default, 10));
-	txt:SetJustifyV("CENTER"); txt:SetJustifyH("LEFT");
+	txt:SetJustifyV("MIDDLE"); txt:SetJustifyH("LEFT");
 	txt:SetText(""); txt:Show();
 
 	---------------------------- Gluecode
@@ -72,11 +72,11 @@ function RDXDB.ObjectFinder:new(parent, fileFilter)
 
 	--------- API
 	obj.SetLabel = function(s, t) txt:SetText(t); end
-	obj.SetPath = function(s, t) 
+	obj.SetPath = function(s, t)
 		editBox:SetText(t);
 		VFLUI.FixEditBoxCursor(editBox);
 	end
-	obj.SetPathWidth = function(s, t) 
+	obj.SetPathWidth = function(s, t)
 		editBox:SetWidth(t);
 		--VFLUI.FixEditBoxCursor(editBox);
 	end
@@ -84,7 +84,7 @@ function RDXDB.ObjectFinder:new(parent, fileFilter)
 	obj.GetPath = function() return editBox:GetText(); end
 	obj.DialogOnLayout = VFL.Noop;
 	obj.OnPathChanged = VFL.Noop;
-	
+
 	--------- Destructor
 	obj.Destroy = VFL.hook(function(s)
 		-- Destroy API
@@ -109,19 +109,19 @@ function RDXDB.PackageSelector:new(parent)
 
 	local btn = VFLUI.Button:new(pkgEdit);
 	btn:SetHeight(25); btn:SetWidth(25);
-	btn:SetPoint("RIGHT", pkgEdit, "LEFT"); btn:Show(); 
+	btn:SetPoint("RIGHT", pkgEdit, "LEFT"); btn:Show();
 	btn:SetText("...");
 	btn:SetScript("OnClick", function()
 		local qq = {};
 		RDXDB.Foreach(function(dk, pkg, file, md)
-			table.insert(qq, { 
-				text = dk .. ":" .. pkg, 
-				func = function() 
+			table.insert(qq, {
+				text = dk .. ":" .. pkg,
+				func = function()
 					VFL.poptree:Release();
 					pkgEdit:SetText(dk .. ":" .. pkg);
 				end
 			});
-			
+
 		end);
 		table.sort(qq, function(x1,x2) return tostring(x1.text) < tostring(x2.text); end);
 		VFL.poptree:Begin(150, 12, btn, "CENTER");
@@ -158,12 +158,12 @@ function RDXDB.PackageListWindow(parent, title, text, filter, callback, dk)
 		end
 	end
 	table.sort(pkgs, function(p1,p2) return p1.pkg < p2.pkg; end);
-	
+
 	local dlg = VFLUI.Window:new(parent);
 	VFLUI.Window.SetDefaultFraming(dlg, 22);
 	dlg:SetPoint("CENTER", RDXParent, "CENTER");
 	dlg:SetWidth(250); dlg:SetHeight(250);
-	dlg:SetTitleColor(0,0,0.6); dlg:SetText(title); 
+	dlg:SetTitleColor(0,0,0.6); dlg:SetText(title);
 	dlg:SetClampedToScreen(true);
 	dlg:Show();
 	VFLUI.Window.StdMove(dlg, dlg:GetTitleBar());

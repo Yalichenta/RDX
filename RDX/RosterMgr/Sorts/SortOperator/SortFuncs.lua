@@ -27,34 +27,26 @@ RDXDAL.RegisterSortOperator({
 	GetBlankDescriptor = function() return {op = "nid"}; end;
 });
 
-TA_LIQUID_ID = {}
-TA_LIQUID_ID["burnÃ«r"] = 70
-TA_LIQUID_ID["skeptagram"] = 80
-TA_LIQUID_ID["tiraÃªl"] = 90
-TA_LIQUID_ID["pillouse"] = 100
-TA_LIQUID_ID["kana"] = 110
-TA_LIQUID_ID["adriflapflap"] = 120
-TA_LIQUID_ID["skeptagrumz"] = 125
-TA_LIQUID_ID["starlettjoh"] = 128
-TA_LIQUID_ID["bethan"] = 130
-TA_LIQUID_ID["seal"] = 140
-TA_LIQUID_ID["Ã­ro"] = 145
-TA_LIQUID_ID["yillara"] = 150
-TA_LIQUID_ID["angÃ«rfirst"] = 160
-TA_LIQUID_ID["dendrolith"] = 170
-TA_LIQUID_ID["kÃ©raz"] = 180
-TA_LIQUID_ID["skyzÃ¸u"] = 190
-TA_LIQUID_ID["arueshalae"] = 200
-TA_LIQUID_ID["brewrea"] = 210
-TA_LIQUID_ID["milotem"] = 220
-TA_LIQUID_ID["sarislava"] = 230
-TA_LIQUID_ID["delmothounet"] = 240
-TA_LIQUID_ID["astelar"] = 250
-TA_LIQUID_ID["hÃ¸lyfuk"] = 260
 
+RDXDAL.RegisterSortOperator({
+	name = "guid";
+	title = VFLI.i18n("Unit GUID");
+	category = VFLI.i18n("Basic");
+	EmitCode = function(desc, code, context)
+		if desc.reversed then
+			code:AppendCode([[return u1.guid > u2.guid;]]);
+		else
+			code:AppendCode([[return u1.guid < u2.guid;]]);
+		end
+	end;
+	GetUI = RDXDAL.TrivialSortUI("guid", VFLI.i18n("Unit guid"));
+	GetBlankDescriptor = function() return {op = "guid"}; end;
+});
 
-
--- Liquid sort.
+-- Liquid sort. checks if unit name exists in a global table
+-- TA_LIQUID_ID that must be defined in another addon, and sort
+-- unit in ascending order according to this value.
+-- if a unit name is not found value 0 is taken
 RDXDAL.RegisterSortOperator({
 	name = "liquid";
 	title = VFLI.i18n("Liquid sort");
@@ -63,7 +55,7 @@ RDXDAL.RegisterSortOperator({
 		if not vars["liquidid"] then
 			vars["liquidid"] = true;
 			code:AppendCode([[
-local classid1,classid2 = TA_LIQUID_ID[u1.name] or 0, TA_LIQUID_ID[u2.name] or 0;
+local table = TA_LIQUID_ID or {}; local classid1,classid2 = table[u1.name] or 0, table[u2.name] or 0;
 ]]);
 		end
 	end;

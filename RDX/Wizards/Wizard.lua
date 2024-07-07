@@ -17,7 +17,7 @@ function RDXUI.Wizard:new(desc)
 	x.idx = {};
 	x.pageNum = nil; x.history = {};
 	x.child = nil;
-	x.window = nil; 
+	x.window = nil;
 	x.nextBtn = nil; x.prevBtn = nil; x.OKBtn = nil; x.cancelBtn = nil;
 	x.title = "";
 	x.OnOK = VFL.Noop; x.OnCancel = VFL.Noop;
@@ -36,18 +36,18 @@ function RDXUI.Wizard:Open(parent, num)
 		win:SetBackdropColor(.8,.8,1,0.6);
 		win:SetTitleColor(0,0,.6); win:SetText(self.title);
 		win:SetPoint("TOPLEFT", RDXParent, "TOPLEFT", 100, -200);
-		win:SetMovable(true); 
+		win:SetMovable(true);
 		VFLUI.Window.StdMove(win, win:GetTitleBar());
 		win:SetClampedToScreen(true);
 		win:Show();
 		self.window = win;
-		
+
 		local btn1 = VFLUI.Button:new(win);
 		btn1:SetHeight(25); btn1:SetWidth(60);
 		btn1:SetPoint("BOTTOMRIGHT", win:GetClientArea(), "BOTTOMRIGHT");
 		btn1:SetText(VFLI.i18n("Next") .. " >"); btn1:Show(); btn1:Disable();
 		self.nextBtn = btn1;
-	
+
 		local btn2 = VFLUI.Button:new(win);
 		btn2:SetHeight(25); btn2:SetWidth(60);
 		btn2:SetPoint("RIGHT", self.nextBtn, "LEFT");
@@ -64,20 +64,20 @@ function RDXUI.Wizard:Open(parent, num)
 			end
 		end);
 		self.prevBtn = btn2;
-	
+
 		local btn3 = VFLUI.CancelButton:new(win);
 		btn3:SetHeight(25); btn3:SetWidth(60);
 		btn3:SetPoint("RIGHT", self.prevBtn, "LEFT");
 		btn3:SetText(VFLI.i18n("Cancel")); btn3:Show(); btn3:Enable();
 		btn3:SetScript("OnClick", function() self:Close(nil); end);
 		self.cancelBtn = btn3;
-	
+
 		local btn4 = VFLUI.OKButton:new(win);
 		btn4:SetHeight(25); btn4:SetWidth(60);
 		btn4:SetPoint("RIGHT", self.cancelBtn, "LEFT");
 		btn4:SetText(VFLI.i18n("OK")); btn4:Show(); btn4:Disable();
 		self.OKBtn = btn4;
-	
+
 		win.Destroy = VFL.hook(function(s)
 			self:ClearPage();
 			self.nextBtn:Destroy(); self.nextBtn = nil;
@@ -86,11 +86,11 @@ function RDXUI.Wizard:Open(parent, num)
 			self.OKBtn:Destroy(); self.OKBtn = nil;
 			self.window = nil; self.pageNum = nil;
 		end, win.Destroy);
-	
+
 	end
-	
+
 	self.window:Show();
-	
+
 	if num then
 		i = 1;
 		while(true) do
@@ -99,7 +99,7 @@ function RDXUI.Wizard:Open(parent, num)
 			i=i+1;
 		end
 	end
-	
+
 	self:SetPage(num or 1);
 	return true;
 end
@@ -129,7 +129,7 @@ function RDXUI.Wizard:SetPage(num, name)
 	end
 	--if not name then name = "null"; end
 	--VFL.print("page " .. name .. " " .. num);
-	
+
 	local pgdef = self.page[num]; if not pgdef then return; end
 
 	-- Clean out the existing page.
@@ -139,7 +139,7 @@ function RDXUI.Wizard:SetPage(num, name)
 	self.pageNum = nil;
 	-- Return the window back to its ordinary settings
 	self.window:SetBackdrop(VFLUI.BlackDialogBackdrop);
-	self.window:SetBackdropColor(1,1,1,1); 
+	self.window:SetBackdropColor(1,1,1,1);
 	self.window:SetBackdropBorderColor(1,1,1,1);
 
 	-- Attempt to open the new page.
@@ -148,7 +148,7 @@ function RDXUI.Wizard:SetPage(num, name)
 	if not child then
 		-- If we're still on the same page, quash the page.
 		if self.pageNum == num then self.pageNum = nil; end
-		return; 
+		return;
 	end
 
 	-- Add to history.
@@ -246,13 +246,13 @@ function RDXUI.Wizard:TurnPage(fn)
 	fn = fn or VFL.Noop;
 	local n, pgs = tonumber(self.pageNum), self.page;
 	if not n then
-		return; 
+		return;
 	end
 	for i=(n+1),100 do
 		local cl_i = i;
-		if self.page[i] then 
-			self:OnNext(function(s) fn(s); s:SetPage(cl_i); end); 
-			return; 
+		if self.page[i] then
+			self:OnNext(function(s) fn(s); s:SetPage(cl_i); end);
+			return;
 		end
 	end
 	self:Final(fn);
@@ -312,13 +312,13 @@ function RDXUI.GenerateStdWizardPage(parent, title)
 	txt:SetPoint("TOPLEFT", frame, "TOPLEFT");
 	txt:SetHeight(16); txt:SetWidth(250); txt:Show();
 	txt:SetFontObject(VFLUI.GetFont(Fonts.Default, 16));
-	txt:SetJustifyH("LEFT"); txt:SetJustifyV("Center");
+	txt:SetJustifyH("LEFT"); txt:SetJustifyV("MIDDLE");
 	txt:SetText(title);
 
 	frame.Destroy = VFL.hook(function(s)
 		VFLUI.ReleaseRegion(txt); txt = nil;
 	end, frame.Destroy);
-	
+
 	return frame;
 end
 

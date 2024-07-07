@@ -27,7 +27,18 @@ local function scroll(self, arg1)
 	end
 end
 
-VFLUI.CreateFramePool("ChatFrame", 
+function VFL_ChatEdit_SetLastActiveWindow()
+end
+function VFL_ChatFrame_OnLoad()
+end
+function VFL_ChatFrame_OnEvent()
+end
+function VFL_ChatFrame_OnUpdate()
+end
+function VFL_ChatFrame_OnHyperlinkShow()
+end
+
+VFLUI.CreateFramePool("ChatFrame",
 	function(pool, x) -- on released
 		if (not x) then return; end
 		VFLUI._CleanupLayoutFrame(x);
@@ -41,17 +52,19 @@ VFLUI.CreateFramePool("ChatFrame",
 		f:EnableMouseWheel(true);
 		f:SetID(1);
 		return f;
-	end, 
+	end,
 	function(_, f) -- on acquired
 		--f:Show();
 		--f:ClearAllPoints();
-		ChatFrame_RemoveAllMessageGroups(f);
+		--ChatFrame_RemoveAllMessageGroups(f);
 		f.channelList = {};
 		f.zoneChannelList = {};
 	end
 );
 
-VFLUI.CreateFramePool("ChatFrame2", 
+-- Disabled by bethan as this create taint in blizzard code that propagates everywhere
+--[[
+VFLUI.CreateFramePool("ChatFrame2",
 	function(pool, x) -- on released
 		if (not x) then return; end
 		x:SetScript("OnShow", nil);
@@ -75,14 +88,14 @@ VFLUI.CreateFramePool("ChatFrame2",
 		f.ebbg:SetWidth(f:GetWidth()); f.ebbg:SetHeight(26);
 		f.ebbg:SetPoint("TOP", f.cfbg, "BOTTOM", 0, 1);
 		f.ebbg:Show();
-		
+
 		-- the chatframe
 		f.cf = CreateFrame("ScrollingMessageFrame", "SMF" .. VFL.GetNextID(), nil, "VFLChatFrameTemplate", "BackdropTemplate");
 		f.cf:SetParent(f.cfbg);
 		f.cf:SetWidth(f:GetWidth() - 10); f.cf:SetHeight(f:GetHeight() - 36);
 		f.cf:SetPoint("TOPLEFT", f.cfbg, "TOPLEFT", 5, -5);
 		f.cf:Show();
-		
+
 		f.cf:UnregisterEvent("UPDATE_CHAT_WINDOWS");
 		--f.cf:UnregisterEvent("UPDATE_CHAT_COLOR");
 		f.cf:SetScript("OnMouseWheel", scroll);
@@ -96,31 +109,31 @@ VFLUI.CreateFramePool("ChatFrame2",
 		--m2:SetTexture(nil);
 		--r2:SetTexture(nil);
 		f.cf:SetHyperlinksEnabled(true);
-		
+
 		f.cf.editBox:SetScript("OnHide", nil);
-		
+
 		f.cf.editBox.edittex = f:CreateTexture();
 		f.cf.editBox.edittex:SetPoint("LEFT", f.ebbg, "LEFT");
 		f.cf.editBox.edittex:SetWidth(20);
 		f.cf.editBox.edittex:SetHeight(20);
-		f.cf.editBox.edittex:SetTexture("Interface\\Addons\\VFL\\Skin\\sb_right_pressed"); 
+		f.cf.editBox.edittex:SetTexture("Interface\\Addons\\VFL\\Skin\\sb_right_pressed");
 		f.cf.editBox.edittex:Hide();
-		
+
 		return f;
-	end, 
+	end,
 	function(_, f) -- on acquired
 		f:Show();
 		--f:ClearAllPoints();
 		--ChatFrame_RemoveAllMessageGroups(f.cf);
 		f.cf.channelList = {};
 		f.cf.zoneChannelList = {};
-		
+
 		f:SetScript("OnShow", function(self)
 			self.cfbg:SetWidth(self:GetWidth()); self.cfbg:SetHeight(self:GetHeight() - 26);
 			self.ebbg:SetWidth(self:GetWidth()); self.ebbg:SetHeight(26);
 			self.cf:SetWidth(self:GetWidth() - 10); self.cf:SetHeight(self:GetHeight() - 36);
 		end);
-		
+
 		f:SetScript("OnSizeChanged", function(self)
 			self.cfbg:SetWidth(self:GetWidth()); self.cfbg:SetHeight(self:GetHeight() - 26);
 			self.ebbg:SetWidth(self:GetWidth()); self.ebbg:SetHeight(26);
@@ -153,9 +166,10 @@ ChatEdit_SetLastActiveWindow = function(editBox)
 	cslaw(editBox);
 end
 
+]]
 --DEFAULT_CHAT_FRAME = f.cf;
 
-VFLUI.CreateFramePool("ChatFrameEditBox", 
+VFLUI.CreateFramePool("ChatFrameEditBox",
 	function(pool, x) -- on released
 		if (not x) then return; end
 		--VFLUI._CleanupLayoutFrame(x);
@@ -165,7 +179,7 @@ VFLUI.CreateFramePool("ChatFrameEditBox",
 		--local f = CreateFrame("EditBox", "EB" .. key, nil, "ChatFrameEditBoxTemplate", "BackdropTemplate");
 		local f = _G["ChatFrame1EditBox"];
 		return f;
-	end, 
+	end,
 	function(_, f) -- on acquired
 		--f:Show();
 		f:ClearAllPoints();
@@ -174,13 +188,13 @@ VFLUI.CreateFramePool("ChatFrameEditBox",
 
 
 VFLIO.Console = VFLUI.AcquireFrame("ChatFrame");
-ChatFrame_AddMessageGroup(VFLIO.Console, "SYSTEM");
-ChatFrame_AddMessageGroup(VFLIO.Console, "ERRORS");
-ChatFrame_AddMessageGroup(VFLIO.Console, "GUILD");
-ChatFrame_AddMessageGroup(VFLIO.Console, "OPENING");
-ChatFrame_AddMessageGroup(VFLIO.Console, "CHANNEL");
-ChatFrame_AddMessageGroup(VFLIO.Console, "GUILD_ACHIEVEMENT");
-ChatFrame_AddMessageGroup(VFLIO.Console, "OFFICER");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "SYSTEM");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "ERRORS");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "GUILD");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "OPENING");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "CHANNEL");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "GUILD_ACHIEVEMENT");
+--ChatFrame_AddMessageGroup(VFLIO.Console, "OFFICER");
 
 --[[
 VFLIO.Chatframe1 = VFLUI.AcquireFrame("ChatFrame2");

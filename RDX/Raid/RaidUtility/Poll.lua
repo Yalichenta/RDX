@@ -58,7 +58,7 @@ end
 
 local function SendPoll(data)
 	local timeout = data.timeout; if type(timeout) ~= "number" then error("Bad timeout"); end
-	local ans = data.a; 
+	local ans = data.a;
 	if type(ans) ~= "table" then error("Bad answer table"); end
 
 	local pw = Logistics.NewWindow(nil, data.title, true, 150, 70);
@@ -69,8 +69,8 @@ local function SendPoll(data)
 	for _,unit in RDXDAL.Group() do
 		if unit:IsValid() then
 			totalCount = totalCount + 1;
-			nameMap[unit.name] = { 
-				name = unit:GetProperName(); 
+			nameMap[unit.name] = {
+				name = unit:GetProperName();
 				class = unit:GetClassID();
 				answer = "|cFF444444(no resp)|r";
 			};
@@ -133,7 +133,7 @@ local function OpenPoll(sender, data, onAnswer)
 	if (not data) then return; end
 	local title = data.title; if type(title) ~= "string" then return; end
 	local question = data.q; if type(question) ~= "string" then return; end
-	local answers = data.a; 
+	local answers = data.a;
 	if (type(answers) ~= "table" or table.getn(answers) < 1 or table.getn(answers) > 10) then return; end
 	local timeout = data.timeout; if type(timeout) ~= "number" or timeout < 0.1 then return; end
 	local t0, t1 = GetTime(), GetTime() + timeout;
@@ -159,21 +159,21 @@ local function OpenPoll(sender, data, onAnswer)
 	local titleTxt = VFLUI.CreateFontString(bar);
 	titleTxt:SetWidth(250); titleTxt:SetHeight(16);
 	titleTxt:SetFontObject(VFLUI.GetFont(Fonts.Default, 16));
-	titleTxt:SetJustifyH("LEFT"); titleTxt:SetJustifyV("CENTER");
+	titleTxt:SetJustifyH("LEFT"); titleTxt:SetJustifyV("MIDDLE");
 	titleTxt:SetPoint("LEFT", bar, "LEFT", 4, 0); titleTxt:Show();
 	titleTxt:SetText(title);
 
 	local timeTxt = VFLUI.CreateFontString(bar);
 	timeTxt:SetWidth(50); timeTxt:SetHeight(12);
 	timeTxt:SetFontObject(VFLUI.GetFont(Fonts.Default, 12));
-	timeTxt:SetJustifyH("RIGHT"); timeTxt:SetJustifyV("CENTER");
+	timeTxt:SetJustifyH("RIGHT"); timeTxt:SetJustifyV("MIDDLE");
 	timeTxt:SetPoint("RIGHT", bar, "RIGHT", -4, 0); timeTxt:Show();
 
 	local questionTxt = VFLUI.CreateFontString(ca);
 	questionTxt:SetWidth(ca:GetWidth()); questionTxt:SetHeight(60);
 	questionTxt:SetFontObject(VFLUI.GetFont(Fonts.Default, 12));
 	questionTxt:SetPoint("TOPLEFT", bar, "BOTTOMLEFT"); questionTxt:Show();
-	questionTxt:SetJustifyH("CENTER"); questionTxt:SetJustifyV("CENTER");
+	questionTxt:SetJustifyH("CENTER"); questionTxt:SetJustifyV("MIDDLE");
 	questionTxt:SetText(question);
 
 

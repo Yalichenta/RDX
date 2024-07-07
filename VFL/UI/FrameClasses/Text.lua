@@ -45,7 +45,7 @@ function VFLUI.StaticText:new(parent, tt)
 	txt:SetPoint("TOPLEFT", self, "TOPLEFT");
 	txt:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT");
 	VFLUI.SetFont(txt, Fonts.Default, 10);
-	txt:SetJustifyV("CENTER"); txt:SetJustifyH("CENTER");
+	txt:SetJustifyV("MIDDLE"); txt:SetJustifyH("CENTER");
 	txt:SetText(""); txt:Show();
 	self.text = txt;
 

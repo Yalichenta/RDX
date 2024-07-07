@@ -151,7 +151,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["TabManager1_tm"] then
 		default["TabManager1_tm"] = {
 			["ty"] = "TabManager",
@@ -164,7 +164,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["TabManager1_ds"] then
 		default["TabManager1_ds"] = {
 			["ty"] = "Design",
@@ -216,7 +216,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 							["b"] = 1,
 						},
 						["face"] = "Interface\\Addons\\VFL\\Fonts\\LiberationSans-Regular.ttf",
-						["justifyV"] = "CENTER",
+						["justifyV"] = "MIDDLE",
 						["sb"] = 0,
 						["sa"] = 1,
 						["sg"] = 0,
@@ -233,7 +233,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["TabManager1"] then
 		default["TabManager1"] = {
 			["ty"] = "Window",
@@ -258,7 +258,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["TabManager2_tm"] then
 		default["TabManager2_tm"] = {
 			["ty"] = "TabManager",
@@ -269,7 +269,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["TabManager2_ds"] then
 		default["TabManager2_ds"] = {
 			["ty"] = "Design",
@@ -338,7 +338,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["TabManager2"] then
 		default["TabManager2"] = {
 			["ty"] = "Window",
@@ -363,7 +363,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["assists"] then
 		default["assists"] = {
 			["ty"] = "NominativeSet",
@@ -522,7 +522,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Party_fset"] then
 		default["Party_fset"] = {
 			["ty"] = "FilterSet",
@@ -541,7 +541,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Partypet_fset"] then
 		default["Party_fset"] = {
 			["ty"] = "FilterSet",
@@ -551,7 +551,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Arena_fset"] then
 		default["Arena_fset"] = {
 			["ty"] = "FilterSet",
@@ -561,7 +561,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Arenapet_fset"] then
 		default["Arena_fset"] = {
 			["ty"] = "FilterSet",
@@ -571,7 +571,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Boss_fset"] then
 		default["Boss_fset"] = {
 			["ty"] = "FilterSet",
@@ -610,7 +610,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Dead_fset"] then
 		default["Dead_fset"] = {
 			["ty"] = "FilterSet",
@@ -629,7 +629,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Raid_needsHeals_fset"] then
 		default["Raid_needsHeals_fset"] = {
 			["ty"] = "FilterSet",
@@ -652,7 +652,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["ClassBarDefault_ds"] then
 		default["ClassBarDefault_ds"] = {
 			["ty"] = "Design",
@@ -668,7 +668,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["ActionBar1"] then
 		default["ActionBar1"] = {
 			["ty"] = "Window",
@@ -693,7 +693,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["ActionBar1_ds"] then
 		default["ActionBar1_ds"] = {
 			["ty"] = "Design",
@@ -824,7 +824,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	-- range
 	if not default["Range_0_10_fset"] then
 		default["Range_0_10_fset"] = {
@@ -845,7 +845,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_0_10_ODM_fset"] then
 		default["Range_0_10_ODM_fset"] = {
 			["ty"] = "FilterSet",
@@ -881,7 +881,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_40plus_fset"] then
 		default["Range_40plus_fset"] = {
 			["ty"] = "FilterSet",
@@ -924,7 +924,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_0_70_fset"] then
 		default["Range_0_70_fset"] = {
 			["ty"] = "FilterSet",
@@ -944,7 +944,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_0_15_ODM_fset"] then
 		default["Range_0_15_ODM_fset"] = {
 			["ty"] = "FilterSet",
@@ -986,7 +986,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_not_0_30_dead_fset"] then
 		default["Range_not_0_30_dead_fset"] = {
 			["ty"] = "FilterSet",
@@ -1015,7 +1015,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_70plus_fset"] then
 		default["Range_70plus_fset"] = {
 			["ty"] = "FilterSet",
@@ -1038,7 +1038,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_0_30_fset"] then
 		default["Range_0_30_fset"] = {
 			["ty"] = "FilterSet",
@@ -1058,7 +1058,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_0_15_fset"] then
 		default["Range_0_15_fset"] = {
 			["ty"] = "FilterSet",
@@ -1078,7 +1078,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_15_30_fset"] then
 		default["Range_15_30_fset"] = {
 			["ty"] = "FilterSet",
@@ -1108,7 +1108,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_40_70_fset"] then
 		default["Range_40_70_fset"] = {
 			["ty"] = "FilterSet",
@@ -1138,7 +1138,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_0_40_fset"] then
 		default["Range_0_40_fset"] = {
 			["ty"] = "FilterSet",
@@ -1157,7 +1157,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_30_40_fset"] then
 		default["Range_30_40_fset"] = {
 			["ty"] = "FilterSet",
@@ -1196,7 +1196,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_10_15_fset"] then
 		default["Range_10_15_fset"] = {
 			["ty"] = "FilterSet",
@@ -1226,7 +1226,7 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 	if not default["Range_30plus_fset"] then
 		default["Range_30plus_fset"] = {
 			["ty"] = "FilterSet",
@@ -1249,5 +1249,5 @@ RDXEvents:Bind("INIT_POST_DATABASE_LOADED", nil, function()
 			},
 		};
 	end
-	
+
 end);

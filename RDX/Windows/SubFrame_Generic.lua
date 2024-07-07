@@ -63,25 +63,25 @@ RDX.RegisterFeature({
 			VFLUI.StdSetParent(btn, frame, 1);
 			btn:SetAllPoints(frame); btn:Show();
 			frame.button = btn;
-			
+
 			local txt = VFLUI.CreateFontString(frame);
 			txt:SetWidth(t1dx); txt:SetHeight(dy);
 			txt:SetFontObject(VFLUI.GetFont(Fonts.Default, 10));
-			txt:SetJustifyH("LEFT"); txt:SetJustifyV("CENTER");
+			txt:SetJustifyH("LEFT"); txt:SetJustifyV("MIDDLE");
 			txt:SetPoint("LEFT", frame, "LEFT"); txt:Show();
 			frame.text1 = txt;
 
 			txt = VFLUI.CreateFontString(frame);
 			txt:SetWidth(t2dx); txt:SetHeight(dy);
 			txt:SetFontObject(VFLUI.GetFont(Fonts.Default, 10));
-			txt:SetJustifyH("RIGHT"); txt:SetJustifyV("CENTER");
+			txt:SetJustifyH("RIGHT"); txt:SetJustifyV("MIDDLE");
 			txt:SetPoint("RIGHT", frame, "RIGHT"); txt:Show();
 			frame.text2 = txt;
 
 			frame.Cleanup = cleanup; frame.SetData = applyData;
 
 			function frame:GetHotspot() return self.button; end
-			
+
 			frame.Destroy = VFL.hook(function(s)
 				s.Cleanup = nil; s.SetData = nil; s.GetHotspot = nil;
 				s._data = nil;
@@ -93,7 +93,7 @@ RDX.RegisterFeature({
 
 			return frame;
 		end
-	
+
 		-- The UnitFrame function should return something out of the pool.
 		-- When the UnitFrame is released, its OnDeparent will be called,
 		-- returning it to the pool afterwards.

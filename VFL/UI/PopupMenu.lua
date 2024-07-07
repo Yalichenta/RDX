@@ -12,6 +12,7 @@ local mouseOutDelay = 2;
 local emptyMenu = {
 	{ text = "|c00888888(Empty menu)|r" }
 };
+--[[
 local menuFrame = CreateFrame("Frame", "VFL_DropDownFrame", VFLFULLSCREEN_DIALOG, "UIDropDownMenuTemplate","BackdropTemplate");
 
 function VFLUI.PopUpMenu(data, point, parent, relpoint, x, y)
@@ -26,13 +27,13 @@ function VFLUI.ClosePopUp()
 	UIDROPDOWNMENU_OPEN_MENU:Hide();
 	menuFrame:Hide();
 end
-
+]]
 -----------------------------------------------------------------------------
 -- @class VFLUI.PopMenu
 --
--- An entity for displaying a hierarchical menu whose display entities are 
+-- An entity for displaying a hierarchical menu whose display entities are
 -- VFL Selectables.
--- 
+--
 -- PopupMenu:Begin(targetFrame, targetPoint, offx, offy) functions like SetPoint
 -- and sets where the popup menu will originate from.
 --
@@ -42,7 +43,7 @@ end
 -- Rendering functions
 local function UnivMenuApplyData(cell, data)
 	-- Set pictorials
-	if(data.hasArrow) then 
+	if(data.hasArrow) then
 		cell.icon:Show();
 	elseif data.checked and type(data.checked) == "function" and data.checked() then
 		cell.icon:SetTexture("Interface\\AddOns\\VFL\\Skin\\DotOn");
@@ -155,14 +156,14 @@ function VFLUI.PopMenu:Begin(cellWidth, cellHeight, frame, point, dx, dy)
 	local MCx, MCy = VFLUI.GetPoint(frame, point);
 	MCx, MCy = VFLUI.GetUniversalCoords(frame, MCx + dx, MCy + dy);
 	if(MCx > UICx) then self.orientation = 1; else self.orientation = 2; end
-	
+
 	-- Move the menu slightly so the mouse is within the menu boundaries.
 	if self.orientation == 1 then
 		dx = dx + 10; dy = dy + 10;
 	else
 		dx = dx - 10; dy = dy + 10;
 	end
-	
+
 	-- Initialize state
 	self.af = frame; self.ap = point; self.adx = dx; self.ady = dy; self.cdx = cellWidth; self.cdy = cellHeight;
 	self.menus = {};
@@ -203,7 +204,7 @@ function VFLUI.PopMenu:Expand(aFrame, data, limit)
 		end
 		for i=1, #(self.menus) - menu_level + 1 do table.remove(self.menus, 1); end
 	end
-	
+
 	-- Determine layout parameters
 	local aHoldPoint, aGrabPoint, fnad, dy, dx = nil, nil, nil, 0, 5;
 	if(self.orientation == 1) then -- left-oriented
@@ -212,7 +213,7 @@ function VFLUI.PopMenu:Expand(aFrame, data, limit)
 	else -- right oriented
 		aHoldPoint = "TOPRIGHT"; aGrabPoint = "TOPLEFT"; fnad = RightMenuApplyData;
 	end
-	
+
 	-- If we've not yet created a menu...
 	if(table.getn(self.menus) == 0) then
 		VFL.AddEscapeHandler(self.esch);
@@ -225,7 +226,7 @@ function VFLUI.PopMenu:Expand(aFrame, data, limit)
 	local decor = VFLUI.AcquireFrame("Frame");
 	decor:SetParent(VFLTOOLTIP);
 	decor:SetFrameLevel(1);
-	
+
 	-- Create the menu
 	local menuSz = table.getn(data);
 	if limit then menuSz = math.min(limit, menuSz); end
@@ -240,24 +241,24 @@ function VFLUI.PopMenu:Expand(aFrame, data, limit)
 	end);
 	menu:SetWidth(self.cdx); menu:SetHeight((menuSz * self.cdy) + 1);
 	menu:SetDataSource(fnad, VFL.ArrayLiterator(data));
-	
+
 	-- Assign and anchor the decor to the menu
 	menu.decor = decor;
 	decor:SetPoint("TOPLEFT", menu, "TOPLEFT", -5, 4);
 	decor:SetPoint("BOTTOMRIGHT", menu, "BOTTOMRIGHT", 5, -5);
-	
+
 	decor:SetBackdrop(VFLUI.BlackDialogBackdrop);
 
 	-- Anchor the menu to the appropriate point
 	menu:SetPoint(aGrabPoint, aFrame, aHoldPoint, VFLUI.TransformCoords(aFrame, VFLParent, dx, dy));
-	
+
 	-- Insert our new menu into the hierarchy
 	table.insert(self.menus, 1, menu);
 
 	-- Show the new menu
 	menu:Rebuild();
 	menu:Show(); decor:Show();
-	
+
 	-- Check for off-screenage
 	local bx, by = 0, 0;
 	if not menu:GetLeft() then return; end
@@ -271,7 +272,7 @@ function VFLUI.PopMenu:Expand(aFrame, data, limit)
 	end
 	if(menu:GetBottom() < 0) then by = -menu:GetBottom(); end
 	self:Bump(bx, by);
-	
+
 	-- Schedule mouseout checks
 	if not self.mouseout_schedule then self:MouseOutCheck(); end
 end

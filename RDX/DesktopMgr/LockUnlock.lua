@@ -14,7 +14,7 @@ local dlg = nil;
 local function OpenDockDialog(frameprops, point)
 	if dlg then return; end
 	local x, y = RDXDK.GetDockOffset(frameprops, point);
-	
+
 	dlg = VFLUI.Window:new(parent);
 	VFLUI.Window.SetDefaultFraming(dlg, 22);
 	dlg:SetTitleColor(0,.6,0);
@@ -23,26 +23,26 @@ local function OpenDockDialog(frameprops, point)
 	dlg:SetWidth(230); dlg:SetHeight(125);
 	dlg:SetText("Dock Options");
 	dlg:SetClampedToScreen(true);
-	
+
 	if RDXPM.Ismanaged("lockunlock") then RDXPM.RestoreLayout(dlg, "lockunlock"); end
 	VFLUI.Window.StdMove(dlg, dlg:GetTitleBar());
-	
+
 	local ui, sf = VFLUI.CreateScrollingCompoundFrame(dlg);
 	sf:SetWidth(200); sf:SetHeight(70);
 	sf:SetPoint("TOPLEFT", dlg:GetClientArea(), "TOPLEFT");
-	
+
 	local ed_x = VFLUI.LabeledEdit:new(ui, 100); ed_x:Show();
 	ed_x:SetText(VFLI.i18n("Offset x"));
 	if x then ed_x.editBox:SetText(x); else ed_x.editBox:SetText("0"); end
 	ui:InsertFrame(ed_x);
-	
+
 	local ed_y = VFLUI.LabeledEdit:new(ui, 100); ed_y:Show();
 	ed_y:SetText(VFLI.i18n("Offset y"));
 	if y then ed_y.editBox:SetText(y); else ed_y.editBox:SetText("0"); end
 	ui:InsertFrame(ed_y);
-	
+
 	VFLUI.ActivateScrollingCompoundFrame(ui, sf);
-	
+
 	dlg:Show();
 	--dlg:_Show(RDX.smooth);
 
@@ -52,14 +52,14 @@ local function OpenDockDialog(frameprops, point)
 			dlg:Destroy(); dlg = nil;
 		--end);
 	end
-	
+
 	VFL.AddEscapeHandler(esch);
 	function dlg:_esch() VFL.EscapeTo(esch); end
-	
+
 	local btnClose = VFLUI.CloseButton:new(dlg);
 	dlg:AddButton(btnClose);
 	btnClose:SetScript("OnClick", function() VFL.EscapeTo(esch); end);
-	
+
 	local btnOK = VFLUI.OKButton:new(dlg);
 	btnOK:SetHeight(25); btnOK:SetWidth(60);
 	btnOK:SetPoint("BOTTOMRIGHT", dlg:GetClientArea(), "BOTTOMRIGHT", -15, 0);
@@ -103,7 +103,7 @@ VFLUI.CreateFramePool("ButtonLayout",
 function(pool, x) -- onrelease
 	x.OnDrop = nil; DockingDragContext:UnregisterDragTarget(x);
 	VFLUI._CleanupButton(x);
-end, 
+end,
 function() -- onfallback
 	local f = CreateFrame("Button",nil,nil,"BackdropTemplate");
 	VFLUI._FixFontObjectNonsense(f);
@@ -154,10 +154,10 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 		tf:SetFrameLevel(100);
 		tf:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight");
 		tf:Show();
-	
+
 		-- Now for the font
 		tfIdent = VFLUI.CreateFontString(tf);
-		tfIdent:SetJustifyV("CENTER");
+		tfIdent:SetJustifyV("MIDDLE");
 		tfIdent:SetJustifyH("CENTER");
 		tfIdent:SetFontObject(Fonts.Default10Shadowed);
 		tfIdent:Show();
@@ -169,9 +169,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	end
 	frame.tf = tf;
 	frame.tfIdent = tfIdent;
-	
+
 	------------------------------------------
-	
+
 	local tfl = VFLUI.AcquireFrame("ButtonLayout");
 	tfl:SetParent(tf);
 	tfl:SetPoint("LEFT", tf, "LEFT");
@@ -180,9 +180,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tfl.data = frameprops;
 	tfl:Show();
 	frame.tfl = tfl;
-	
+
 	--
-	
+
 	local tftl = VFLUI.AcquireFrame("ButtonLayout");
 	tftl:SetParent(tf);
 	tftl:SetPoint("TOPLEFT", tf, "TOPLEFT");
@@ -191,9 +191,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tftl.data = frameprops;
 	tftl:Show();
 	frame.tftl = tftl;
-	
+
 	---------------------------------------------
-	
+
 	local tft = VFLUI.AcquireFrame("ButtonLayout");
 	tft:SetParent(tf);
 	tft:SetPoint("TOP", tf, "TOP");
@@ -202,9 +202,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tft.data = frameprops;
 	tft:Show();
 	frame.tft = tft;
-	
+
 	-------
-	
+
 	local tftr = VFLUI.AcquireFrame("ButtonLayout");
 	tftr:SetParent(tf);
 	tftr:SetPoint("TOPRIGHT", tf, "TOPRIGHT");
@@ -213,9 +213,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tftr.data = frameprops;
 	tftr:Show();
 	frame.tftr = tftr;
-	
+
 	------------------
-	
+
 	local tfr = VFLUI.AcquireFrame("ButtonLayout");
 	tfr:SetParent(tf);
 	tfr:SetPoint("RIGHT", tf, "RIGHT");
@@ -224,9 +224,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tfr.data = frameprops;
 	tfr:Show();
 	frame.tfr = tfr;
-	
+
 	------------------
-	
+
 	local tfbr = VFLUI.AcquireFrame("ButtonLayout");
 	tfbr:SetParent(tf);
 	tfbr:SetPoint("BOTTOMRIGHT", tf, "BOTTOMRIGHT");
@@ -235,9 +235,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tfbr.data = frameprops;
 	tfbr:Show();
 	frame.tfbr = tfbr;
-	
+
 	-------------------------------------------------
-	
+
 	local tfb = VFLUI.AcquireFrame("ButtonLayout");
 	tfb:SetParent(tf);
 	tfb:SetPoint("BOTTOM", tf, "BOTTOM");
@@ -246,9 +246,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tfb.data = frameprops;
 	tfb:Show();
 	frame.tfb = tfb;
-	
+
 	-------------------------------------------------
-	
+
 	local tfbl = VFLUI.AcquireFrame("ButtonLayout");
 	tfbl:SetParent(tf);
 	tfbl:SetPoint("BOTTOMLEFT", tf, "BOTTOMLEFT");
@@ -257,9 +257,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tfbl.data = frameprops;
 	tfbl:Show();
 	frame.tfbl = tfbl;
-	
+
 	--------------------------
-	
+
 	local tfc = VFLUI.AcquireFrame("ButtonLayout");
 	tfc:SetParent(tf);
 	tfc:SetPoint("CENTER", tf, "CENTER");
@@ -268,9 +268,9 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 	tfc.data = frameprops;
 	tfc:Show();
 	frame.tfc = tfc;
-	
+
 	--------------------------
-	
+
 	if frameprops.root then
 		frame.tfl:Hide();
 		frame.tftl:Hide();
@@ -282,7 +282,7 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 		frame.tfbl:Hide();
 		frame.tfc:Hide();
 	end
-	
+
 	function frame:Unlock(frameprops)
 		if frame.tfIdent then
 			local h, w = 0, 0;
@@ -290,14 +290,14 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 			if frame:GetWidth() < 10 then w = 10; end
 			frame.tf:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
 			frame.tf:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", w, -h);
-			
+
 			RDXDK.StdMove(frame, frame.tf, function() RDXDK.SetFramew_window(frameprops); DesktopEvents:Dispatch("WINDOW_UPDATE_ALL", "OVERLAY", frameprops); end);
-			
+
 			frame.tfIdent:SetPoint("CENTER", frame.tf, "CENTER", 0, 10);
-			frame.tfIdent:SetWidth(frame.tf:GetWidth()+200); 
+			frame.tfIdent:SetWidth(frame.tf:GetWidth()+200);
 			frame.tfIdent:SetHeight(frame.tf:GetHeight()-5);
 			frame.tfIdent:SetText(frame._path);
-			
+
 			frame.tf:Show();
 		end
 		frame.tfl.data = frameprops; frame.tfl:Show();
@@ -311,7 +311,7 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 		frame.tfc.data = frameprops; frame.tfc:Show();
 		frame:UpdateUnlockOverlay(frameprops);
 	end
-	
+
 	function frame:Lock(frameprops)
 		if frame.tfIdent then
 			frame.tf:SetScript("OnMouseDown", nil);
@@ -329,7 +329,7 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 		frame.tfc.data = nil; frame.tfc:Hide();
 		se = nil;
 	end
-	
+
 	function frame:UpdateUnlockOverlay(frameprops, select)
 		if select then se = select; end
 		if not select and se then select = se; end
@@ -392,7 +392,7 @@ function RDXDK.AddUnlockOverlay(frame, frameprops)
 				else
 					frame.tf:SetBackdrop(VFLUI.BlueDialogBackdrop);
 				end
-				
+
 			end
 			frame.tf:SetFrameStrata(VFLUI.GetRelativeStata(frame:GetFrameStrata(), 1));
 		end
@@ -418,7 +418,7 @@ function RDXDK.RemoveUnlockOverlay(frame)
 end
 
 function RDXDK.UpdateUnlockOverlay()
-	if not InCombatLockdown() then 
+	if not InCombatLockdown() then
 		local currentDesktop = RDXDK.GetCurrentDesktop()
 		if currentDesktop then currentDesktop:UpdateUnlockOverlay(); end
 	end
@@ -431,7 +431,7 @@ end
 --end
 
 --function RDXDK.UnlockDesktop()
---	if not InCombatLockdown() then 
+--	if not InCombatLockdown() then
 --		DesktopEvents:Dispatch("DESKTOP_UNLOCK");
 --		RDX.printI(VFLI.i18n("Unlocking desktop."));
 --	else
@@ -447,7 +447,7 @@ end
 --function RDXDK.ToggleDesktopLock()
 --	if RDXDK.IsDesktopLocked() then
 --		RDXDK.UnlockDesktop();
---	else 
+--	else
 --		RDXDK.LockDesktop();
 --	end
 --end

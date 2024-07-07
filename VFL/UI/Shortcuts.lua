@@ -13,14 +13,14 @@ function VFLUI.MakeLabel(src, parent, text, jh, jv)
 	local fs = VFLUI.CreateFontString(parent);
 	VFLUI.SetFont(fs, Fonts.Default, 10);
 	fs:SetHeight(10);
-	fs:SetJustifyH(jh or "LEFT"); fs:SetJustifyV(jv or "CENTER");
+	fs:SetJustifyH(jh or "LEFT"); fs:SetJustifyV(jv or "MIDDLE");
 	fs:SetText(text); fs:SetWidth(fs:GetStringWidth() + 10);
 	fs:Show();
 	parent.Destroy = VFL.hook(function() VFLUI.ReleaseRegion(fs); fs = nil; end, parent.Destroy);
 	return fs;
 end
 
---- Makes a default-styled button on the given frame. You'll have to add the anchors 
+--- Makes a default-styled button on the given frame. You'll have to add the anchors
 -- and OnClick script yourself.
 function VFLUI.MakeButton(src, parent, text, width)
 	local btn = VFLUI.Button:new(parent);

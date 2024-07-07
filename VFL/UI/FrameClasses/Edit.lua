@@ -73,7 +73,7 @@ function VFLUI.LabeledEdit:new(parent, editWidth)
 	txt:SetPoint("TOPLEFT", self, "TOPLEFT");
 	txt:SetPoint("BOTTOMRIGHT", editBox, "BOTTOMLEFT");
 	VFLUI.SetFont(txt, Fonts.Default, 10);
-	txt:SetJustifyV("CENTER"); txt:SetJustifyH("LEFT");
+	txt:SetJustifyV("MIDDLE"); txt:SetJustifyH("LEFT");
 	txt:SetText(""); txt:Show();
 	self.text = txt;
 

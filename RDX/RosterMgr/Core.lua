@@ -29,8 +29,8 @@ local function GenMetadataCacheFuncs(ncache)
 		return x;
 	end
 
-	local NGet = function(name) 
-		return ncache[name]; 
+	local NGet = function(name)
+		return ncache[name];
 	end
 
 	return Set, NGet;
@@ -66,18 +66,31 @@ local function LoadDebuffFromUnit(uid, i, castable, cache)
 		testUnit = RDXDAL._ReallyFastProject(uid);
 		if (not testUnit) then cache = false; end
 	end
-	
+	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable
 	if cache then
 		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = testUnit:GetDeBuffCache(i);
 	else
-		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitDebuff(uid, i, castable);
+		local d
+		if(uid and i~=nil) then
+			d = C_UnitAuras.GetAuraDataByIndex(uid, i,"HARMFUL ".. (castable and "RAID" or ""));
+		end
+		if(d) then
+			name = d.name
+			icon = d.icon
+			count = d.applications
+			debuffType = d.dispelName
+			duration = d.duration
+			expirationTime = d.expirationTime
+			caster = d.sourceUnit
+			isStealable = d.isStealable
+		end
 	end
-	
+
 	if (not name) then return nil; end
 	lname = strlower(name);
 	if expirationTime and expirationTime > 0 then timeLeft = expirationTime - GetTime(); end
 	if (not count) or (count < 1) then count = 1; end
-	
+
 	-- Query cache; early out if we already have the infos.
 	info = debuffcache_nget(lname);
 	if info then
@@ -111,18 +124,31 @@ local function LoadBuffFromUnit(uid, i, castable, cache)
 		testUnit = RDXDAL._ReallyFastProject(uid);
 		if (not testUnit) then cache = false; end
 	end
-	
+	local name, icon, count, debuffType, duration, expirationTime, caster, isStealable
 	if cache then
 		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = testUnit:GetBuffCache(i);
 	else
-		name, icon, count, debuffType, duration, expirationTime, caster, isStealable = UnitBuff(uid, i, castable);
+		local d
+		if(uid and i~=nil) then
+			d = C_UnitAuras.GetAuraDataByIndex(uid, i, castable and "RAID");
+		end
+		if(d) then
+			name = d.name
+			icon = d.icon
+			count = d.applications
+			debuffType = d.dispelName
+			duration = d.duration
+			expirationTime = d.expirationTime
+			caster = d.sourceUnit
+			isStealable = d.isStealable
+		end
 	end
-	
+
 	if (not name) then return nil; end
 	lname = strlower(name);
 	if expirationTime and expirationTime > 0 then timeLeft = expirationTime - GetTime(); end
 	if (not count) or (count < 1) then count = 1; end
-	
+
 	-- Attempt to get buff data from the cache
 	info = buffcache_nget(lname);
 	if info then
@@ -144,7 +170,7 @@ VFLP.RegisterFunc("RDXDAL: UnitAura", "LoadBuffFromUnit", LoadBuffFromUnit, true
 
 -- Debuff categories
 RDXEvents:Bind("INIT_PRELOAD", nil, function()
-	debuffCacheN["@curse"] = {	
+	debuffCacheN["@curse"] = {
 		name = "@curse",
 		texture = "Interface\\InventoryItems\\WoWUnknownItem01.blp",
 		text = VFLI.i18n("@curse"),
@@ -167,7 +193,7 @@ RDXEvents:Bind("INIT_PRELOAD", nil, function()
 		descr = VFLI.i18n("Matches any poison debuff."),
 		set = RDXDAL.GetDebuffSet("@poison"), isInvisible = true,
 	};
-	
+
 	debuffCacheN["@disease"] = {
 		name = "@disease",
 		texture = "Interface\\InventoryItems\\WoWUnknownItem01.blp",
@@ -251,7 +277,7 @@ local function scanHand(hand)
 			if buffname then
 				local a = string.len(buffname);
 				buffname = string.sub(buffname, 1, a - 2);
-			else 
+			else
 				buffname = strfound;
 			end
 			--if buffname then VFL.print(buffname); VFL.print(a); end
@@ -273,7 +299,7 @@ local function LoadWeaponsBuff()
 		mainHandBuffDur, mainHandBuffTex = RDXDAL.getBuffWeaponInfo(mainHandBuffName);
 		if mainHandBuffDur and mainHandBuffDur > 0 then
 			mainHandBuffStart = GetTime() - (mainHandBuffDur - mainHandExpiration / 1000);
-		else 
+		else
 			mainHandBuffStart = 0;
 			mainHandBuffDur = 0;
 		end
@@ -286,7 +312,7 @@ local function LoadWeaponsBuff()
 		offHandBuffDur, offHandBuffTex = RDXDAL.getBuffWeaponInfo(offHandBuffName);
 		if offHandBuffDur and offHandBuffDur > 0 then
 			offHandBuffStart = GetTime() - (offHandBuffDur - offHandExpiration / 1000);
-		else 
+		else
 			offHandBuffStart = 0;
 			offHandBuffDur = 0;
 		end

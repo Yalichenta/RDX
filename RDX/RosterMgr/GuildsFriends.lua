@@ -6,10 +6,10 @@ local function OnFriendguild_update()
 
 
 --	VFL.vprint ("OnFriendguild_update")
-	
+
 	VFL.empty(RDXDAL.PalNames);
 	VFL.empty(RDXDAL.Friends);
-	
+
 	local gNum = GetNumGuildMembers()
 
 	for n = 1, gNum do

@@ -13,7 +13,7 @@ end
 
 function __AuraIconOnClick(self)
 	if not InCombatLockdown() then
-		CancelUnitBuff("player", self.meta.name);
+		CancelSpellByName(self.meta.name);
 	end
 end
 
@@ -52,11 +52,11 @@ RDX.RegisterFeature({
 		flg = flg and RDXUI.UFAnchorCheck(desc.anchor, state, errs);
 		flg = flg and RDXUI.UFOwnerCheck(desc.owner, state, errs);
 		if desc.ftype == 1 or desc.ftype == 2 then
-			if (not tonumber(desc.mindurationfilter)) then 
-				if (desc.mindurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Min duration is not a number or empty")); flg = nil; end 
+			if (not tonumber(desc.mindurationfilter)) then
+				if (desc.mindurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Min duration is not a number or empty")); flg = nil; end
 			end
-			if (not tonumber(desc.maxdurationfilter)) then 
-				if (desc.maxdurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Max duration is not a number or empty")); flg = nil; end 
+			if (not tonumber(desc.maxdurationfilter)) then
+				if (desc.maxdurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Max duration is not a number or empty")); flg = nil; end
 			end
 		end
 		if desc.externalNameFilter and desc.externalNameFilter ~= "" then
@@ -70,43 +70,43 @@ RDX.RegisterFeature({
 		if desc.ftype == 4 then
 			desc.nIcons = 4;
 		end
-		
+
 		if not desc.shader then desc.shader = 2; end
-		
+
 		if flg then state:AddSlot("Icons_" .. desc.name); end
 		return flg;
 	end;
 	ApplyFeature = function(desc, state)
 		local objname = "Icons_" .. desc.name;
-		
+
 		local driver = desc.driver or 1;
 		local bs = desc.bs or VFLUI.defaultButtonSkin;
 		local bkd = desc.bkd or VFLUI.defaultBackdrop;
-		
+
 		if not desc.nIcons then desc.nIcons = 3; end
-		
+
 		local os = 0;
 		if driver == 2 then
 			if desc.bs and desc.bs.insets then os = desc.bs.insets or 0; end
 		elseif driver == 3 then
 			if desc.bkd and desc.bkd.insets and desc.bkd.insets.left then os = desc.bkd.insets.left or 0; end
 		end
-		
+
 		local r, g, b, a = 1, 1, 1, 1;
 		if driver == 2 then
 			r, g, b, a = bs.br or 1, bs.bg or 1, bs.bb or 1, bs.ba or 1;
 		elseif driver == 3 then
 			r, g, b, a = bkd.br or 1, bkd.bg or 1, bkd.bb or 1, bkd.ba or 1;
 		end
-		
+
 		if not desc.drawLayer then desc.drawLayer = "ARTWORK"; end
 		if not desc.sublevel then desc.sublevel = 3; end
 		if not desc.cd then desc.cd = VFL.copy(VFLUI.defaultCooldown); end
-		
+
 		local loadCode = "";
-		
+
 		local mux, mask = nil, 0;
-		
+
 		if desc.ftype == 1 then
 			loadCode = "LoadBuffFromUnit";
 			-- Event hinting.
@@ -195,13 +195,13 @@ RDXDB.GetObjectInstance(]] .. string.format("%q", desc.externalNameFilter) .. [[
 				mux:Event_UnitMask("UNIT_COOLDOWN", mask);
 				mask = bit.bor(mask, 1);
 			end
-			
+
 			loadCode = "unit:GetUsedCooldownsById";
 			-- Event hinting.
 			if desc.cooldownType == "AVAIL" then
 				loadCode = "unit:GetAvailCooldownsById";
 			end
-			
+
 			-- If there's an external filter, add a quick menu to the window to edit it.
 			if desc.externalNameFiltercd then
 				local path = desc.externalNameFiltercd; local afname = desc.name;
@@ -283,7 +283,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 				mux:Event_UnitMask("UNIT_ENTERING_WORLD", umask);
 			end
 		end
-		
+
 		----------------- Creation
 		local createCode = [[
 	frame.]] .. objname .. [[ = {};
@@ -325,7 +325,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		btn:Disable();
 ]];
 		end
-		if not desc.disableShowTooltip then 
+		if not desc.disableShowTooltip then
 			if desc.ftype == 1 then
 				createCode = createCode .. [[
 		btn:SetScript("OnEnter", __AuraIconOnEnter);
@@ -398,10 +398,10 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		local auracache = "false"; --if md and RDXDB.HasFeature(md.data, "AuraCache") then auracache = "true"; end
 		local smooth = "nil"; if desc.smooth then smooth = "RDX.smooth"; end
 		local raidfilter = "nil"; if desc.raidfilter then raidfilter = "true"; end
-		
-		local aurasfilter, afflag = " (", nil; 
+
+		local aurasfilter, afflag = " (", nil;
 		if desc.playerauras then aurasfilter = aurasfilter .. " _caster == 'player'"; afflag = true; end
-		if desc.othersauras then 
+		if desc.othersauras then
 			if afflag then
 				aurasfilter = aurasfilter .. " or _caster ~= 'player'";
 			else
@@ -414,16 +414,16 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 			else
 				aurasfilter = aurasfilter .. " _caster == 'pet' or _caster == 'vehicle'"; afflag = true;
 			end
-		
+
 		end
-		if desc.targetauras then 
+		if desc.targetauras then
 			if afflag then
 				aurasfilter = aurasfilter .. " or _caster == 'target'";
 			else
 				aurasfilter = aurasfilter .. " _caster == 'target'"; afflag = true;
 			end
 		end
-		if desc.focusauras then 
+		if desc.focusauras then
 			if afflag then
 				aurasfilter = aurasfilter .. " or _caster == 'focus'";
 			else
@@ -432,11 +432,11 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		end
 		if not afflag then aurasfilter = aurasfilter .. " true"; end
 		aurasfilter = aurasfilter .. " )";
-		
+
 		local isstealablefilter = "true"; if desc.isstealablefilter then isstealablefilter = "_isStealable"; end
 		local curefilter = "true"; if desc.curefilter then curefilter = "(_dispelt and RDXSS.GetCategoryByName('CURE_'..string.upper(_dispelt)))"; end
-		
-		local timefilter = "true"; 
+
+		local timefilter = "true";
 		if desc.timefilter then timefilter = "(_dur > 0";
 			if (desc.mindurationfilter ~= "") then timefilter = timefilter .. " and _dur >= " .. desc.mindurationfilter; end
 			if (desc.maxdurationfilter ~= "") then timefilter = timefilter .. " and _dur <= " .. desc.maxdurationfilter; end
@@ -448,10 +448,10 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 			namefilter = "(" .. objname .. "_fnames[_bn] or " .. objname .. "_fnames[_meta.category])";
 			namefilter = namefilter .. " and (not (" .. objname .. "_fnames['!'.._bn] or " .. objname .. "_fnames['!'.._meta.category]))"
 		end
-		
+
 		local number = 0;
 		if desc.number then number = desc.number; end
-		
+
 		--local sorticons = " ";
 		--desc.sort = nil;
 		--if desc.sort then
@@ -466,9 +466,9 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		--	end
 		--	if desc.sortname then sorticons = sorticons .. [[
 		--	table.sort(sort_icons, function(x1,x2) return x1._bn < x2._bn; end); ]];
-		--	end	
+		--	end
 		--end
-		
+
 		local paintCodeTest = [[
 		_i, _j, _bn, _tex, _apps, _meta, _dur, _tl, _dispelt, _caster, _isStealable = 1,1,nil,nil,nil,nil,nil,nil,nil,nil;
 		_icons = frame.]] .. objname .. [[;
@@ -505,7 +505,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 						btn.tex:SetVertexColor(1, 1, 1, 1);
 ]];
 		end
-		paintCodeTest = paintCodeTest .. [[				
+		paintCodeTest = paintCodeTest .. [[
 			end
 			-- Cooldown
 			if _dur and _dur > 0 and btn.cd then
@@ -514,9 +514,9 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 				btn.cd:SetCooldown(0, 0);
 			end
 			if _apps and (_apps > 1) then btn.sttxt:SetText(_apps); else btn.sttxt:SetText(""); end
-			
+
 			_j = _j + 1;
-			
+
 			--_i = _i + 1;
 		end
 		--while _j <= ]] .. desc.nIcons .. [[ do
@@ -575,7 +575,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 						btn.cd:SetCooldown(0, 0);
 					end
 					if _apps and (_apps > 1) then btn.sttxt:SetText(_apps); else btn.sttxt:SetText(""); end
-					
+
 					_j = _j + 1;
 				end
 				_i = _i + 1;
@@ -702,42 +702,42 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Orientation"));
 		local dd_orientation = VFLUI.Dropdown:new(er, RDXUI.OrientationDropdownFunction);
 		dd_orientation:SetWidth(75); dd_orientation:Show();
-		if desc and desc.orientation then 
-			dd_orientation:SetSelection(desc.orientation); 
+		if desc and desc.orientation then
+			dd_orientation:SetSelection(desc.orientation);
 		else
 			dd_orientation:SetSelection("RIGHT");
 		end
 		er:EmbedChild(dd_orientation); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local ed_iconspx = VFLUI.LabeledEdit:new(ui, 50); ed_iconspx:Show();
 		ed_iconspx:SetText(VFLI.i18n("Width spacing"));
 		if desc and desc.iconspx then ed_iconspx.editBox:SetText(desc.iconspx); else ed_iconspx.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspx);
-		
+
 		local ed_iconspy = VFLUI.LabeledEdit:new(ui, 50); ed_iconspy:Show();
 		ed_iconspy:SetText(VFLI.i18n("Height spacing"));
 		if desc and desc.iconspy then ed_iconspy.editBox:SetText(desc.iconspy); else ed_iconspy.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspy);
-		
+
 		local ed_width = VFLUI.LabeledEdit:new(ui, 50); ed_width:Show();
 		ed_width:SetText(VFLI.i18n("Width"));
 		if desc and desc.w then ed_width.editBox:SetText(desc.w); else ed_width.editBox:SetText("20"); end
 		ui:InsertFrame(ed_width);
-		
+
 		local ed_height = VFLUI.LabeledEdit:new(ui, 50); ed_height:Show();
 		ed_height:SetText(VFLI.i18n("Height"));
 		if desc and desc.h then ed_height.editBox:SetText(desc.h); else ed_height.editBox:SetText("20"); end
 		ui:InsertFrame(ed_height);
-		
-		
+
+
 		-- to be replace by h and w ?
 
 		-------------- Display
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Skin parameters")));
-		
+
 		local driver = VFLUI.DisjointRadioGroup:new();
-		
+
 		local driver_NS = driver:CreateRadioButton(ui);
 		driver_NS:SetText(VFLI.i18n("No Skin"));
 		local driver_BS = driver:CreateRadioButton(ui);
@@ -745,36 +745,36 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		local driver_BD = driver:CreateRadioButton(ui);
 		driver_BD:SetText(VFLI.i18n("Use Backdrop"));
 		driver:SetValue(desc.driver or 1);
-		
+
 		ui:InsertFrame(driver_NS);
-		
+
 		ui:InsertFrame(driver_BS);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("ButtonSkin"));
 		local dd_buttonskin = VFLUI.MakeButtonSkinSelectButton(er, desc.bs);
 		dd_buttonskin:Show();
 		er:EmbedChild(dd_buttonskin); er:Show();
 		ui:InsertFrame(er);
-		
+
 		ui:InsertFrame(driver_BD);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Backdrop"));
 		local dd_backdrop = VFLUI.MakeBackdropSelectButton(er, desc.bkd);
 		dd_backdrop:Show();
 		er:EmbedChild(dd_backdrop); er:Show();
 		ui:InsertFrame(er);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Shader parameters")));
-		
+
 		--local chk_hidebs = VFLUI.Checkbox:new(ui); chk_hidebs:Show();
 		--chk_hidebs:SetText(VFLI.i18n("Hide empty button"));
 		--if desc and desc.hidebs then chk_hidebs:SetChecked(true); else chk_hidebs:SetChecked(); end
 		--ui:InsertFrame(chk_hidebs);
-		
+
 		-- Shader stuff
-		
+
 		local shader = VFLUI.DisjointRadioGroup:new();
-		
+
 		local shader_key = shader:CreateRadioButton(ui);
 		shader_key:SetText(VFLI.i18n("No Shader (dispell)"));
 		local shader_border = shader:CreateRadioButton(ui);
@@ -782,26 +782,26 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		local shader_icon = shader:CreateRadioButton(ui);
 		shader_icon:SetText(VFLI.i18n("Use Icon Shader"));
 		shader:SetValue(desc.shader or 2);
-		
+
 		ui:InsertFrame(shader_key);
-		
+
 		ui:InsertFrame(shader_border);
-		
+
 		ui:InsertFrame(shader_icon);
-		
+
 		-------------- Interraction
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Interaction parameters")));
-		
+
 		local chk_disableClick = VFLUI.Checkbox:new(ui); chk_disableClick:Show();
 		chk_disableClick:SetText(VFLI.i18n("Disable button"));
 		if desc and desc.disableClick then chk_disableClick:SetChecked(true); else chk_disableClick:SetChecked(); end
 		ui:InsertFrame(chk_disableClick);
-		
+
 		local chk_disableShowTooltip = VFLUI.Checkbox:new(ui); chk_disableShowTooltip:Show();
 		chk_disableShowTooltip:SetText(VFLI.i18n("Disable tooltip"));
 		if desc and desc.disableShowTooltip then chk_disableShowTooltip:SetChecked(true); else chk_disableShowTooltip:SetChecked(); end
 		ui:InsertFrame(chk_disableShowTooltip);
-		
+
 		-------------- Texture
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Texture parameters")));
 
@@ -812,56 +812,56 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		if desc and desc.drawLayer then drawLayer:SetSelection(desc.drawLayer); else drawLayer:SetSelection("ARTWORK"); end
 		er:EmbedChild(drawLayer); er:Show();
 		ui:InsertFrame(er);
-		
+
 		-- SubLevel
 		local ed_sublevel = VFLUI.LabeledEdit:new(ui, 50); ed_sublevel:Show();
 		ed_sublevel:SetText(VFLI.i18n("TextureLevel offset"));
 		if desc and desc.sublevel then ed_sublevel.editBox:SetText(desc.sublevel); end
 		ui:InsertFrame(ed_sublevel);
-		
+
 		-------------- CooldownDisplay
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Cooldown parameters")));
 		local ercd = VFLUI.EmbedRight(ui, VFLI.i18n("Cooldown"));
 		local cd = VFLUI.MakeCooldownSelectButton(ercd, desc.cd); cd:Show();
 		ercd:EmbedChild(cd); ercd:Show();
 		ui:InsertFrame(ercd);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Font parameters")));
-		
+
 		local er_st = VFLUI.EmbedRight(ui, VFLI.i18n("Font stack"));
 		local fontsel2 = VFLUI.MakeFontSelectButton(er_st, desc.fontst); fontsel2:Show();
 		er_st:EmbedChild(fontsel2); er_st:Show();
 		ui:InsertFrame(er_st);
-		
+
 		--ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Smooth show hide")));
 		--local chk_smooth = VFLUI.Checkbox:new(ui); chk_smooth:Show();
 		--chk_smooth:SetText(VFLI.i18n("Use smooth on show and hide"));
 		--if desc and desc.smooth then chk_smooth:SetChecked(true); else chk_smooth:SetChecked(); end
 		--ui:InsertFrame(chk_smooth);
-		
+
 		------------ Sort
 		--[[ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Sort")));
-		
+
 		local chk_sort = VFLUI.Checkbox:new(ui); chk_sort:Show();
 		chk_sort:SetText(VFLI.i18n("Activate Sort"));
 		if desc and desc.sort then chk_sort:SetChecked(true); else chk_sort:SetChecked(); end
 		ui:InsertFrame(chk_sort);
-		
+
 		local chk_sortstack = VFLUI.Checkbox:new(ui); chk_sortstack:Show();
 		chk_sortstack:SetText(VFLI.i18n("Sort by stack"));
 		if desc and desc.sortstack then chk_sortstack:SetChecked(true); else chk_sortstack:SetChecked(); end
 		ui:InsertFrame(chk_sortstack);
-		
+
 		local chk_sortduration = VFLUI.Checkbox:new(ui); chk_sortduration:Show();
 		chk_sortduration:SetText(VFLI.i18n("Sort by duration"));
 		if desc and desc.sortduration then chk_sortduration:SetChecked(true); else chk_sortduration:SetChecked(); end
 		ui:InsertFrame(chk_sortduration);
-		
+
 		local chk_sorttimeleft = VFLUI.Checkbox:new(ui); chk_sorttimeleft:Show();
 		chk_sorttimeleft:SetText(VFLI.i18n("Sort by timeleft"));
 		if desc and desc.sorttimeleft then chk_sorttimeleft:SetChecked(true); else chk_sorttimeleft:SetChecked(); end
 		ui:InsertFrame(chk_sorttimeleft);
-		
+
 		local chk_sortname = VFLUI.Checkbox:new(ui); chk_sortname:Show();
 		chk_sortname:SetText(VFLI.i18n("Sort by name"));
 		if desc and desc.sortname then chk_sortname:SetChecked(true); else chk_sortname:SetChecked(); end
@@ -874,22 +874,22 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		chk_notimefilter:SetText(VFLI.i18n("Show only icons with no timer"));
 		if desc and desc.notimefilter then chk_notimefilter:SetChecked(true); else chk_notimefilter:SetChecked(); end
 		ui:InsertFrame(chk_notimefilter);
-		
+
 		local chk_timefilter = VFLUI.Checkbox:new(ui); chk_timefilter:Show();
 		chk_timefilter:SetText(VFLI.i18n("Show only icons with timer"));
 		if desc and desc.timefilter then chk_timefilter:SetChecked(true); else chk_timefilter:SetChecked(); end
 		ui:InsertFrame(chk_timefilter);
-		
+
 		local ed_maxduration = VFLUI.LabeledEdit:new(ui, 50); ed_maxduration:Show();
 		ed_maxduration:SetText(VFLI.i18n("Filter by Max duration (sec)"));
 		if desc and desc.maxdurationfilter then ed_maxduration.editBox:SetText(desc.maxdurationfilter); else ed_maxduration.editBox:SetText(""); end
 		ui:InsertFrame(ed_maxduration);
-		
+
 		local ed_minduration = VFLUI.LabeledEdit:new(ui, 50); ed_minduration:Show();
 		ed_minduration:SetText(VFLI.i18n("Filter by min duration (sec)"));
 		if desc and desc.mindurationfilter then ed_minduration.editBox:SetText(desc.mindurationfilter); else ed_minduration.editBox:SetText(""); end
 		ui:InsertFrame(ed_minduration);
-		
+
 		-- Feature type
 		local ftype = VFLUI.DisjointRadioGroup:new();
 		local ftype_1 = ftype:CreateRadioButton(ui);
@@ -901,31 +901,31 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		local ftype_4 = ftype:CreateRadioButton(ui);
 		ftype_4:SetText(VFLI.i18n("Use Totems Icons"));
 		ftype:SetValue(desc.ftype or 1);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Aura Icons")));
 		ui:InsertFrame(ftype_1);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Aura Type"));
 		local dd_auraType = VFLUI.Dropdown:new(er, RDXUI.AurasTypesDropdownFunction);
 		dd_auraType:SetWidth(150); dd_auraType:Show();
-		if desc and desc.auraType then 
-			dd_auraType:SetSelection(desc.auraType); 
+		if desc and desc.auraType then
+			dd_auraType:SetSelection(desc.auraType);
 		else
 			dd_auraType:SetSelection("BUFFS");
 		end
 		er:EmbedChild(dd_auraType); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_raidfilter = VFLUI.Checkbox:new(ui); chk_raidfilter:Show();
 		chk_raidfilter:SetText(VFLI.i18n("Use Blizzard raid filter"));
 		if desc and desc.raidfilter then chk_raidfilter:SetChecked(true); else chk_raidfilter:SetChecked(); end
 		ui:InsertFrame(chk_raidfilter);
-		
+
 		local chk_playerauras = VFLUI.Checkbox:new(ui); chk_playerauras:Show();
 		chk_playerauras:SetText(VFLI.i18n("Filter auras by player"));
 		if desc and desc.playerauras then chk_playerauras:SetChecked(true); else chk_playerauras:SetChecked(); end
 		ui:InsertFrame(chk_playerauras);
-		
+
 		local chk_othersauras = VFLUI.Checkbox:new(ui); chk_othersauras:Show();
 		chk_othersauras:SetText(VFLI.i18n("Filter auras by other players"));
 		if desc and desc.othersauras then chk_othersauras:SetChecked(true); else chk_othersauras:SetChecked(); end
@@ -935,37 +935,37 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		chk_petauras:SetText(VFLI.i18n("Filter auras by pet/vehicle"));
 		if desc and desc.petauras then chk_petauras:SetChecked(true); else chk_petauras:SetChecked(); end
 		ui:InsertFrame(chk_petauras);
-		
+
 		local chk_targetauras = VFLUI.Checkbox:new(ui); chk_targetauras:Show();
 		chk_targetauras:SetText(VFLI.i18n("Filter auras by target"));
 		if desc and desc.targetauras then chk_targetauras:SetChecked(true); else chk_targetauras:SetChecked(); end
 		ui:InsertFrame(chk_targetauras);
-		
+
 		local chk_focusauras = VFLUI.Checkbox:new(ui); chk_focusauras:Show();
 		chk_focusauras:SetText(VFLI.i18n("Filter auras by focus"));
 		if desc and desc.focusauras then chk_focusauras:SetChecked(true); else chk_focusauras:SetChecked(); end
 		ui:InsertFrame(chk_focusauras);
-		
+
 		local chk_nameauras = VFLUI.Checkbox:new(ui); chk_nameauras:Show();
 		chk_nameauras:SetText(VFLI.i18n("Filter auras by name"));
 		if desc and desc.nameauras then chk_nameauras:SetChecked(true); else chk_nameauras:SetChecked(); end
 		ui:InsertFrame(chk_nameauras);
-		
+
 		local ed_unitfilter = VFLUI.LabeledEdit:new(ui, 200); ed_unitfilter:Show();
 		ed_unitfilter:SetText(VFLI.i18n("Name of the unit"));
 		if desc and desc.unitfilter then ed_unitfilter.editBox:SetText(desc.unitfilter); else ed_unitfilter.editBox:SetText(""); end
 		ui:InsertFrame(ed_unitfilter);
-		
+
 		local chk_isStealable = VFLUI.Checkbox:new(ui); chk_isStealable:Show();
 		chk_isStealable:SetText(VFLI.i18n("Show only Stealable auras"));
 		if desc and desc.isstealablefilter then chk_isStealable:SetChecked(true); else chk_isStealable:SetChecked(); end
 		ui:InsertFrame(chk_isStealable);
-		
+
 		local chk_curefilter = VFLUI.Checkbox:new(ui); chk_curefilter:Show();
 		chk_curefilter:SetText(VFLI.i18n("Show only auras that I can cure"));
 		if desc and desc.curefilter then chk_curefilter:SetChecked(true); else chk_curefilter:SetChecked(); end
 		ui:InsertFrame(chk_curefilter);
-		
+
 		local chk_filterName = VFLUI.Checkbox:new(ui); chk_filterName:Show();
 		chk_filterName:SetText(VFLI.i18n("Filter by aura name"));
 		if desc and desc.filterName then chk_filterName:SetChecked(true); else chk_filterName:SetChecked(); end
@@ -982,7 +982,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 			chk_external:SetChecked();
 		end
 
-		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data) 
+		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data)
 			if type(data) == "number" then
 				local name = GetSpellInfo(data);
 				cell.text:SetText(name);
@@ -1003,23 +1003,23 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		end);
 		le_names:SetHeight(183); le_names:Show();
 		ui:InsertFrame(le_names);
-		
+
 		ui:InsertFrame(VFLUI.EmptySeparator:new(ui, 30));
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Cooldown Icons")));
 		ui:InsertFrame(ftype_2);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Cooldown Type"));
 		local dd_cooldownType = VFLUI.Dropdown:new(er, RDXUI.CooldownsTypesDropdownFunction);
 		dd_cooldownType:SetWidth(150); dd_cooldownType:Show();
-		if desc and desc.cooldownType then 
-			dd_cooldownType:SetSelection(desc.cooldownType); 
+		if desc and desc.cooldownType then
+			dd_cooldownType:SetSelection(desc.cooldownType);
 		else
 			dd_cooldownType:SetSelection("USED");
 		end
 		er:EmbedChild(dd_cooldownType); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_filterNamecd = VFLUI.Checkbox:new(ui); chk_filterNamecd:Show();
 		chk_filterNamecd:SetText(VFLI.i18n("Filter by cooldown name"));
 		if desc and desc.filterNamecd then chk_filterNamecd:SetChecked(true); else chk_filterNamecd:SetChecked(); end
@@ -1036,7 +1036,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 			chk_externalcd:SetChecked();
 		end
 
-		local le_namescd = VFLUI.ListEditor:new(ui, desc.filterNameListcd or {}, function(cell,data) 
+		local le_namescd = VFLUI.ListEditor:new(ui, desc.filterNameListcd or {}, function(cell,data)
 			if type(data) == "number" then
 				local name = GetSpellInfo(data);
 				cell.text:SetText(name);
@@ -1057,22 +1057,22 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		end);
 		le_namescd:SetHeight(183); le_namescd:Show();
 		ui:InsertFrame(le_namescd);
-		
+
 		ui:InsertFrame(VFLUI.EmptySeparator:new(ui, 30));
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Custom Icons")));
-		
+
 		ui:InsertFrame(ftype_3);
-		
+
 		local number = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Number"), state, "NumberVar_");
 		if desc and desc.number then number:SetSelection(desc.number); end
-		
+
 		-- Texture
 		local er = VFLUI.EmbedRight(ui, "Texture");
 		local tsel = VFLUI.MakeTextureSelectButton(er, desc.texture); tsel:Show();
 		er:EmbedChild(tsel); er:Show();
 		ui:InsertFrame(er);
-		
+
 		-- color
 		local color1 = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Texture 1 color"));
 		if desc and desc.color1 then color1:SetColor(VFL.explodeRGBA(desc.color1)); end
@@ -1084,12 +1084,12 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		if desc and desc.color4 then color4:SetColor(VFL.explodeRGBA(desc.color4)); end
 		local color5 = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Texture 5 color"));
 		if desc and desc.color5 then color5:SetColor(VFL.explodeRGBA(desc.color5)); end
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Totems Icons")));
-		
+
 		ui:InsertFrame(ftype_4);
-		
-		
+
+
 		function ui:GetDescriptor()
 			local filterName, filterNameList, filternl, ext, filterNamecd, filterNameListcd, filternlcd, extcd, unitfi, maxdurfil, mindurfil = nil, nil, {}, nil, nil, nil, {}, nil, "", "", "";
 			if chk_nameauras:GetChecked() then
@@ -1170,7 +1170,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 			--	chk_sorttimeleft:SetChecked();
 			--	chk_sortname:SetChecked();
 			--end
-			return { 
+			return {
 				feature = "listicons"; version = 1;
 				name = ed_name.editBox:GetText();
 				-- layout
@@ -1242,8 +1242,8 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 				color5 = color5:GetColor();
 			};
 		end
-		
-		ui.Destroy = VFL.hook(function(s) 
+
+		ui.Destroy = VFL.hook(function(s)
 			ftype:Destroy(); ftype = nil;
 			driver:Destroy(); driver = nil;
 			shader:Destroy(); shader = nil;
@@ -1253,7 +1253,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 	end;
 	CreateDescriptor = function()
 		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "CENTER"; font.justifyH = "CENTER";
-		return { 
+		return {
 			feature = "listicons";
 			version = 1;
 			name = "li1";

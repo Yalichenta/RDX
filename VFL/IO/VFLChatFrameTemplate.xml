@@ -12,7 +12,7 @@
 						FCFClickAnywhereButton_OnEvent(self, event, ...);
 					</OnEvent>
 					<OnClick>
-						ChatEdit_SetLastActiveWindow(self:GetParent().editBox);
+						VFL_ChatEdit_SetLastActiveWindow(self:GetParent().editBox);
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -32,16 +32,16 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				ChatFrame_OnLoad(self);
+				VFL_ChatFrame_OnLoad(self);
 			</OnLoad>
 			<OnEvent>
-				ChatFrame_OnEvent(self, event, ...);
+				VFL_ChatFrame_OnEvent(self, event, ...);
 			</OnEvent>
 			<OnUpdate>
-				ChatFrame_OnUpdate(self, elapsed);
+				VFL_ChatFrame_OnUpdate(self, elapsed);
 			</OnUpdate>
 			<OnHyperlinkClick>
-				ChatFrame_OnHyperlinkShow(self, link, text, button);
+				VFL_ChatFrame_OnHyperlinkShow(self, link, text, button);
 			</OnHyperlinkClick>
 		</Scripts>
 	</ScrollingMessageFrame>

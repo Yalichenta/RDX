@@ -44,7 +44,7 @@ function VFLUI.RegisterFont(tbl)
 	if type(tbl.face) ~= "string" then tbl.face = sortedFaces[1].path; end
 	if type(tbl.size) ~= "number" then tbl.size = 12; end
 	--if type(tbl.justifyH) ~= "string" then tbl.justifyH = "LEFT"; end
-	--if type(tbl.justifyV) ~= "string" then tbl.justifyV = "CENTER"; end
+	--if type(tbl.justifyV) ~= "string" then tbl.justifyV = "MIDDLE"; end
 	Fonts[tbl.name] = tbl;
 
 	-- Also create a font object for use with buttons.
@@ -79,7 +79,7 @@ function VFLUI.SetFont(obj, descr, sz, justify, extra)
 		obj:SetTextColor(descr.cr or 1, descr.cg or 1, descr.cb or 1, descr.ca or 1);
 	end
 	if justify then
-		obj:SetJustifyH(descr.justifyH or "LEFT"); obj:SetJustifyV(descr.justifyV or "CENTER");
+		obj:SetJustifyH(descr.justifyH or "LEFT"); obj:SetJustifyV(descr.justifyV or "MIDDLE");
 	end
 end
 
@@ -105,7 +105,10 @@ function VFLUI.GenerateSetFontCode(obj, descr, sz, justify)
 ]];
 	end
 	if justify then
-		ret = ret .. obj .. [[:SetJustifyH("]] .. (descr.justifyH or "LEFT") .. [["); ]] .. obj .. [[:SetJustifyV("]] .. (descr.justifyV or "CENTER") .. [[");
+		local jv = "MIDDLE"
+		if(descr.justifyV == "TOP") then jv = "TOP" end
+		if(descr.justifyV == "BOTTOM") then jv = "BOTTOM" end
+		ret = ret .. obj .. [[:SetJustifyH("]] .. (descr.justifyH or "LEFT") .. [["); ]] .. obj .. [[:SetJustifyV("]] .. (jv) .. [[");
 ]];
 	end
 	return ret;

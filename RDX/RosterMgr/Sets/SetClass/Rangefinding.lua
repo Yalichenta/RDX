@@ -34,12 +34,15 @@ local function UpdateFRS()
 		unit = GetUnitByNumber(i); uid = unit.uid;
 		if (not unit:IsCacheValid()) or (not UnitIsVisible(uid)) then
 			frs_70:_Set(i, false); frs_30:_Set(i, false); frs_10:_Set(i, false);
-		elseif CheckInteractDistance(uid, 3) then
-			frs_70:_Set(i, true); frs_30:_Set(i, true); frs_10:_Set(i, true);
-		elseif CheckInteractDistance(uid, 4) then
-			frs_70:_Set(i, true); frs_30:_Set(i, true); frs_10:_Set(i, false);
 		else
-			frs_70:_Set(i, true); frs_30:_Set(i, false); frs_10:_Set(i, false);
+			local inrange, checkok = UnitInRange(uid)
+			if(checkok and not inrange) then
+				frs_70:_Set(i, true); frs_30:_Set(i, false); frs_10:_Set(i, false);
+			elseif TA_auratracker_helpclose_spellid and not IsSpellInRange(TA_auratracker_helpclose_spellid, uid) then
+				frs_70:_Set(i, true); frs_30:_Set(i, true); frs_10:_Set(i, false);
+			else
+				frs_70:_Set(i, true); frs_30:_Set(i, true); frs_10:_Set(i, true);
+			end
 		end
 	end
 
@@ -72,9 +75,9 @@ local function CreateFRS(yd)
 	RDXDAL.RegisterSet(x);
 	return x;
 end
-frs_70 = CreateFRS(70); 
-frs_30 = CreateFRS(30); 
-frs_10 = CreateFRS(10); 
+frs_70 = CreateFRS(70);
+frs_30 = CreateFRS(30);
+frs_10 = CreateFRS(10);
 
 -- The RDX setclass for FRS.
 RDXDAL.RegisterSetClass({
@@ -88,7 +91,7 @@ RDXDAL.RegisterSetClass({
 			if desc.n == 1 then -- compat: old 5yd class
 				ui:SetValue(1);
 			else
-				ui:SetValue(desc.n - 1); 
+				ui:SetValue(desc.n - 1);
 			end
 		else
 			ui:SetValue(1);
@@ -248,7 +251,7 @@ RDXDAL.RegisterSetClass({
 		local spellEdit = RDXSS.SpellSelector:new(ui); spellEdit:Show();
 		spellEdit:SetSpell(csp);
 		ui:InsertFrame(spellEdit);
-	
+
 		ui.Destroy = VFL.hook(function(s) s.GetDescriptor = nil; end, ui.Destroy);
 		ui.GetDescriptor = function() return { class="spellrange", spell = spellEdit:GetSpell() }; end
 
@@ -273,7 +276,7 @@ RDXDAL.RegisterSetClass({
 		edit:SetText(VFLI.i18n("Item name (Exact)")); edit:Show();
 		edit.editBox:SetText(csp);
 		ui:InsertFrame(edit);
-	
+
 		ui.Destroy = VFL.hook(function(s) s.GetDescriptor = nil; end, ui.Destroy);
 		ui.GetDescriptor = function() return { class="itemrange", item = edit.editBox:GetText() }; end
 

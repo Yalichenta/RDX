@@ -19,7 +19,7 @@ function VFLUI.PassthroughFrame:new(f, parent)
 		self:SetFrameStrata(parent:GetFrameStrata());
 		self:SetFrameLevel(parent:GetFrameLevel() + 1);
 	end
-	
+
 	local collapsed = nil;
 	local child = nil;
 	local dxLeft, dyTop, dxRight, dyBottom = 0, 0, 0, 0;
@@ -110,7 +110,7 @@ function VFLUI.CollapsibleFrame:new(parent)
 	self.btn = ctl;
 
 	local fs = VFLUI.CreateFontString(self);
-	fs:SetPoint("LEFT", ctl, "RIGHT"); 
+	fs:SetPoint("LEFT", ctl, "RIGHT");
 	VFLUI.SetFont(fs, Fonts.Default);
 	fs:SetJustifyH("LEFT");
 	fs:SetHeight(25); fs:SetWidth(0); fs:Show();
@@ -142,7 +142,7 @@ function VFLUI.CollapsibleFrame:new(parent)
 		VFLUI.ReleaseRegion(s.text); s.text = nil;
 		s.SetText = nil;
 	end, self.Destroy);
-	
+
 	return self;
 end
 
@@ -170,7 +170,7 @@ function VFLUI.CompoundFrame:new(parent)
 		-- Upward constraint: relayout the grid based on the cells
 		s:Relayout();
 	end
-	
+
 	-- Destroy cleans up what we did and destroys all children
 	self.Destroy = VFL.hook(function(s)
 		s.DialogOnLayout = nil;
@@ -197,7 +197,7 @@ end
 
 function VFLUI.DestroyScrollingCompoundFrame(ui, sf)
 	sf:SetScrollChild(nil);
-	ui:Destroy(); 
+	ui:Destroy();
 	sf:Destroy();
 end
 
@@ -216,7 +216,7 @@ function VFLUI.Separator:new(parent, str, objHeight, fontHeight)
 
 	local txt = VFLUI.CreateFontString(f);
 	VFLUI.SetFont(txt, Fonts.Default, fontHeight);
-	txt:SetJustifyH("LEFT"); txt:SetJustifyV("CENTER");
+	txt:SetJustifyH("LEFT"); txt:SetJustifyV("MIDDLE");
 	txt:SetPoint("LEFT", f, "LEFT", 5, 0); txt:Show();
 	txt:SetTextColor(0.85, 0.8, 0);
 	txt:SetHeight(fontHeight);
@@ -286,8 +286,8 @@ function VFLUI.FilterDialogFrame:new(parent)
 		btn:Show();
 		btn:SetScript("OnClick", onClose);
 	end;
-	self.SetText = function(s, t) 
-		label:SetText(t); 
+	self.SetText = function(s, t)
+		label:SetText(t);
 	end
 
 	self.Destroy = VFL.hook(function(s)
@@ -345,8 +345,8 @@ function VFLUI.SortDialogFrame:new(parent)
 		upbtn:SetScript("OnClick", onUp);
 		dnbtn:SetScript("OnClick", onDn);
 	end;
-	self.SetText = function(s, t) 
-		label:SetText(t); 
+	self.SetText = function(s, t)
+		label:SetText(t);
 	end
 	self.IsReversed = function(s) return rvs:GetChecked(); end
 	self.SetReversed = function(s, arg) rvs:SetChecked(arg); end
