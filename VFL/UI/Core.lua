@@ -1151,3 +1151,19 @@ function VFLUI.GetRelativeStata(strata, inc)
 	return idToStrata[idstrata + inc] or strata;
 end
 
+-- Helpers, for functions that were changed
+
+
+function VFLUI.GetSpellInfo_dep(id)
+	local r = C_Spell.GetSpellInfo(id)
+	if(r) then
+		return r.name, nil, r.iconID, r.castTime, r.minRange, r.maxRange, r.spellID, r.originalIconID
+	else
+		return nil
+	end
+end
+
+function VFLUI.GetSpellInfo_name(id)
+	local r = C_Spell.GetSpellInfo(id)
+	return r and r.name
+end

@@ -14,14 +14,14 @@
 -- Subtleties: Power Word: Fortitude and Prayer of Fortitude are DIFFERENT spell classes because
 --   they don't have the exact same effect (one buffs a single person, one buffs a group.)
 --
--- Spells are also grouped into SpellCategories. A SpellCategory can be something like "DAMAGE", 
+-- Spells are also grouped into SpellCategories. A SpellCategory can be something like "DAMAGE",
 -- "HEALING", "PERIODIC", "INSTANT", etc. A spell can be in multiple SpellCategories.
 --
 -- Spells are also grouped into RangeClasses. Spells in the same RangeClass have the same range.
 --
--- Spells can be manually grouped into generic SpellGroups which can have any content or meaning 
+-- Spells can be manually grouped into generic SpellGroups which can have any content or meaning
 -- that the programmer desires.
--- 
+--
 -- Interesting spell events
 -- LEARNED_SPELL_IN_TAB(tabnum)
 -- SPELL_UPDATE_USABLE
@@ -37,8 +37,11 @@ RDXSS = RegisterVFLModule({
 });
 VFLP.RegisterCategory("RDXSS: Spell System");
 
+local GetSpellInfo = VFLUI.GetSpellInfo_dep;
 -- Burning Crusade: abstract away crazy renamed function...
-if IsPassiveSpell then
+if C_Spell.IsSpellPassive then
+	RDXSS.IsPassiveSpell = C_Spell.IsSpellPassive
+elseif IsPassiveSpell then
 	RDXSS.IsPassiveSpell = IsPassiveSpell;
 else
 	RDXSS.IsPassiveSpell = IsSpellPassive;
@@ -51,14 +54,15 @@ end
 -- Given a spell's book numerical ID, return its full name.
 function RDXSS.GetSpellFullNameByBookId(id)
 	if not id then return nil; end
-	local name,q = GetSpellBookItemName(id, BOOKTYPE_SPELL);
+	print("spellid",id)
+	local name,q = C_SpellBook.GetSpellBookItemName(id, Enum.SpellBookSpellBank.Player);
 	if not name then return nil; end
 	return name .. '(' .. q .. ')', name, q;
 end
 
 -- Given a spell's book numerical ID, attempt to figure out its numerical rank
 function RDXSS.GetSpellRankByBookId(id)
-	local name,q = GetSpellBookItemName(id, BOOKTYPE_SPELL);
+	local name,q = C_SpellBook.GetSpellBookItemName(id, Enum.SpellBookSpellBank.Player);
 	if not name then return nil; end
 	if q then
 		local _,_,num = string.find(q, "(%d+)");
@@ -72,10 +76,12 @@ function RDXSS.GetSpellBookId(sname, bkt)
 	if not sname then return nil; end
 	if not bkt then return nil; end
 	for i = 1, MAX_SKILLLINE_TABS do
-		local name, texture, offset, numSpells = GetSpellTabInfo(i);
+		local sti = C_SpellBook.GetSpellBookSkillLineInfo(i)
+		local name, texture, offset, numSpells = sti.name, sti.iconID, sti.itemIndexOffset, sti.numSpellBookItems;
+
 		if not name then break; end
 		for s = offset + 1, offset + numSpells do
-			if (sname == GetSpellBookItemName(s,bkt)) then
+			if (sname == C_SpellBook.GetSpellBookItemName(s,bkt)) then
 				return s;
 			end
 		end
@@ -128,7 +134,7 @@ function RDXSS.GetSpellIdBook(n)
 end
 
 --- Get a table (name->id) of all spells recognized by VFL.
-function RDXSS.GetAllSpells(fulldb) 
+function RDXSS.GetAllSpells(fulldb)
 	if fulldb then
 		return FullspFN;
 	else
@@ -170,10 +176,11 @@ end
 
 -- Rebuild the core spell database
 local function BuildCoreSpellDB()
-	for i = 1, GetNumSpellTabs() do
-		local name, texture, offset, numSpells, isGuild = GetSpellTabInfo(i);
+	for i = 1, C_SpellBook.GetNumSpellBookSkillLines() do
+		local sti = C_SpellBook.GetSpellBookSkillLineInfo(i)
+		local name, texture, offset, numSpells, isGuild = sti.name, sti.iconID, sti.itemIndexOffset, sti.numSpellBookItems, sti.isGuild;
 		for s = offset + 1, offset + numSpells do
-			local spellName, subSpellName = GetSpellBookItemName(s, BOOKTYPE_SPELL);
+			local spellName, subSpellName = C_SpellBook.GetSpellBookItemName(s, Enum.SpellBookSpellBank.Player);
 			if SpellFilter(s,spellName,subSpellName) then
 				if not subSpellName or subSpellName == "" then
 					spFN[spellName] = s;
@@ -181,7 +188,7 @@ local function BuildCoreSpellDB()
 					spFN[spellName.."("..subSpellName..")"] = s;
 				end
 			end
-			
+
 			if not subSpellName or subSpellName == "" then
 				FullspFN[spellName] = s;
 			else
@@ -244,11 +251,11 @@ end
 RDXSS.SpellGroup = {};
 function RDXSS.SpellGroup:new()
 	local s = {};
-	
+
 	local spells = {};
 	local spellsByID = {};
 	local spellsByName = {};
-	
+
 	--- Get all spells in this group, as a sorted array.
 	function s:Spells() return spells; end
 
@@ -372,11 +379,11 @@ end
 --- Categorize all spells in a SpellClass.
 function RDXSS.CategorizeClass(class, cn)
 	if(not class) or (not cn) then error("usage: RDXSS.CategorizeClass(id, categoryName)"); end
-	class = GetSpellInfo(class);
+	class = C_Spell.GetSpellInfo(class);
 	--local cls = RDXSS.GetClassByName(class); if not cls then return; end
 	local cat = RDXSS.GetOrCreateCategoryByName(cn);
 	--for _,id in pairs(cls:Spells()) do CategorizeSpell(cat, cn, id); end
-	CategorizeSpell(cat, cn, class);
+	CategorizeSpell(cat, cn, class and class.spellID);
 end
 
 --- Get a table (cat->true) mapping of all categories to which the given spell belongs.
@@ -452,11 +459,11 @@ end
 RDXSS.SpellSelector = {};
 function RDXSS.SpellSelector:new(parent)
 	local spellEdit = VFLUI.LabeledEdit:new(parent, 200);
-	spellEdit:SetText(VFLI.i18n("Spell Name")); 
+	spellEdit:SetText(VFLI.i18n("Spell Name"));
 
 	local btn = VFLUI.Button:new(spellEdit);
-	btn:SetHeight(25); 
-	btn:SetWidth(25); 
+	btn:SetHeight(25);
+	btn:SetWidth(25);
 	btn:SetText("...");
 	btn:SetPoint("RIGHT", spellEdit.editBox, "LEFT");
 	btn:Show();
@@ -464,9 +471,9 @@ function RDXSS.SpellSelector:new(parent)
 		local qq = { };
 		for spell,_ in pairs(RDXSS.GetAllSpells()) do
 			local retVal = spell;
-			table.insert(qq, { 
-				text = retVal, 
-				func = function() 
+			table.insert(qq, {
+				text = retVal,
+				func = function()
 					VFL.poptree:Release();
 					spellEdit.editBox:SetText(retVal);
 				end
@@ -512,8 +519,8 @@ local function __RDXParser_(timestamp, event, hideCaster, sourceGUID, sourceName
 	subVal = strsub(event, 1, 5);
 	spellId, spellName, spellSchool = nil, nil, nil;
 	norank = nil;
-	
-	if (subVal == "SPELL") then 
+
+	if (subVal == "SPELL") then
 		if (event == "SPELL_DAMAGE") then
 			spellId, spellName, spellSchool = select(1, ...);
 		elseif (event == "SPELL_HEAL") then
@@ -525,7 +532,7 @@ local function __RDXParser_(timestamp, event, hideCaster, sourceGUID, sourceName
 				spellId, spellName, spellSchool = select(1, ...);
 			elseif (event == "SPELL_PERIODIC_HEAL") then
 				spellId, spellName, spellSchool = select(1, ...);
-			elseif (event == "SPELL_PERIODIC_MISSED") then 
+			elseif (event == "SPELL_PERIODIC_MISSED") then
 				spellId, spellName, spellSchool = select(1, ...);
 			elseif (event == "SPELL_PERIODIC_DRAIN") then
 				spellId, spellName, spellSchool = select(1, ...);
@@ -545,7 +552,7 @@ local function __RDXParser_(timestamp, event, hideCaster, sourceGUID, sourceName
 			end
 		elseif  (event == "SPELL_CAST_START") then
 			spellId, spellName, spellSchool = select(1, ...);
-		elseif (event == "SPELL_MISSED") then 
+		elseif (event == "SPELL_MISSED") then
 			spellId, spellName, spellSchool = select(1, ...);
 		elseif (event == "SPELL_DRAIN") then
 			spellId, spellName, spellSchool = select(1, ...);
@@ -557,27 +564,26 @@ local function __RDXParser_(timestamp, event, hideCaster, sourceGUID, sourceName
 	elseif (subVal == "RANGE") then
 		if (event == "RANGE_DAMAGE") then
 			spellId, spellName, spellSchool = select(1, ...);
-		elseif (event == "RANGE_MISSED") then 
+		elseif (event == "RANGE_MISSED") then
 			spellId, spellName, spellSchool = select(1, ...);
 		end
 	elseif (event == "DAMAGE_SHIELD") then
 		spellId, spellName, spellSchool = select(1, ...);
-	elseif (event == "DAMAGE_SHIELD_MISSED") then 
+	elseif (event == "DAMAGE_SHIELD_MISSED") then
 		spellId, spellName, spellSchool = select(1, ...);
 	elseif (event == "DAMAGE_SPLIT") then
 		spellId, spellName, spellSchool = select(1, ...);
 	end
-	
+
 	if norank and spellName and spellId then
 		local obj = RDXDB.GetObjectData("RDXDiskSystem:locales:spells")
 		if obj and obj.data then
 			obj.data[spellName] = spellId;
 		end
 	end
-	
+
 	if spellName and spellId then
-		_, rank = GetSpellInfo(spellId);
-		if rank then spellName = spellName .. "(" .. rank ..")"; end
+		rank = nil
 		local obj = RDXDB.GetObjectData("RDXDiskSystem:locales:spells")
 		if obj and obj.data then
 			obj.data[spellName] = spellId;

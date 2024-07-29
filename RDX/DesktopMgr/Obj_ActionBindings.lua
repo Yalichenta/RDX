@@ -11,7 +11,7 @@ RDXAB = RegisterVFLModule({
 });
 
 -------------------------------------------------------------------
--- Action type registration 
+-- Action type registration
 -------------------------------------------------------------------
 local actiontypes = {};
 
@@ -84,7 +84,7 @@ RDXAB.RegisterActionType({
 			PlaceAction(id);
 			return true;
 		end
-	end,	
+	end,
 });]]
 
 RDXAB.RegisterActionType({
@@ -109,7 +109,7 @@ RDXAB.RegisterActionType({
 			PlaceAction(id);
 			return true;
 		--end
-	end,	
+	end,
 });
 
 RDXAB.RegisterActionType({
@@ -125,7 +125,7 @@ RDXAB.RegisterActionType({
 		PickupItem(newactionid);
 		PlaceAction(id);
 		return true;
-	end,	
+	end,
 });
 
 RDXAB.RegisterActionType({
@@ -140,7 +140,7 @@ RDXAB.RegisterActionType({
 		PickupMacro(newactionid);
 		PlaceAction(id);
 		return true;
-	end,	
+	end,
 });
 
 ---------------------------------------------------------
@@ -178,7 +178,7 @@ local function saveActionBindings(actionslist)
 		elseif actiontype == "spell" then
 			actionid = RDXSS.GetSpellFullNameByBookId(actioninfo);
 		elseif actiontype == "item" then
-			actionid = GetItemInfo(actioninfo);
+			actionid = C_Item.GetItemInfo(actioninfo);
 		elseif actiontype == "macro" then
 			actionid = GetMacroInfo(actioninfo);
 		end
@@ -208,7 +208,7 @@ local function loadActionBindings(actionslist)
 			-- general spell case , actionid is the full name
 			actionid = RDXSS.GetSpellFullNameByBookId(actioninfo);
 		elseif actiontype == "item" then
-			actionid = GetItemInfo(actioninfo);
+			actionid = C_Item.GetItemInfo(actioninfo);
 		elseif actiontype == "macro" then
 			actionid = GetMacroInfo(actioninfo);
 		end
@@ -235,19 +235,19 @@ RDXAB.ActionBindings = {};
 function RDXAB.ActionBindings:new(parent)
 	local self = VFLUI.AcquireFrame("Frame");
 	self:SetParent(parent or VFLDIALOG);
-	
+
 	function self:LoadAB(actionslist)
 		loadActionBindings(actionslist);
 	end
-	
+
 	function self:SaveAB(actionslist)
 		saveActionBindings(actionslist);
 	end
-	
+
 	self.Destroy = VFL.hook(function(s)
 		s.LoadAB = nil; s.SaveAB = nil
 	end, self.Destroy);
-	
+
 	return self;
 end
 

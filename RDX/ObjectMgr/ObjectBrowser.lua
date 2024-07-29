@@ -31,19 +31,19 @@ function RDXDB.ExplorerInstance:new(parent)
 		local i=0;
 		for file,data in pairs(pd) do
 			i=i+1;
-			if FilterFile(dk, pkg, file, data) then return true; end 
+			if FilterFile(dk, pkg, file, data) then return true; end
 		end
 		if(i == 0) and (FindFilterFile == VFL.True) then return true; end
 		return nil;
 	end
-	
+
 	local function Filterdisk(dk)
 		local pd = RDXDB.GetDisk(dk);
 		if not pd then return nil; end
 		local i=0;
 		for file,data in pairs(pd) do
 			i=i+1;
-			if FilterPackage(dk, pkg) then return true; end 
+			if FilterPackage(dk, pkg) then return true; end
 		end
 		if(i == 0) and (FindFilterFile == VFL.True) then return true; end
 		return nil;
@@ -78,9 +78,9 @@ function RDXDB.ExplorerInstance:new(parent)
 			function FindFilterFile(dk, pkg, file, data)
 				if (not data) then return nil; end
 				if type(data) ~= "table" then return nil; end
-				if data.ty == "SymLink" then 
-					local v = RDXDB.AccessPath(dk, pkg, file); 
-					if v then 
+				if data.ty == "SymLink" then
+					local v = RDXDB.AccessPath(dk, pkg, file);
+					if v then
 						if string.find(string.lower(v.ty), txt, 1, true) then return true; end
 					end
 				elseif string.find(string.lower(file), txt, 1, true) or string.find(string.lower(data.ty), txt, 1, true)  then
@@ -102,20 +102,20 @@ function RDXDB.ExplorerInstance:new(parent)
 		local txt = selEd:GetText();
 		if(not txt) or (txt == "") then return; end
 		local a,b,c = RDXDB.ParsePath(txt);
-		if not RDXDB.GetDisk(a) then 
+		if not RDXDB.GetDisk(a) then
 			selFeedback:SetText(VFLI.i18n("|cFFFF0000Invalid disk.|r"));
 			return;
 		end
 		if not RDXDB.GetPackage(a, b) then
-			selFeedback:SetText(VFLI.i18n("|cFFFF0000Invalid folder.|r")); 
+			selFeedback:SetText(VFLI.i18n("|cFFFF0000Invalid folder.|r"));
 			return;
 		end
 		if (not c) then
 			selFeedback:SetText(VFLI.i18n("|cFFFF0000No filename specified.|r"));
-			return; 
-		elseif (not RDXDB.IsValidFileName(c)) then 
+			return;
+		elseif (not RDXDB.IsValidFileName(c)) then
 			selFeedback:SetText(VFLI.i18n("|cFFFF0000Invalid filename.|r"));
-			return; 
+			return;
 		end
 		local qq = RDXDB.AccessPath(a,b,c);
 		if (not FilterFile(a,b,c,qq)) then
@@ -125,7 +125,7 @@ function RDXDB.ExplorerInstance:new(parent)
 			local obj = RDXDB._AccessPathRaw(a,b,c);
 			if obj.ty == "SymLink" then
 				local link
-				if type(obj.data) ~= "table" then 
+				if type(obj.data) ~= "table" then
 					link = "error";
 				else
 					link = RDXDB.GetSymLinkTarget(obj.data);
@@ -148,15 +148,15 @@ function RDXDB.ExplorerInstance:new(parent)
 	decor0:SetBackdrop(VFLUI.BlackDialogBackdrop);
 	decor0:SetPoint("TOPLEFT", selEd, "BOTTOMLEFT", 0, -25);
 	decor0:SetWidth(150); decor0:SetHeight(250); decor0:Show();
-	
+
 	local lbl0 = VFLUI.MakeLabel(nil, dlg, VFLI.i18n("Disks:"));
 	lbl0:SetPoint("TOPLEFT", decor0, "TOPLEFT", 3, 10);
-	
+
 	dkList = VFLUI.List:new(dlg, 12, VFLUI.Selectable.AcquireCell)
 	dkList:SetPoint("TOPLEFT", decor0, "TOPLEFT", 5, -5);
-	dkList:SetWidth(140); dkList:SetHeight(240); 
+	dkList:SetWidth(140); dkList:SetHeight(240);
 	dkList:Rebuild(); dkList:Show();
-	
+
 	dkList:SetDataSource(function(cell, data, pos)
 		if (not cell.text) then
 			return
@@ -169,16 +169,16 @@ function RDXDB.ExplorerInstance:new(parent)
 		end
 		cell:SetScript("OnClick", function(self, arg1)
 			if arg1 == "LeftButton" then
-				SetActiveDisk(data); 
+				SetActiveDisk(data);
 			elseif arg1 == "RightButton" then
 				DiskRightClick(cell, data, dlg);
 			end
 		end);
 	end, VFL.ArrayLiterator(dks));
-	
+
 	function UpdateDiskList()
 		VFL.empty(dks); local i = 0;
-		for k,_ in pairs(RDXDB.GetDisks()) do 
+		for k,_ in pairs(RDXDB.GetDisks()) do
 			--if Filterdisk(k) then
 				i=i+1; dks[i] = k;
 			--end
@@ -186,19 +186,19 @@ function RDXDB.ExplorerInstance:new(parent)
 		table.sort(dks, function(a,b) return a<b; end);
 		dkList:Update();
 	end
-	
+
 	function SetActiveDisk(dk)
 		if dk ~= activeDk then
 			VFL.poptree:Release(); -- release any dangling menus
-			--if Filterdisk(dk) then 
+			--if Filterdisk(dk) then
 				activeDk = dk;
 				if activeDk then
 					selEd:SetText(activeDk .. ":");
 				end
 				activePkg = nil;
 				activeFile = nil;
-			--else 
-			--	activeDk = nil; 
+			--else
+			--	activeDk = nil;
 			--end
 			dkList:Update();
 			UpdatePackageList()
@@ -206,7 +206,7 @@ function RDXDB.ExplorerInstance:new(parent)
 			UpdateFileList();
 		end
 	end
-	
+
 	----------------- Left side (package list)
 	local decor1 = VFLUI.AcquireFrame("Frame");
 	decor1:SetParent(dlg);
@@ -219,7 +219,7 @@ function RDXDB.ExplorerInstance:new(parent)
 
 	pkgList = VFLUI.List:new(dlg, 12, VFLUI.Selectable.AcquireCell)
 	pkgList:SetPoint("TOPLEFT", decor1, "TOPLEFT", 5, -5);
-	pkgList:SetWidth(140); pkgList:SetHeight(240); 
+	pkgList:SetWidth(140); pkgList:SetHeight(240);
 	pkgList:Rebuild(); pkgList:Show();
 
 	pkgList:SetDataSource(function(cell, data, pos)
@@ -234,7 +234,7 @@ function RDXDB.ExplorerInstance:new(parent)
 		end
 		cell:SetScript("OnClick", function(self, arg1)
 			if arg1 == "LeftButton" then
-				SetActivePackage(data); 
+				SetActivePackage(data);
 			elseif arg1 == "RightButton" then
 				PackageRightClick(cell, activeDk,data, dlg);
 			end
@@ -244,7 +244,7 @@ function RDXDB.ExplorerInstance:new(parent)
 	function UpdatePackageList()
 		VFL.empty(pkgs); local i = 0;
 		if activeDk then
-			for k,_ in pairs(RDXDB.GetDisk(activeDk)) do 
+			for k,_ in pairs(RDXDB.GetDisk(activeDk)) do
 				if FilterPackage(activeDk, k) then
 					i=i+1; pkgs[i] = k;
 				end
@@ -257,15 +257,15 @@ function RDXDB.ExplorerInstance:new(parent)
 	function SetActivePackage(pkg)
 		if pkg ~= activePkg then
 			VFL.poptree:Release(); -- release any dangling menus
-			if FilterPackage(activeDk, pkg) then 
+			if FilterPackage(activeDk, pkg) then
 				activePkg = pkg;
 				if activeDk and activePkg then
 					selEd:SetText(activeDk .. ":" .. activePkg .. ":");
 				elseif activeDk then
 					selEd:SetText(activeDk .. ":");
 				end
-			else 
-				activePkg = nil; 
+			else
+				activePkg = nil;
 			end
 			pkgList:Update();
 			UpdateFileList();
@@ -284,9 +284,9 @@ function RDXDB.ExplorerInstance:new(parent)
 
 	fileList = VFLUI.List:new(dlg, 12, VFLUI.Selectable.AcquireCell);
 	fileList:SetPoint("TOPLEFT", decor2, "TOPLEFT", 5, -5);
-	fileList:SetWidth(325); fileList:SetHeight(240); 
+	fileList:SetWidth(325); fileList:SetHeight(240);
 	fileList:Rebuild(); fileList:Show();
-	
+
 	fileList:SetDataSource(function(cell, data, pos)
 		cell.text:SetText(data.text);
 		if (activeDk == selDk) and (activePkg == selPkg) and (data.name == selFile) then
@@ -295,9 +295,9 @@ function RDXDB.ExplorerInstance:new(parent)
 			cell.selTexture:Hide();
 		end
 		local fn = data.name;
-		cell:SetScript("OnClick", function(self, arg1) 
+		cell:SetScript("OnClick", function(self, arg1)
 			if(arg1 == "LeftButton") then
-				SelectFile(activeDk, activePkg, fn); 
+				SelectFile(activeDk, activePkg, fn);
 			elseif(arg1 == "RightButton") then
 				ObjectRightClick(cell, data.path, dlg);
 			end
@@ -319,7 +319,7 @@ function RDXDB.ExplorerInstance:new(parent)
 				end
 				-- Handle symlinks
 				if v.ty == "SymLink" then
-					if type(v.data) ~= "table" then 
+					if type(v.data) ~= "table" then
 						tbl.link = "error";
 					else
 						tbl.link = RDXDB.GetSymLinkTarget(v.data);
@@ -327,7 +327,7 @@ function RDXDB.ExplorerInstance:new(parent)
 					if not tbl.link then tbl.link = "error"; end
 					v = RDXDB.AccessPath(activeDk, activePkg, k); -- resolve the link
 					if not v then
-						tbl.version = 0; tbl.ty = "SymLink"; 
+						tbl.version = 0; tbl.ty = "SymLink";
 						tbl.text = k .. " |cFFAAAAAA->|r |cFF00FFFF" .. tbl.link .. VFLI.i18n("|r |cFFFF0000(Broken link)|r");
 						table.insert(dir, tbl);
 					end
@@ -400,7 +400,11 @@ function RDXDB.ExplorerInstance:new(parent)
 		PackageRightClick = pkgClick;
 		ObjectRightClick = fileClick;
 	end
-	function dlg:Rebuild() UpdateDiskList(); UpdatePackageList(); UpdateFileList(); end
+	function dlg:Rebuild()
+		--UpdateDiskList();
+		--UpdatePackageList();
+		--UpdateFileList();
+	end
 	function dlg:SetPath(initPath)
 		if type(initPath) ~= "string" then return; end
 		--VFL.print(initPath);
@@ -430,7 +434,7 @@ function RDXDB.ExplorerInstance:new(parent)
 	function dlg:EnableFeedback(okFunc, cancelFunc)
 		if okBtn then return; end -- Can't EnableFeedback twice.
 		fnOK = okFunc or VFL.Noop; fnCancel = cancelFunc or VFL.Noop;
-		
+
 		cancelBtn = VFLUI.CancelButton:new(self);
 		cancelBtn:SetWidth(60); cancelBtn:SetHeight(25);
 		cancelBtn:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT");
@@ -664,11 +668,11 @@ local function ObjectRightClick(cell, opath, dialog)
 	VFL.empty(mnu);
 	table.insert(mnu, { text = "|cFFAAAAAA" .. opath .. "|r" });
 	if rpath ~= opath then
-		table.insert(mnu, { 
+		table.insert(mnu, {
 			text = VFLI.i18n("Edit link");
-			func = function() 
+			func = function()
 				VFL.poptree:Release();
-				RDXDB.EditSymLink(opath, dialog); 
+				RDXDB.EditSymLink(opath, dialog);
 			end;
 		});
 	end
@@ -727,7 +731,7 @@ function RDXDB.ObjectBrowser(parent, initPath, fileFilter)
 	dlg:SetText(VFLI.i18n("Explorer"));
 	dlg:SetPoint("CENTER", RDXParent, "CENTER");
 	dlg:SetClampedToScreen(true);
-	
+
 	if RDXPM.Ismanaged("ObjectBrowser") then RDXPM.RestoreLayout(dlg, "ObjectBrowser"); end
 	VFLUI.Window.StdMove(dlg, dlg:GetTitleBar());
 	local ca = dlg:GetClientArea();
@@ -737,7 +741,7 @@ function RDXDB.ObjectBrowser(parent, initPath, fileFilter)
 	expl:SetFileFilter(fileFilter);
 	expl:SetRightClickFunctions(DiskRightClick, PackageRightClick, ObjectRightClick);
 	expl:Rebuild();
-	
+
 	---------------- Clipboard handling
 	local clipboardPath, clipboardOp, btnPaste = nil, nil, nil;
 
@@ -761,7 +765,7 @@ function RDXDB.ObjectBrowser(parent, initPath, fileFilter)
 
 	----------------- Control buttons
 	local cbtn = nil ;
-	
+
 	cbtn = VFLUI.MakeButton(nil, dlg, VFLI.i18n("New Folder"), 100);
 	cbtn:SetPoint("TOPLEFT", expl, "BOTTOMLEFT", 155, 25);
 	cbtn:SetScript("OnClick", function()
@@ -772,7 +776,7 @@ function RDXDB.ObjectBrowser(parent, initPath, fileFilter)
 			NewPackage(activeDk);
 		end
 	end);
-	
+
 	cbtn = VFLUI.MakeButton(nil, dlg, VFLI.i18n("Mass Send"), 100);
 	cbtn:SetPoint("TOPLEFT", expl, "BOTTOMLEFT", 155, 0);
 	cbtn:SetScript("OnClick", function()
@@ -786,7 +790,7 @@ function RDXDB.ObjectBrowser(parent, initPath, fileFilter)
 			RDX.MassIntegrate(dlg, dk);
 		end
 	end);
-	
+
 	cbtn = VFLUI.MakeButton(nil, dlg, VFLI.i18n("New File"), 100);
 	cbtn:SetPoint("TOPLEFT", expl, "BOTTOMLEFT", 310, 25);
 	cbtn:SetScript("OnClick", function()
@@ -808,20 +812,20 @@ function RDXDB.ObjectBrowser(parent, initPath, fileFilter)
 	btnPaste:SetPoint("TOPLEFT", cbtn, "TOPRIGHT");
 	btnPaste:Disable();
 	btnPaste:SetScript("OnClick", ClipboardPaste);
-	
+
 	dlg:Show();
 	--dlg:_Show(RDX.smooth);
-	
+
 	-- Escapement
 	local esch = function()
-		--dlg:_Hide(RDX.smooth, nil, function() 
+		--dlg:_Hide(RDX.smooth, nil, function()
 			RDXPM.StoreLayout(dlg, "ObjectBrowser");
 			dlg:Destroy(); dlg = nil;
 			if selCallback then selCallback(nil); end
 		--end);
 	end;
 	VFL.AddEscapeHandler(esch);
-	
+
 	function dlg:_esch()
 		VFL.EscapeTo(esch);
 	end

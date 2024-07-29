@@ -226,7 +226,7 @@ local Buffweapons = {};
 
 function RDXDAL.registerBuffWeapon(spellid, duration, icon)
 	local name = nil;
-	name = GetSpellInfo(spellid);
+	name = VFLUI.GetSpellInfo_name(spellid);
 	if not name then name = spellid; end --else VFL.print(name); end
 	local t = {};
 	t.duration = duration;

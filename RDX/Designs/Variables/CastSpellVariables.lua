@@ -1,4 +1,6 @@
 ﻿
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
+
 RDX.RegisterFeature({
 	name = "var_spellinfo";
 	title = VFLI.i18n("Vars Spell");
@@ -19,7 +21,7 @@ RDX.RegisterFeature({
 			if desc.externalNameFilter then
 				-- one day
 			else
-				if VFL.tsize(desc.filterNameList) == 0 then 
+				if VFL.tsize(desc.filterNameList) == 0 then
 					VFL.AddError(errs, VFLI.i18n("Empty filter list.")); return nil;
 				end
 			end
@@ -45,7 +47,7 @@ RDX.RegisterFeature({
 			mux:Event_UnitMask("UNIT_CAST_TIMER_UPDATE", umask);
 			mux:Event_UnitMask("UNIT_CAST_TIMER_STOP", smask);
 		end
-		
+
 		local closureCode = "";
 		closureCode = closureCode ..[[
 local spColor_cf = {};
@@ -75,7 +77,7 @@ local _fnames = ]];
 						end
 						local testnumber = tonumber(name);
 						if testnumber then
-							local auname = GetSpellInfo(name);
+							local auname = GetSpellInfoName(name);
 							if not auname then auname = name; end
 							if flag then
 								auname = "!" .. auname;
@@ -97,7 +99,7 @@ local _fnames = ]];
 		end
 		state:Attach("EmitClosure", true, function(code) code:AppendCode(closureCode); end);
 
-		local namefilter = "true"; 
+		local namefilter = "true";
 		if desc.filterName then
 			namefilter = "(_fnames[spell_name])";
 			namefilter = namefilter .. " and (not (_fnames['!'.. spell_name]))";
@@ -150,42 +152,42 @@ local _fnames = ]];
 	end;
 	UIFromDescriptor = function(desc, parent, state)
 		local ui = VFLUI.CompoundFrame:new(parent);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Options")));
-		
+
 		local er1 = VFLUI.EmbedRight(ui, VFLI.i18n("Cast color"));
 		local swatch_raColor1 = VFLUI.ColorSwatch:new(er1);
 		swatch_raColor1:Show();
 		if desc and desc.raColor1 then swatch_raColor1:SetColor(VFL.explodeRGBA(desc.raColor1)); end
 		er1:EmbedChild(swatch_raColor1); er1:Show();
 		ui:InsertFrame(er1);
-		
+
 		local er2 = VFLUI.EmbedRight(ui, VFLI.i18n("Chanel color"));
 		local swatch_raColor2 = VFLUI.ColorSwatch:new(er2);
 		swatch_raColor2:Show();
 		if desc and desc.raColor2 then swatch_raColor2:SetColor(VFL.explodeRGBA(desc.raColor2)); end
 		er2:EmbedChild(swatch_raColor2); er2:Show();
 		ui:InsertFrame(er2);
-		
+
 		local er3 = VFLUI.EmbedRight(ui, VFLI.i18n("Tradeskill color"));
 		local swatch_raColor3 = VFLUI.ColorSwatch:new(er3);
 		swatch_raColor3:Show();
 		if desc and desc.raColor3 then swatch_raColor3:SetColor(VFL.explodeRGBA(desc.raColor3)); end
 		er3:EmbedChild(swatch_raColor3); er3:Show();
 		ui:InsertFrame(er3);
-		
+
 		local er4 = VFLUI.EmbedRight(ui, VFLI.i18n("Interrupt color"));
 		local swatch_raColor4 = VFLUI.ColorSwatch:new(er4);
 		swatch_raColor4:Show();
 		if desc and desc.raColor4 then swatch_raColor4:SetColor(VFL.explodeRGBA(desc.raColor4)); end
 		er4:EmbedChild(swatch_raColor4); er4:Show();
 		ui:InsertFrame(er4);
-		
+
 		local chk_filterName = VFLUI.Checkbox:new(ui); chk_filterName:Show();
 		chk_filterName:SetText(VFLI.i18n("Filter by spell name"));
 		if desc and desc.filterName then chk_filterName:SetChecked(true); else chk_filterName:SetChecked(); end
 		ui:InsertFrame(chk_filterName);
-		
+
 		local chk_external = VFLUI.CheckEmbedRight(ui, VFLI.i18n("Use external spell list"));
 		local file_external = RDXDB.ObjectFinder:new(chk_external, function(d,p,f,md) return (md and type(md) == "table" and md.ty and string.find(md.ty, "SpellFilter$")); end);
 		file_external:SetWidth(200); file_external:Show();
@@ -197,15 +199,15 @@ local _fnames = ]];
 			chk_external:SetChecked();
 		end
 
-		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data) 
+		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -222,7 +224,7 @@ local _fnames = ]];
 		function ui:GetDescriptor()
 			local filterName, filterNameList, filternl, ext, unitfi, maxdurfil, mindurfil = nil, nil, {}, nil, "", "", "";
 			if chk_filterName:GetChecked() then
-				if chk_external:GetChecked() then 
+				if chk_external:GetChecked() then
 					ext = file_external:GetPath(); filternl = nil;
 				else
 					ext = nil;
@@ -259,7 +261,7 @@ local _fnames = ]];
 			end
 			return {
 				feature = "var_spellinfo";
-				raColor1 = swatch_raColor1:GetColor(); 
+				raColor1 = swatch_raColor1:GetColor();
 				raColor2 = swatch_raColor2:GetColor();
 				raColor3 = swatch_raColor3:GetColor();
 				raColor4 = swatch_raColor4:GetColor();
@@ -271,13 +273,13 @@ local _fnames = ]];
 
 		return ui;
 	end;
-	CreateDescriptor = function() 
+	CreateDescriptor = function()
 		return {
 			feature = "var_spellinfo";
 			raColor1 = _green;
 			raColor2 = _yellow;
 			raColor3 = _blue;
 			raColor4 = _red;
-		}; 
+		};
 	end
 });

@@ -1,7 +1,7 @@
 ﻿-- Core.lua
 -- VFL_Profiler
 -- (C)2007 Bill Johnson and The VFL Project
--- 
+--
 -- STUB
 -- APIs for instrumenting code for profiling.
 --
@@ -67,12 +67,12 @@ if VFLP.IsEnabled() then
 
 	--- Register a profiling category. All functions have a category; the parent category
 	-- totals up the usages of all subfunctions.
-	
+
 	function VFLP.RegisterCategory(name)
 		if (type(name) ~= "string") or (fcats[name]) then return; end
 		fcats[name] = true;
 		table.insert(flist, {
-			type = "category"; category = name; title = name; 
+			type = "category"; category = name; title = name;
 			calls = 0; lastCalls = 0; raCalls =0;
 			CPU = 0; lastCPU = 0; raCPU = 0;
 		});
@@ -87,7 +87,7 @@ if VFLP.IsEnabled() then
 		fcats[name] = nil;
 		VFLP.Events:Dispatch("PROFILE_OBJECTS_CHANGED");
 	end
-	
+
 	function VFLP.GetCategoryCPU(name)
 		for i,v in ipairs(flist) do
 			if v.category == name then
@@ -149,13 +149,13 @@ if VFLP.IsEnabled() then
 		if (type(name) ~= "string") or (ecats[name]) then return; end
 		ecats[name] = true;
 		table.insert(elist, {
-			type = "category"; category = name; title = name; 
+			type = "category"; category = name; title = name;
 			calls = 0; lastCalls = 0; raCalls =0;
 			CPU = 0; lastCPU = 0; raCPU = 0;
 		});
 	end
 	VFLP.RegisterEventCategory("Uncategorized");
-	
+
 	--- Register a event in the given category.
 	function VFLP.RegisterEvent(category, title, f)
 		if (type(title) ~= "string") then return; end
@@ -183,13 +183,13 @@ if VFLP.IsEnabled() then
 		if (type(name) ~= "string") or (pcats[name]) then return; end
 		pcats[name] = true;
 		table.insert(plist, {
-			type = "category"; category = name; title = name; 
+			type = "category"; category = name; title = name;
 			create = 0; use = 0; available = 0; jail = 0;
 		});
 	end
 	--VFLP.RegisterPoolCategory("Uncategorized");
-	
-	
+
+
 
 
 end -- (if VFLP.IsEnabled())
@@ -222,9 +222,9 @@ local function UpdateAList()
 		mem = 0; CPU = 0; raMem = 0; raCPU = 0, PicCPU = 0, nbPicCPU = 0;
 	};
 	local n = 3;
-	for i=1, GetNumAddOns() do
-		if IsAddOnLoaded(i) then
-			local name = GetAddOnInfo(i);
+	for i=1, C_AddOns.GetNumAddOns() do
+		if C_AddOns.IsAddOnLoaded(i) then
+			local name = C_AddOns.GetAddOnInfo(i);
 			if not string.find(name, "^RDX_mediapack_") then
 				alist[n] = {
 					addon_index = i;
@@ -248,7 +248,7 @@ if VFLP.IsEnabled() then
 		UpdateAddOnMemoryUsage();
 		-- /script UpdateAddOnMemoryUsage();
 		mem, memusage, memtot, memratot, memx, memaindex = 0, 0, 0, 0, nil, 1;
-		
+
 		-- For each addon...
 		for i=3,#alist do
 			memx = alist[i]; memaindex = memx.addon_index;
@@ -258,12 +258,12 @@ if VFLP.IsEnabled() then
 			--	mem = 0;
 			--end
 			memtot = memtot + mem;
-			memusage = mem - memx.mem; 
+			memusage = mem - memx.mem;
 			memx.raMem = ( (memx.raMem * 4) + memusage ) / 5; -- weight-5 rolling average
 			memratot = memratot + memx.raMem;
 			memx.mem = mem;
 		end
-	
+
 		-- Now update totals row
 		memx = alist[1];
 		cgm = collectgarbage("count");
@@ -292,19 +292,19 @@ if VFLP.IsEnabled() then
 			acpuaindex = acpux.addon_index;
 			acpu = GetAddOnCPUUsage(acpuaindex) / 1000;
 			acputot = acputot + acpu;
-			
+
 			acpuusage = acpu - acpux.CPU;
 			acpux.raCPU = ( (acpux.raCPU * 4) + acpuusage ) / 5;
 			acpuratot = acpuratot + acpux.raCPU;
 			acpux.CPU = acpu;
 		end
-		acpux = alist[1]; 
-		acpu = GetScriptCPUUsage() / 1000; 
+		acpux = alist[1];
+		acpu = GetScriptCPUUsage() / 1000;
 		acpuusage = acpu - acpux.CPU;
 		acpux.raCPU = ( (acpux.raCPU * 4) + acpuusage ) / 5;
 		acpux.CPU = acpu;
-		
-		acpux = alist[2]; 
+
+		acpux = alist[2];
 		acpux.raCPU = alist[1].raCPU - acpuratot;
 		acpux.CPU = alist[1].CPU - acputot;
 	end
@@ -324,7 +324,7 @@ local function SummaryUpdate()
 	if (t_su-last_su) < summary_update_interval then return; end
 	last_su = t_su;
 
-	-- Measure 
+	-- Measure
 	frames_per_su = ( (frames_per_su * 4) + (framecount_su - last_su_frame) ) / 5;
 	last_su_frame = framecount_su;
 
@@ -406,7 +406,7 @@ local function EventUpdate()
 	if (t_eu-last_eu) < event_update_interval then return; end
 	last_eu = t_eu;
 
-	-- Measure 
+	-- Measure
 	frames_per_eu = ( (frames_per_eu * 4) + (framecount_eu - last_eu_frame) ) / 5;
 	last_eu_frame = framecount_eu;
 
@@ -491,7 +491,7 @@ local function ObjectUpdate()
 	if (t_ou-last_ou) < object_update_interval then return; end
 	last_ou = t_ou;
 
-	-- Measure 
+	-- Measure
 	frames_per_ou = ( (frames_per_ou * 4) + (framecount_ou - last_ou_frame) ) / 5;
 	last_ou_frame = framecount_ou;
 
@@ -563,38 +563,38 @@ local function UpdatePoolSummary()
 	tot.use = 0;
 	tot.available = 0;
 	tot.jail = 0;
-	
+
 	for i=2,#plist do
 		x = plist[i];
 		if x.type == "poolObject" then
 			pool = VFLUI.GetPoolObject(x.pool_name);
-			x.create = pool:GetFallbacks(); 
-			x.use = (pool:GetFallbacks() - pool:GetPoolSize() -  pool:GetJailSize()); 
+			x.create = pool:GetFallbacks();
+			x.use = (pool:GetFallbacks() - pool:GetPoolSize() -  pool:GetJailSize());
 			x.available = pool:GetPoolSize();
 			x.jail = pool:GetJailSize();
-			
+
 			tot.create = tot.create + x.create;
 			tot.use = tot.use + x.use;
 			tot.available = tot.available + x.available;
 			tot.jail = tot.jail + x.jail;
 		elseif x.pool_name == "Textures" then
 			pool = VFLUI.GetPoolTextures();
-			x.create = pool:GetFallbacks(); 
-			x.use = (pool:GetFallbacks() - pool:GetPoolSize() -  pool:GetJailSize()); 
-			x.available = pool:GetPoolSize(); 
+			x.create = pool:GetFallbacks();
+			x.use = (pool:GetFallbacks() - pool:GetPoolSize() -  pool:GetJailSize());
+			x.available = pool:GetPoolSize();
 			x.jail = 0;
 		elseif x.pool_name == "Fonts" then
 			pool = VFLUI.GetPoolFonts();
-			x.create = pool:GetFallbacks(); 
-			x.use = (pool:GetFallbacks() - pool:GetPoolSize() -  pool:GetJailSize()); 
-			x.available = pool:GetPoolSize(); 
+			x.create = pool:GetFallbacks();
+			x.use = (pool:GetFallbacks() - pool:GetPoolSize() -  pool:GetJailSize());
+			x.available = pool:GetPoolSize();
 			x.jail = 0;
 		end
 	end
 
 	-- Now update totals row
 	x = plist[1];
-	x.create = tot.create; 
+	x.create = tot.create;
 	x.use = tot.use;
 	x.available = tot.available;
 	x.jail = tot.jail;
@@ -611,7 +611,7 @@ local function PoolUpdate()
 	if (t_pu-last_pu) < pool_update_interval then return; end
 	last_pu = t_pu;
 
-	-- Measure 
+	-- Measure
 	frames_per_su = ( (frames_per_su * 4) + (framecount_pu - last_su_frame) ) / 5;
 	last_su_frame = framecount_pu;
 
@@ -631,7 +631,7 @@ local textperf, textdebit = "", "";
 local memtotal_color, ips_color, latency_color;
 local memtotal, memtmp, memsave = 0, 0, 0;
 
-local SAMPLESIZE = 5; 
+local SAMPLESIZE = 5;
 local fWeight = ( (SAMPLESIZE-1)/SAMPLESIZE );
 local sWeight = 1 - fWeight;
 local vps, val = 0 , 0;
@@ -659,7 +659,7 @@ local function updateTextPerf()
 
 	vps = (memtmp - memsave) * 1000;
 	val = ((val * fWeight) + (vps * sWeight));
-	if vps < 0 then 
+	if vps < 0 then
 		textdebit = "Garbage Collecting"; val = 0;
 	elseif vps > 1000000 then
 		textdebit = "Calcul"; val = 0;
@@ -667,7 +667,7 @@ local function updateTextPerf()
 		textdebit = "Mem debit: " .. VFL.KayMemory(val);
 	end
 	memsave = memtmp;
-	
+
 end
 
 function VFLP.GetTextPerf()
@@ -681,21 +681,21 @@ WoWEvents:Bind("VARIABLES_LOADED", nil, function()
 	if not VFLConfig.object then VFLConfig.object = {}; end
 	if not VFLConfig.event then VFLConfig.event = {}; end
 	if not VFLConfig.pool then VFLConfig.pool = {}; end
-	
+
 	-- summary_update_interval = 1 by default
 	if type(VFLConfig.prof_summary_update_interval) == "number" then
 		summary_update_interval = VFL.clamp(VFLConfig.prof_summary_update_interval, 0.1, 10);
 	else
 		VFLConfig.prof_summary_update_interval = summary_update_interval;
 	end
-	
+
 	if VFLP.IsEnabled() then
 		--if RDX then RDX.printW(VFLI.i18n("Profiler Activated !!!")); end
 		suf:SetScript("OnUpdate", SummaryUpdate);
 		--euf:SetScript("OnUpdate", EventUpdate);
 		ouf:SetScript("OnUpdate", ObjectUpdate);
 		puf:SetScript("OnUpdate", PoolUpdate);
-		
+
 		local txt1 = VFLUI.CreateFontString(VFLTOOLTIP);
 		txt1:SetPoint("TOPLEFT",VFLParent,"TOPLEFT", 0, 0);
 		txt1:SetWidth(150); txt1:SetHeight(20);
@@ -705,7 +705,7 @@ WoWEvents:Bind("VARIABLES_LOADED", nil, function()
 		txt1:SetText("Debug Activated");
 		txt1:SetJustifyH("LEFT"); txt1:SetJustifyV("TOP");
 		txt1:Show();
-		
+
 		local txt2 = VFLUI.CreateFontString(VFLTOOLTIP);
 		txt2:SetPoint("TOPRIGHT",VFLParent,"TOPRIGHT", 0, 0);
 		txt2:SetWidth(150); txt2:SetHeight(20);
@@ -715,7 +715,7 @@ WoWEvents:Bind("VARIABLES_LOADED", nil, function()
 		txt2:SetText("Debug Activated");
 		txt2:SetJustifyH("RIGHT"); txt2:SetJustifyV("TOP");
 		txt2:Show();
-		
+
 		local txt3 = VFLUI.CreateFontString(VFLTOOLTIP);
 		txt3:SetPoint("BOTTOMLEFT",VFLParent,"BOTTOMLEFT", 0, 0);
 		txt3:SetWidth(150); txt3:SetHeight(20);
@@ -725,7 +725,7 @@ WoWEvents:Bind("VARIABLES_LOADED", nil, function()
 		txt3:SetText("Debug Activated");
 		txt3:SetJustifyH("LEFT"); txt3:SetJustifyV("BOTTOM");
 		txt3:Show();
-		
+
 		local txt4 = VFLUI.CreateFontString(VFLTOOLTIP);
 		txt4:SetPoint("BOTTOMRIGHT",VFLParent,"BOTTOMRIGHT", 0, 0);
 		txt4:SetWidth(150); txt4:SetHeight(20);
@@ -735,9 +735,9 @@ WoWEvents:Bind("VARIABLES_LOADED", nil, function()
 		txt4:SetText("Debug Activated");
 		txt4:SetJustifyH("RIGHT"); txt4:SetJustifyV("BOTTOM");
 		txt4:Show();
-		
+
 	end
-	
+
 	--[[
 	local last_as = 0;
 	muf:SetScript("OnUpdate", function(self, elapsed)

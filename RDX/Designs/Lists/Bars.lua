@@ -4,6 +4,7 @@
 --
 
 local strsub = string.sub;
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 RDX.RegisterFeature({
 	name = "listbars";
@@ -35,12 +36,12 @@ RDX.RegisterFeature({
 		--flg = flg and RDXUI.UFLayoutCheck(desc, state, errs);
 		if desc.ftype == 1 or desc.ftype == 2 then
 			if not desc.mindurationfilter then desc.mindurationfilter = 0; end
-			if (not tonumber(desc.mindurationfilter)) then 
-				if (desc.mindurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Min duration is not a number or empty")); flg = nil; end 
+			if (not tonumber(desc.mindurationfilter)) then
+				if (desc.mindurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Min duration is not a number or empty")); flg = nil; end
 			end
 			if not desc.maxdurationfilter then desc.maxdurationfilter = 3000; end
-			if (not tonumber(desc.maxdurationfilter)) then 
-				if (desc.maxdurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Max duration is not a number or empty")); flg = nil; end 
+			if (not tonumber(desc.maxdurationfilter)) then
+				if (desc.maxdurationfilter ~= "") then VFL.AddError(errs, VFLI.i18n("Max duration is not a number or empty")); flg = nil; end
 			end
 		end
 		if desc.externalNameFilter and desc.externalNameFilter ~= "" then
@@ -59,15 +60,15 @@ RDX.RegisterFeature({
 	end;
 	ApplyFeature = function(desc, state)
 		local objname = "Bars_" .. desc.name;
-		
+
 		local loadCode = "";
 		local mux, mask = nil, 0;
-		
+
 		local tet = desc.textType or "VFL.Hundredths";
 		local showtimertext = "nil"; if desc.sbtib and desc.sbtib.showtimertext then showtimertext = "true"; end
 		local showduration = "false"; if desc.showduration then showduration = "true"; end
 		local blendcolor = "false"; if desc.blendcolor then blendcolor = "true"; end
-		
+
 		if desc.ftype == 1 then
 			loadCode = "LoadBuffFromUnit";
 			-- Event hinting.
@@ -85,7 +86,7 @@ RDX.RegisterFeature({
 				end
 				mask = bit.bor(mask, 1);
 			end
-			
+
 			-- If there's an external filter, add a quick menu to the window to edit it.
 			if desc.externalNameFilter then
 				local path = desc.externalNameFilter; local afname = desc.name;
@@ -102,7 +103,7 @@ RDX.RegisterFeature({
 					end);
 				end
 			end
-			
+
 			------------ Closure
 			local closureCode = [[
 	local ftc_]] .. objname .. [[ = FreeTimer.CreateFreeTimerClass(true, ]] .. showtimertext .. [[ , nil, VFLUI.GetTextTimerTypesString("]] .. tet .. [["), false, false, FreeTimer.SB_Hide, FreeTimer.Text_None, FreeTimer.TextInfo_None, FreeTimer.TexIcon_Hide, FreeTimer.SB_Hide, FreeTimer.Text_None, FreeTimer.TextInfo_None, FreeTimer.TexIcon_Hide, ]] .. showduration .. [[, ]] .. blendcolor .. [[);
@@ -128,7 +129,7 @@ RDX.RegisterFeature({
 							end
 							local testnumber = tonumber(name);
 							if testnumber then
-								local auname = GetSpellInfo(name);
+								local auname = GetSpellInfoName(name);
 								if not auname then auname = name; end
 								if flag then
 									auname = "!" .. auname;
@@ -148,9 +149,9 @@ RDX.RegisterFeature({
 					end
 				end
 			end
-			
+
 			state:Attach("EmitClosure", true, function(code) code:AppendCode(closureCode); end);
-			
+
 		elseif desc.ftype == 2 then
 			loadCode = "unit:GetUsedCooldownsById";
 			-- Event hinting.
@@ -162,7 +163,7 @@ RDX.RegisterFeature({
 				mux:Event_UnitMask("UNIT_COOLDOWN", mask);
 				mask = bit.bor(mask, 1);
 			end
-			
+
 			-- If there's an external filter, add a quick menu to the window to edit it.
 			if desc.externalNameFiltercd then
 				local path = desc.externalNameFiltercd; local afname = desc.name;
@@ -179,7 +180,7 @@ RDX.RegisterFeature({
 					end);
 				end
 			end
-			
+
 			------------ Closure
 			local closureCode = [[
 	local ftc_]] .. objname .. [[ = FreeTimer.CreateFreeTimerClass(true, ]] .. showtimertext .. [[, nil, VFLUI.GetTextTimerTypesString("]] .. tet .. [["), false, false, FreeTimer.SB_Hide, FreeTimer.Text_None, FreeTimer.TextInfo_None, FreeTimer.TexIcon_Hide, FreeTimer.SB_Hide, FreeTimer.Text_None, FreeTimer.TextInfo_None, FreeTimer.TexIcon_Hide, ]] .. showduration .. [[, ]] .. blendcolor .. [[);
@@ -205,7 +206,7 @@ RDX.RegisterFeature({
 							end
 							local testnumber = tonumber(name);
 							if testnumber then
-								local auname = GetSpellInfo(name);
+								local auname = GetSpellInfoName(name);
 								if not auname then auname = name; end
 								if flag then
 									auname = "!" .. auname;
@@ -225,13 +226,13 @@ RDX.RegisterFeature({
 					end
 				end
 			end
-			
+
 			state:Attach("EmitClosure", true, function(code) code:AppendCode(closureCode); end);
 		end
-		
+
 		if not desc.color1 then desc.color1 = _white; end
 		if not desc.color2 then desc.color2 = _white; end
-		
+
 		----------------- Creation
 		local createCode = [[
 frame.]] .. objname .. [[ = {};
@@ -247,7 +248,7 @@ for i=1,]] .. desc.nIcons .. [[ do
 	btn:SetScript("OnClick", __AuraIconOnClick);
 ]];
 		end
-	
+
 		createCode = createCode .. [[
 	btn.ftc = ftc_]] .. objname .. [[(btn, btn.sb, btn.timetxt, nil, nil, ]] .. Serialize(desc.color1) .. [[, ]] .. Serialize(desc.color2) .. [[);
 	frame.]] .. objname .. [[[i] = btn;
@@ -275,8 +276,8 @@ frame.]] .. objname .. [[ = nil;
 		local auracache = "false"; --if md and RDXDB.HasFeature(md.data, "AuraCache") then auracache = "true"; end
 		local smooth = "nil"; if desc.smooth then smooth = "RDX.smooth"; end
 		local raidfilter = "nil"; if desc.raidfilter then raidfilter = "true"; end
-		
-		local aurasfilter, afflag = " (", nil; 
+
+		local aurasfilter, afflag = " (", nil;
 		if desc.playerauras then aurasfilter = aurasfilter .. " _caster == 'player'"; afflag = true; end
 		if desc.othersauras then
 			if afflag then
@@ -285,21 +286,21 @@ frame.]] .. objname .. [[ = nil;
 				aurasfilter = aurasfilter .. " _caster ~= 'player'"; afflag = true;
 			end
 		end
-		if desc.petauras then 
+		if desc.petauras then
 			if afflag then
 				aurasfilter = aurasfilter .. " or _caster == 'pet' or _caster == 'vehicle'" ;
 			else
 				aurasfilter = aurasfilter .. " _caster == 'pet' or _caster == 'vehicle'"; afflag = true;
 			end
 		end
-		if desc.targetauras then 
+		if desc.targetauras then
 			if afflag then
 				aurasfilter = aurasfilter .. " or _caster == 'target'";
 			else
 				aurasfilter = aurasfilter .. " _caster == 'target'"; afflag = true;
 			end
 		end
-		if desc.focusauras then 
+		if desc.focusauras then
 			if afflag then
 				aurasfilter = aurasfilter .. " or _caster == 'focus'";
 			else
@@ -308,10 +309,10 @@ frame.]] .. objname .. [[ = nil;
 		end
 		if not afflag then aurasfilter = aurasfilter .. " true"; end
 		aurasfilter = aurasfilter .. " )";
-		
+
 		local isstealablefilter = "true"; if desc.isstealablefilter then isstealablefilter = "_isStealable"; end
 		local curefilter = "true"; if desc.curefilter then curefilter = "(_dispelt and RDXSS.GetCategoryByName('CURE_'..string.upper(_dispelt)))"; end
-		local timefilter = "true"; 
+		local timefilter = "true";
 		if desc.timefilter then timefilter = "(_dur > 0";
 			if (desc.mindurationfilter ~= "") then timefilter = timefilter .. " and _dur >= " .. desc.mindurationfilter; end
 			if (desc.maxdurationfilter ~= "") then timefilter = timefilter .. " and _dur <= " .. desc.maxdurationfilter; end
@@ -327,7 +328,7 @@ frame.]] .. objname .. [[ = nil;
 		local usedebuffcolor = "true"; if (not desc.sbcolor) then usedebuffcolor = "false"; end
 		local auranametrunc = "nil"; if desc.trunc then auranametrunc = desc.trunc; end
 		local auranameab = "true"; if (not desc.abr) then auranameab = "false"; end
-		local sorticons = " "; 
+		local sorticons = " ";
 		desc.sort = nil;
 		--if desc.sort then
 		--	if desc.sortduration then sorticons = sorticons .. [[
@@ -343,7 +344,7 @@ frame.]] .. objname .. [[ = nil;
 		--	table.sort(sort_icons, function(x1,x2) return x1._bn < x2._bn; end); ]];
 		--	end
 		--end
-		
+
 		local sbblendcolor = "false"; if desc.sbblendcolor then sbblendcolor = "true"; end
 
 		local paintCodeAura = [[
@@ -357,9 +358,9 @@ if band(paintmask, ]] .. mask .. [[) ~= 0 then
 		if (not _meta.isInvisible) and ]] .. aurasfilter .. [[ and ]] .. isstealablefilter .. [[ and ]] .. curefilter .. [[ and ]] .. timefilter .. [[ and ]] .. namefilter .. [[ then
 			btn = _icons[_j];
 			if not btn:IsShown() then btn:Show(); end
-			
+
 			if btn.icon then btn.icon:SetTexture(_tex); end
-			
+
 			if btn.nametxt then
 				if ]] .. auranameab .. [[ then
 					word, text = nil, "";
@@ -373,32 +374,32 @@ if band(paintmask, ]] .. mask .. [[) ~= 0 then
 					btn.nametxt:SetText(_meta.text);
 				end
 			end
-			
+
 			if "]] .. desc.auraType .. [[" == "DEBUFFS" and ]] .. usedebuffcolor .. [[ and _dispelt then
 				btn.sb:SetColorTable(DebuffTypeColor[_dispelt]);
 ]];
-		if desc.sbblendcolor then 
+		if desc.sbblendcolor then
 			paintCodeAura = paintCodeAura .. [[
 			elseif ]] .. sbblendcolor .. [[ then
 				btn.ftc:SetSBBlendColor(]] .. desc.sbcolorVar1 .. [[, ]] .. desc.sbcolorVar2 .. [[);
 ]];
-		end			
+		end
 		paintCodeAura = paintCodeAura .. [[
 			else
 				btn.sb:SetColorTable(_grey);
 			end
-			
+
 			btn.ftc:SetFormula(]] .. countTypeFlag .. [[,']] .. desc.formulaType .. [[');
 			if _dur and _dur > 0 and btn.ftc then
 				btn.ftc:SetTimer(GetTime() + _tl - _dur , _dur);
 			else
 				btn.ftc:SetTimer(0, 0);
 			end
-			
+
 			if btn.stacktxt then
 				if _apps and _apps > 1 then btn.stacktxt:SetText(_apps); else btn.stacktxt:SetText(""); end
 			end
-			
+
 			_j = _j + 1;
 		end
 		_i = _i + 1;
@@ -421,9 +422,9 @@ if band(paintmask, ]] .. mask .. [[) ~= 0 then
 			btn = _icons[_j];
 			if not btn:IsShown() then btn:Show(); end
 			btn.spellid = _meta;
-			
+
 			if btn.icon then btn.icon:SetTexture(_tex); end
-			
+
 			if btn.nametxt then
 				if ]] .. auranameab .. [[ then
 					word, text = nil, "";
@@ -438,15 +439,15 @@ if band(paintmask, ]] .. mask .. [[) ~= 0 then
 				end
 			end
 ]];
-		if desc.sbblendcolor then 
+		if desc.sbblendcolor then
 			paintCodeCd = paintCodeCd .. [[
 			if ]] .. sbblendcolor .. [[ then
 				btn.ftc:SetSBBlendColor(]] .. desc.sbcolorVar1 .. [[, ]] .. desc.sbcolorVar2 .. [[);
 			end
 ]];
-		end			
+		end
 		paintCodeCd = paintCodeCd .. [[
-			
+
 			btn.ftc:SetFormula(]] .. countTypeFlag .. [[, ']] .. desc.formulaType .. [[');
 			if _dur and _dur > 0 and btn.ftc then
 				btn.ftc:SetTimer(_start, _dur);
@@ -522,101 +523,101 @@ end
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Orientation"));
 		local dd_orientation = VFLUI.Dropdown:new(er, RDXUI.OrientationDropdownFunction);
 		dd_orientation:SetWidth(75); dd_orientation:Show();
-		if desc and desc.orientation then 
-			dd_orientation:SetSelection(desc.orientation); 
+		if desc and desc.orientation then
+			dd_orientation:SetSelection(desc.orientation);
 		else
 			dd_orientation:SetSelection("RIGHT");
 		end
 		er:EmbedChild(dd_orientation); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local ed_iconspx = VFLUI.LabeledEdit:new(ui, 50); ed_iconspx:Show();
 		ed_iconspx:SetText(VFLI.i18n("Width spacing"));
 		if desc and desc.iconspx then ed_iconspx.editBox:SetText(desc.iconspx); else ed_iconspx.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspx);
-		
+
 		local ed_iconspy = VFLUI.LabeledEdit:new(ui, 50); ed_iconspy:Show();
 		ed_iconspy:SetText(VFLI.i18n("Height spacing"));
 		if desc and desc.iconspy then ed_iconspy.editBox:SetText(desc.iconspy); else ed_iconspy.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspy);
-		
+
 		local ed_width = VFLUI.LabeledEdit:new(ui, 50); ed_width:Show();
 		ed_width:SetText(VFLI.i18n("Width"));
 		if desc and desc.w then ed_width.editBox:SetText(desc.w); else ed_width.editBox:SetText("20"); end
 		ui:InsertFrame(ed_width);
-		
+
 		local ed_height = VFLUI.LabeledEdit:new(ui, 50); ed_height:Show();
 		ed_height:SetText(VFLI.i18n("Height"));
 		if desc and desc.h then ed_height.editBox:SetText(desc.h); else ed_height.editBox:SetText("20"); end
 		ui:InsertFrame(ed_height);
-		
+
 		-------------- Display
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Statusbar parameters")));
-		
+
 		local er2 = VFLUI.EmbedRight(ui, VFLI.i18n("Statusbar style"));
 		local sbtib = VFLUI.MakeSBTIBSelectButton(er2, desc.sbtib); sbtib:Show();
 		er2:EmbedChild(sbtib); er2:Show();
 		ui:InsertFrame(er2);
-		
+
 		local countTypeFlag = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Count type (true CountUP, false CountDOWN)"), state, "BoolVar_", nil, "true", "false");
 		if desc and desc.countTypeFlag then countTypeFlag:SetSelection(desc.countTypeFlag); end
-		
+
 		local tt = VFLUI.EmbedRight(ui, VFLI.i18n("Formula Type"));
 		local dd_formulaType = VFLUI.Dropdown:new(tt, RDX.GetFormula);
 		dd_formulaType:SetWidth(200); dd_formulaType:Show();
-		if desc and desc.formulaType then 
-			dd_formulaType:SetSelection(desc.formulaType); 
+		if desc and desc.formulaType then
+			dd_formulaType:SetSelection(desc.formulaType);
 		else
 			dd_formulaType:SetSelection("simple");
 		end
 		tt:EmbedChild(dd_formulaType); tt:Show();
 		ui:InsertFrame(tt);
-		
+
 		local chk_sbblendcolor = VFLUI.Checkbox:new(ui); chk_sbblendcolor:Show();
 		chk_sbblendcolor:SetText(VFLI.i18n("Use blend color"));
 		if desc and desc.sbblendcolor then chk_sbblendcolor:SetChecked(true); else chk_sbblendcolor:SetChecked(); end
 		ui:InsertFrame(chk_sbblendcolor);
-		
+
 		local sbcolorVar1 = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Static empty color"), state, "ColorVar_");
 		if desc and desc.sbcolorVar1 and type(desc.sbcolorVar1) == "string" then sbcolorVar1:SetSelection(desc.sbcolorVar1); end
-		
+
 		local sbcolorVar2 = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Static full color"), state, "ColorVar_");
 		if desc and desc.sbcolorVar2 and type(desc.sbcolorVar2) == "string" then sbcolorVar2:SetSelection(desc.sbcolorVar2); end
-		
+
 		local chk_blendcolor = VFLUI.Checkbox:new(ui); chk_blendcolor:Show();
 		chk_blendcolor:SetText(VFLI.i18n("Use blend color"));
 		if desc and desc.blendcolor then chk_blendcolor:SetChecked(true); else chk_blendcolor:SetChecked(); end
 		ui:InsertFrame(chk_blendcolor);
-		
+
 		local color1 = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Static empty color"));
 		if desc and desc.color1 then color1:SetColor(VFL.explodeRGBA(desc.color1)); end
 
 		local color2 = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Static full color"));
 		if desc and desc.color2 then color2:SetColor(VFL.explodeRGBA(desc.color2)); end
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Text parameters")));
-		
+
 		local tt = VFLUI.EmbedRight(ui, VFLI.i18n("Text Timer Type"));
 		local dd_textType = VFLUI.Dropdown:new(tt, VFLUI.TextTypesDropdownFunction);
 		dd_textType:SetWidth(200); dd_textType:Show();
-		if desc and desc.textType then 
-			dd_textType:SetSelection(desc.textType); 
+		if desc and desc.textType then
+			dd_textType:SetSelection(desc.textType);
 		else
 			dd_textType:SetSelection("VFL.Hundredths");
 		end
 		tt:EmbedChild(dd_textType); tt:Show();
 		ui:InsertFrame(tt);
-		
+
 		local chk_duration = VFLUI.Checkbox:new(ui); chk_duration:Show();
 		chk_duration:SetText(VFLI.i18n("Show max duration"));
 		if desc and desc.showduration then chk_duration:SetChecked(true); else chk_duration:SetChecked(); end
 		ui:InsertFrame(chk_duration);
-		
+
 		local ed_trunc = VFLUI.LabeledEdit:new(ui, 50); ed_trunc:Show();
 		ed_trunc:SetText(VFLI.i18n("Max aura length (blank = no truncation)"));
 		if desc and desc.trunc then ed_trunc.editBox:SetText(desc.trunc); end
 		ui:InsertFrame(ed_trunc);
-		
+
 		local chk_abr = VFLUI.Checkbox:new(ui); chk_abr:Show();
 		chk_abr:SetText(VFLI.i18n("Use abbreviating"));
 		if desc and desc.abr then chk_abr:SetChecked(true); else chk_abr:SetChecked(); end
@@ -624,17 +625,17 @@ end
 
 		------------ Filter
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Filtering parameters")));
-		
+
 		local chk_timefilter = VFLUI.Checkbox:new(ui); chk_timefilter:Show();
 		chk_timefilter:SetText(VFLI.i18n("Show only bars with timer"));
 		if desc and desc.timefilter then chk_timefilter:SetChecked(true); else chk_timefilter:SetChecked(); end
 		ui:InsertFrame(chk_timefilter);
-                
+
 		local ed_maxduration = VFLUI.LabeledEdit:new(ui, 50); ed_maxduration:Show();
 		ed_maxduration:SetText(VFLI.i18n("Filter by Max duration (sec)"));
 		if desc and desc.maxdurationfilter then ed_maxduration.editBox:SetText(desc.maxdurationfilter); else ed_maxduration.editBox:SetText(""); end
 		ui:InsertFrame(ed_maxduration);
-		
+
 		local ed_minduration = VFLUI.LabeledEdit:new(ui, 50); ed_minduration:Show();
 		ed_minduration:SetText(VFLI.i18n("Filter by min duration (sec)"));
 		if desc and desc.mindurationfilter then ed_minduration.editBox:SetText(desc.mindurationfilter); else ed_minduration.editBox:SetText(""); end
@@ -651,36 +652,36 @@ end
 		--local ftype_4 = ftype:CreateRadioButton(ui);
 		--ftype_4:SetText(VFLI.i18n("Use Totems Icons"));
 		ftype:SetValue(desc.ftype or 1);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Aura Bars")));
 		ui:InsertFrame(ftype_1);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Aura Type"));
 		local dd_auraType = VFLUI.Dropdown:new(er, RDXUI.AurasTypesDropdownFunction);
 		dd_auraType:SetWidth(150); dd_auraType:Show();
-		if desc and desc.auraType then 
-			dd_auraType:SetSelection(desc.auraType); 
+		if desc and desc.auraType then
+			dd_auraType:SetSelection(desc.auraType);
 		else
 			dd_auraType:SetSelection("BUFFS");
 		end
 		er:EmbedChild(dd_auraType); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_bc = VFLUI.Checkbox:new(ui); chk_bc:Show();
 		chk_bc:SetText(VFLI.i18n("Use Bar color debuff"));
 		if desc and desc.sbcolor then chk_bc:SetChecked(true); else chk_bc:SetChecked(); end
 		ui:InsertFrame(chk_bc);
-		
+
 		local chk_raidfilter = VFLUI.Checkbox:new(ui); chk_raidfilter:Show();
 		chk_raidfilter:SetText(VFLI.i18n("Use Blizzard raid filter"));
 		if desc and desc.raidfilter then chk_raidfilter:SetChecked(true); else chk_raidfilter:SetChecked(); end
 		ui:InsertFrame(chk_raidfilter);
-		
+
 		local chk_playerauras = VFLUI.Checkbox:new(ui); chk_playerauras:Show();
 		chk_playerauras:SetText(VFLI.i18n("Filter auras by player"));
 		if desc and desc.playerauras then chk_playerauras:SetChecked(true); else chk_playerauras:SetChecked(); end
 		ui:InsertFrame(chk_playerauras);
-		
+
 		local chk_othersauras = VFLUI.Checkbox:new(ui); chk_othersauras:Show();
 		chk_othersauras:SetText(VFLI.i18n("Filter auras by other players"));
 		if desc and desc.othersauras then chk_othersauras:SetChecked(true); else chk_othersauras:SetChecked(); end
@@ -690,42 +691,42 @@ end
 		chk_petauras:SetText(VFLI.i18n("Filter auras by pet/vehicle"));
 		if desc and desc.petauras then chk_petauras:SetChecked(true); else chk_petauras:SetChecked(); end
 		ui:InsertFrame(chk_petauras);
-		
+
 		local chk_targetauras = VFLUI.Checkbox:new(ui); chk_targetauras:Show();
 		chk_targetauras:SetText(VFLI.i18n("Filter auras by target"));
 		if desc and desc.targetauras then chk_targetauras:SetChecked(true); else chk_targetauras:SetChecked(); end
 		ui:InsertFrame(chk_targetauras);
-		
+
 		local chk_focusauras = VFLUI.Checkbox:new(ui); chk_focusauras:Show();
 		chk_focusauras:SetText(VFLI.i18n("Filter auras by focus"));
 		if desc and desc.focusauras then chk_focusauras:SetChecked(true); else chk_focusauras:SetChecked(); end
 		ui:InsertFrame(chk_focusauras);
-		
+
 		local chk_nameauras = VFLUI.Checkbox:new(ui); chk_nameauras:Show();
 		chk_nameauras:SetText(VFLI.i18n("Filter auras by name"));
 		if desc and desc.nameauras then chk_nameauras:SetChecked(true); else chk_nameauras:SetChecked(); end
 		ui:InsertFrame(chk_nameauras);
-		
+
 		local ed_unitfilter = VFLUI.LabeledEdit:new(ui, 200); ed_unitfilter:Show();
 		ed_unitfilter:SetText(VFLI.i18n("Name of the unit"));
 		if desc and desc.unitfilter then ed_unitfilter.editBox:SetText(desc.unitfilter); else ed_unitfilter.editBox:SetText(""); end
 		ui:InsertFrame(ed_unitfilter);
-		
+
 		local chk_isStealable = VFLUI.Checkbox:new(ui); chk_isStealable:Show();
 		chk_isStealable:SetText(VFLI.i18n("Show only Stealable auras"));
 		if desc and desc.isstealablefilter then chk_isStealable:SetChecked(true); else chk_isStealable:SetChecked(); end
 		ui:InsertFrame(chk_isStealable);
-		
+
 		local chk_curefilter = VFLUI.Checkbox:new(ui); chk_curefilter:Show();
 		chk_curefilter:SetText(VFLI.i18n("Show only auras that I can cure"));
 		if desc and desc.curefilter then chk_curefilter:SetChecked(true); else chk_curefilter:SetChecked(); end
 		ui:InsertFrame(chk_curefilter);
-		
+
 		local chk_notimefilter = VFLUI.Checkbox:new(ui); chk_notimefilter:Show();
 		chk_notimefilter:SetText(VFLI.i18n("Show only auras with no timer"));
 		if desc and desc.notimefilter then chk_notimefilter:SetChecked(true); else chk_notimefilter:SetChecked(); end
 		ui:InsertFrame(chk_notimefilter);
-		
+
 		local chk_filterName = VFLUI.Checkbox:new(ui); chk_filterName:Show();
 		chk_filterName:SetText(VFLI.i18n("Filter by aura name"));
 		if desc and desc.filterName then chk_filterName:SetChecked(true); else chk_filterName:SetChecked(); end
@@ -742,15 +743,15 @@ end
 			chk_external:SetChecked();
 		end
 
-		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data) 
+		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -763,23 +764,23 @@ end
 		end);
 		le_names:SetHeight(183); le_names:Show();
 		ui:InsertFrame(le_names);
-		
+
 		ui:InsertFrame(VFLUI.EmptySeparator:new(ui, 30));
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Cooldown Bars")));
 		ui:InsertFrame(ftype_2);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Cooldown Type"));
 		local dd_cooldownType = VFLUI.Dropdown:new(er, RDXUI.CooldownsTypesDropdownFunction);
 		dd_cooldownType:SetWidth(150); dd_cooldownType:Show();
-		if desc and desc.cooldownType then 
-			dd_cooldownType:SetSelection(desc.cooldownType); 
+		if desc and desc.cooldownType then
+			dd_cooldownType:SetSelection(desc.cooldownType);
 		else
 			dd_cooldownType:SetSelection("USED");
 		end
 		er:EmbedChild(dd_cooldownType); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_filterNamecd = VFLUI.Checkbox:new(ui); chk_filterNamecd:Show();
 		chk_filterNamecd:SetText(VFLI.i18n("Filter by cooldown name"));
 		if desc and desc.filterName then chk_filterNamecd:SetChecked(true); else chk_filterNamecd:SetChecked(); end
@@ -796,15 +797,15 @@ end
 			chk_externalcd:SetChecked();
 		end
 
-		local le_namescd = VFLUI.ListEditor:new(ui, desc.filterNameListcd or {}, function(cell,data) 
+		local le_namescd = VFLUI.ListEditor:new(ui, desc.filterNameListcd or {}, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -817,13 +818,13 @@ end
 		end);
 		le_namescd:SetHeight(183); le_namescd:Show();
 		ui:InsertFrame(le_namescd);
-		
+
 		ui:InsertFrame(VFLUI.EmptySeparator:new(ui, 30));
-		
+
 		function ui:GetDescriptor()
 			local ssbcolor1, ssbcolor2, scolor1, scolor2, sstack, sstackVar, sstackMax, sTL = nil, nil, nil, nil, nil, nil, nil, 0;
 			if chk_sbblendcolor:GetChecked() then
-				ssbcolor1 = strtrim(sbcolorVar1:GetSelection() or ""); 
+				ssbcolor1 = strtrim(sbcolorVar1:GetSelection() or "");
 				ssbcolor2 = strtrim(sbcolorVar2:GetSelection() or "");
 				if ssbcolor1 == "" then ssbcolor1 = nil; end
 				if ssbcolor2 == "" then ssbcolor2 = nil; end
@@ -833,7 +834,7 @@ end
 			end
 			local trunc = tonumber(ed_trunc.editBox:GetText());
 			if trunc then trunc = VFL.clamp(trunc, 1, 50); end
-			
+
 			local filterName, filterNameList, filternl, ext, filterNamecd, filterNameListcd, filternlcd, extcd, unitfi, maxdurfil, mindurfil = nil, nil, {}, nil, nil, nil, {}, nil, "", "", "";
 			if chk_nameauras:GetChecked() then
 				unitfi = string.lower(ed_unitfilter.editBox:GetText());
@@ -907,8 +908,8 @@ end
 				end
 				if chk_externalcd:GetChecked() then extcd = file_externalcd:GetPath(); end
 			end
-			return { 
-				feature = "listbars"; 
+			return {
+				feature = "listbars";
 				version = 2;
 				name = ed_name.editBox:GetText();
 				-- layout
@@ -968,15 +969,15 @@ end
 				filterNameListcd = filternlcd;
 			};
 		end
-		
-		ui.Destroy = VFL.hook(function(s) 
+
+		ui.Destroy = VFL.hook(function(s)
 			ftype:Destroy(); ftype = nil;
 		end, ui.Destroy);
 
 		return ui;
 	end;
 	CreateDescriptor = function()
-		return { 
+		return {
 			feature = "listbars";
 			version = 1;
 			name = "lb1";

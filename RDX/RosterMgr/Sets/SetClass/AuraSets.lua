@@ -7,6 +7,7 @@
 
 local MAX_UNITS = RDXDAL.NUM_UNITS;
 local GetUnitByNumber = RDXDAL.GetUnitByNumber
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 -- Create an aura set for the given aura.
 local function CreateAuraSet(type, name)
@@ -71,7 +72,7 @@ local mbsets = {};
 function RDXDAL.GetDebuffSet(spellid)
 	local name;
 	if type(spellid) == "number" then
-		local auname = GetSpellInfo(spellid);
+		local auname = GetSpellInfoName(spellid);
 		if not auname then auname = spellid; end
 		name =  auname;
 	else
@@ -90,7 +91,7 @@ end
 function RDXDAL.GetBuffSet(spellid)
 	local name;
 	if type(spellid) == "number" then
-		local auname = GetSpellInfo(spellid);
+		local auname = GetSpellInfoName(spellid);
 		if not auname then auname = spellid; end
 		name =  auname;
 	else
@@ -108,7 +109,7 @@ end
 function RDXDAL.GetMyBuffSet(spellid)
 	local name;
 	if type(spellid) == "number" then
-		local auname = GetSpellInfo(spellid);
+		local auname = GetSpellInfoName(spellid);
 		if not auname then auname = spellid; end
 		name =  auname;
 	else
@@ -153,7 +154,7 @@ RDXDAL.RegisterSetClass({
 		ui:SetText(VFLI.i18n("Buff Name")); ui:Show();
 		if desc and desc.buff then
 			if type(desc.buff) == "number" then
-				local name = GetSpellInfo(desc.buff);
+				local name = GetSpellInfoName(desc.buff);
 				if not name then name = desc.buff; end
 				ui.editBox:SetText(name);
 			else
@@ -165,7 +166,7 @@ RDXDAL.RegisterSetClass({
 		btn:SetHeight(25); btn:SetWidth(25); btn:SetText("...");
 		btn:SetPoint("RIGHT", ui.editBox, "LEFT"); btn:Show();
 		btn:SetScript("OnClick", function()
-			RDXDAL.AuraCachePopup(RDXDAL._GetBuffCache(), function(x) 
+			RDXDAL.AuraCachePopup(RDXDAL._GetBuffCache(), function(x)
 				if x then ui.editBox:SetText(x.text); end
 			end, btn, "CENTER");
 		end);
@@ -195,7 +196,7 @@ RDXDAL.RegisterSetClass({
 		ui:SetText(VFLI.i18n("Debuff Name")); ui:Show();
 		if desc and desc.buff then
 			if type(desc.buff) == "number" then
-				local name = GetSpellInfo(desc.buff);
+				local name = GetSpellInfoName(desc.buff);
 				if not name then name = desc.buff; end
 				ui.editBox:SetText(name);
 			else
@@ -207,7 +208,7 @@ RDXDAL.RegisterSetClass({
 		btn:SetHeight(25); btn:SetWidth(25); btn:SetText("...");
 		btn:SetPoint("RIGHT", ui.editBox, "LEFT"); btn:Show();
 		btn:SetScript("OnClick", function()
-			RDXDAL.AuraCachePopup(RDXDAL._GetDebuffCache(), function(x) 
+			RDXDAL.AuraCachePopup(RDXDAL._GetDebuffCache(), function(x)
 				if x then ui.editBox:SetText(x.text); end
 			end, btn, "CENTER");
 		end);
@@ -241,7 +242,7 @@ RDXDAL.RegisterSetClass({
 		ui:SetText(VFLI.i18n("Buff Name")); ui:Show();
 		if desc and desc.buff then
 			if type(desc.buff) == "number" then
-				local name = GetSpellInfo(desc.buff);
+				local name = GetSpellInfoName(desc.buff);
 				if not name then name = desc.buff; end
 				ui.editBox:SetText(name);
 			else
@@ -253,7 +254,7 @@ RDXDAL.RegisterSetClass({
 		btn:SetHeight(25); btn:SetWidth(25); btn:SetText("...");
 		btn:SetPoint("RIGHT", ui.editBox, "LEFT"); btn:Show();
 		btn:SetScript("OnClick", function()
-			RDXDAL.AuraCachePopup(RDXDAL._GetBuffCache(), function(x) 
+			RDXDAL.AuraCachePopup(RDXDAL._GetBuffCache(), function(x)
 				if x then ui.editBox:SetText(x.text); end
 			end, btn, "CENTER");
 		end);
@@ -287,7 +288,7 @@ local function CreateAuraFilterSet(type, filename)
 	local self = RDXDAL.Set:new();
 	self.name = type .. "<" .. filename .. ">";
 	type = string.upper(type);
-	
+
 	local auralist = RDXDB.GetObjectInstance(filename);
 	local auralist_include, auralist_exclude = {}, {};
 	local tmpname = nil;
@@ -362,7 +363,7 @@ local function CreateAuraFilterSet(type, filename)
 	else
 		error(VFLI.i18n("invalid aurafilterset type"));
 	end
-	
+
 	-- Bind/unbind events on act/deact.
 	self._OnActivate = function(x)
 		VFLT.AdaptiveSchedule2("AuraFilterUpdate" .. filename, auraFilterUpdatePeriod, auraFilterRebuild, x);
@@ -408,9 +409,9 @@ RDXDAL.RegisterSetClass({
 			return {class = "bufffilterfile", file = ui:GetPath()};
 		end
 		ui.Destroy = VFL.hook(function(s) s.GetDescriptor = nil; end, ui.Destroy);
-		
+
 		return ui;
-		
+
 	end,
 	FindSet = function(desc)
 		return RDXDAL.GetBuffFilterSet(desc.file);
@@ -433,9 +434,9 @@ RDXDAL.RegisterSetClass({
 			return {class = "debufffilterfile", file = ui:GetPath()};
 		end
 		ui.Destroy = VFL.hook(function(s) s.GetDescriptor = nil; end, ui.Destroy);
-		
+
 		return ui;
-		
+
 	end,
 	FindSet = function(desc)
 		return RDXDAL.GetDebuffFilterSet(desc.file);

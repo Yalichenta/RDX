@@ -2,6 +2,7 @@
 -- The AuraFilter object type.
 -----------------------------------
 local dlg = nil;
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 local function WriteFilter(dest, src)
 	VFL.empty(dest);
@@ -15,7 +16,7 @@ local function WriteFilter(dest, src)
 		end
 		local testnumber = tonumber(v);
 		if testnumber then
-			auname = GetSpellInfo(v);
+			auname = GetSpellInfoName(v);
 			if auname then
 				if flag then
 					dest["!" .. auname] = true;
@@ -53,19 +54,19 @@ RDXDB.RegisterObjectType({
 		dlg:SetWidth(310); dlg:SetHeight(270);
 		dlg:SetText(VFLI.i18n("Edit AuraFilter: ") .. path);
 		dlg:SetClampedToScreen(true);
-		
+
 		VFLUI.Window.StdMove(dlg, dlg:GetTitleBar());
 		if RDXPM.Ismanaged("Aurafilter") then RDXPM.RestoreLayout(dlg, "Aurafilter"); end
 
-		local le_names = VFLUI.ListEditor:new(dlg, md.data, function(cell,data) 
+		local le_names = VFLUI.ListEditor:new(dlg, md.data, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -82,7 +83,7 @@ RDXDB.RegisterObjectType({
 		end);
 		le_names:SetPoint("TOPLEFT", dlg:GetClientArea(), "TOPLEFT");
 		le_names:SetWidth(300);	le_names:SetHeight(183); le_names:Show();
-		
+
 		dlg:Show();
 		--dlg:_Show(RDX.smooth);
 
@@ -93,7 +94,7 @@ RDXDB.RegisterObjectType({
 			--end);
 		end
 		VFL.AddEscapeHandler(esch);
-		
+
 		local function Save()
 			local desc = le_names:GetList();
 			if desc then

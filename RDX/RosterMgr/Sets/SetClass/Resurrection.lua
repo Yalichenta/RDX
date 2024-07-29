@@ -19,6 +19,7 @@ RDXDAL.RegisterSet(inc);
 local done = RDXDAL.Set:new();
 done.name = "<Rez Done>";
 RDXDAL.RegisterSet(done);
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 -- "Sweeper" code - constantly remove alive people from the rez sets.
 local function Sweep()
@@ -38,7 +39,7 @@ local function Activate()
 	refcount = refcount + 1;
 	if refcount == 1 then
 		VFLT.AdaptiveUnschedule2("_rezmonitor");
-		VFLT.AdaptiveSchedule2("_rezmonitor", 0.5, Sweep); 
+		VFLT.AdaptiveSchedule2("_rezmonitor", 0.5, Sweep);
 	end
 end
 local function Deactivate()
@@ -114,8 +115,8 @@ RPC_Group:Bind("rez_fail", function(ci, targ)
 		n = n - 1;
 		-- If the last of the incoming rezzes failed, remove from the incoming set.
 		-- Otherwise update the count.
-		if n == 0 then 
-			inc:_Set(targ.nid, false); 
+		if n == 0 then
+			inc:_Set(targ.nid, false);
 		else
 			inc:_Poke(targ.nid, n);
 		end
@@ -141,15 +142,15 @@ RDXEvents:Bind("INIT_DEFERRED", nil, function()
 	local _,ret = UnitClass("player");
 	local pclass = ret or "NONE";
 	if pclass == "PRIEST" then
-		rezSpell = GetSpellInfo(2006); --VFLI.i18n("Resurrection");
+		rezSpell = GetSpellInfoName(2006); --VFLI.i18n("Resurrection");
 	elseif pclass == "PALADIN" then
-		rezSpell = GetSpellInfo(7328); --VFLI.i18n("Redemption");
+		rezSpell = GetSpellInfoName(7328); --VFLI.i18n("Redemption");
 	elseif pclass == "SHAMAN" then
-		rezSpell = GetSpellInfo(2008); --VFLI.i18n("Ancestral Spirit");
+		rezSpell = GetSpellInfoName(2008); --VFLI.i18n("Ancestral Spirit");
 	elseif pclass == "DRUID" then
-		rezSpell = GetSpellInfo(50769); --VFLI.i18n("Rebirth");
+		rezSpell = GetSpellInfoName(50769); --VFLI.i18n("Rebirth");
 	end
-	
+
 	if rezSpell then
 		local rezTarget = nil;
 		-- Detect when a rez is first cast.
@@ -162,14 +163,14 @@ RDXEvents:Bind("INIT_DEFERRED", nil, function()
 				RPC_Group:Invoke("rez_start", target.name);
 			end
 		end);
-	
+
 		-- Detect when a rez is finished.
 		WoWEvents:Bind("UNIT_SPELLCAST_SUCCEEDED", nil, function()
 			if not rezTarget then return; end
 			RPC_Group:Invoke("rez_done", rezTarget.name);
 			rezTarget = nil;
 		end);
-	
+
 		-- Detect rez failure
 		local function fail()
 			if not rezTarget then return; end

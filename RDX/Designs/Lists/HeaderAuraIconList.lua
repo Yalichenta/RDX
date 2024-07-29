@@ -29,25 +29,25 @@ RDX.RegisterFeature({
 	end;
 	ApplyFeature = function(desc, state)
 		local objname = "SIcons_" .. desc.name;
-		
+
 		local driver = desc.driver or 1;
 		local bs = desc.bs or VFLUI.defaultButtonSkin;
 		local bkd = desc.bkd or VFLUI.defaultBackdrop;
-		
+
 		local os = 0;
 		if driver == 2 then
 			if desc.bs and desc.bs.insets then os = desc.bs.insets or 0; end
 		elseif driver == 3 then
 			if desc.bkd and desc.bkd.insets and desc.bkd.insets.left then os = desc.bkd.insets.left or 0; end
 		end
-		
+
 		local r, g, b, a = 1, 1, 1, 1;
 		if driver == 2 then
 			r, g, b, a = bs.br or 1, bs.bg or 1, bs.bb or 1, bs.ba or 1;
 		elseif driver == 3 then
 			r, g, b, a = bkd.br or 1, bkd.bg or 1, bkd.bb or 1, bkd.ba or 1;
 		end
-		
+
 		local showweapons = "false";
 		if desc.showweapons then showweapons = "true"; end
 		local sortdir = "+";
@@ -55,7 +55,7 @@ RDX.RegisterFeature({
 		local separateown = "0";
 		if desc.separateown == "BEFORE" then sortdir = "1"; end
 		if desc.separateown == "AFTER" then sortdir = "-1"; end
-		
+
 		-- Event hinting.
 		--local mux, mask = state:GetContainingWindowState():GetSlotValue("Multiplexer"), 0;
 		local filter;
@@ -71,7 +71,7 @@ RDX.RegisterFeature({
 
 		--local smask = mux:GetPaintMask("UNIT_BUFFWEAPON");
 		--mux:Event_UnitMask("UNIT_BUFFWEAPON_UPDATE", smask);
-		
+
 		--mask = bit.bor(mask, 1);
 
 		----------------- Creation
@@ -79,8 +79,8 @@ RDX.RegisterFeature({
 	local h = RDX.SmartHeaderAura:new();
 	h:SetParent(]] .. RDXUI.ResolveFrameReference(desc.owner) .. [[);
 	h:SetPoint(]] .. RDXUI.AnchorCodeFromDescriptor(desc.anchor) .. [[);
-	h:SetAttribute("useparent-unit", true); 
-	h:SetAttribute("useparent-unitsuffix", true); 
+	h:SetAttribute("useparent-unit", true);
+	h:SetAttribute("useparent-unitsuffix", true);
 	h:SetAttribute("filter", "]] .. filter .. [[");
 	h:SetAttribute("template", "]] .. desc.template .. [[");
 	if ]] .. showweapons .. [[ then
@@ -123,17 +123,17 @@ RDX.RegisterFeature({
 				end
 				btn.tex:SetDrawLayer("ARTWORK", 2);
 				btn.tex:Show();
-				
+
 				btn.cd = VFLUI.CooldownCounter:new(btn, ]] .. Serialize(desc.cd) .. [[);
 				btn.cd:SetAllPoints(btn.tex);
 				btn.cd:Show();
-				
+
 				btn.frtxt = VFLUI.AcquireFrame("Frame");
 				btn.frtxt:SetParent(btn);
 				btn.frtxt:SetFrameLevel(btn:GetFrameLevel() + 2);
 				btn.frtxt:SetAllPoints(btn);
 				btn.frtxt:Show();
-				
+
 				btn.sttxt = VFLUI.CreateFontString(btn.frtxt);
 				btn.sttxt:SetAllPoints(btn.frtxt);
 				btn.sttxt:Show();
@@ -213,17 +213,17 @@ RDX.RegisterFeature({
 				end
 				btn.tex:SetDrawLayer("ARTWORK", 2);
 				btn.tex:Show();
-				
+
 				btn.cd = VFLUI.CooldownCounter:new(btn, ]] .. Serialize(desc.cd) .. [[);
 				btn.cd:SetAllPoints(btn.tex);
 				btn.cd:Show();
-				
+
 				btn.frtxt = VFLUI.AcquireFrame("Frame");
 				btn.frtxt:SetParent(btn);
 				btn.frtxt:SetFrameLevel(btn:GetFrameLevel() + 2);
 				btn.frtxt:SetAllPoints(btn);
 				btn.frtxt:Show();
-				
+
 				btn.sttxt = VFLUI.CreateFontString(btn.frtxt);
 				btn.sttxt:SetAllPoints(btn.frtxt);
 				btn.sttxt:Show();
@@ -268,17 +268,17 @@ RDX.RegisterFeature({
 				end
 				btn.tex:SetDrawLayer("ARTWORK", 2);
 				btn.tex:Show();
-				
+
 				btn.cd = VFLUI.CooldownCounter:new(btn, ]] .. Serialize(desc.cd) .. [[);
 				btn.cd:SetAllPoints(btn.tex);
 				btn.cd:Show();
-				
+
 				btn.frtxt = VFLUI.AcquireFrame("Frame");
 				btn.frtxt:SetParent(btn);
 				btn.frtxt:SetFrameLevel(btn:GetFrameLevel() + 2);
 				btn.frtxt:SetAllPoints(btn);
 				btn.frtxt:Show();
-				
+
 				btn.sttxt = VFLUI.CreateFontString(btn.frtxt);
 				btn.sttxt:SetAllPoints(btn.frtxt);
 				btn.sttxt:Show();
@@ -349,7 +349,7 @@ RDX.RegisterFeature({
 
 --]];
 --		state:Attach("EmitPaint", true, function(code) code:AppendCode(paintCode); end);
-		
+
 		------------------- Cleanup
 --		local cleanupCode = [[
 
@@ -372,14 +372,14 @@ RDX.RegisterFeature({
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Aura Type"));
 		local dd_auraType = VFLUI.Dropdown:new(er, RDXUI.AurasTypesDropdownFunction);
 		dd_auraType:SetWidth(150); dd_auraType:Show();
-		if desc and desc.auraType then 
-			dd_auraType:SetSelection(desc.auraType); 
+		if desc and desc.auraType then
+			dd_auraType:SetSelection(desc.auraType);
 		else
 			dd_auraType:SetSelection("BUFFS");
 		end
 		er:EmbedChild(dd_auraType); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_showweapons = VFLUI.Checkbox:new(ui); chk_showweapons:Show();
 		chk_showweapons:SetText(VFLI.i18n("Show Weapons Enchant"));
 		if desc and desc.showweapons then chk_showweapons:SetChecked(true); else chk_showweapons:SetChecked(); end
@@ -395,65 +395,65 @@ RDX.RegisterFeature({
 		anchor:SetAFArray(RDXUI.ComposeAnchorList(state));
 		if desc and desc.anchor then anchor:SetAnchorInfo(desc.anchor); end
 		ui:InsertFrame(anchor);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Template"));
 		local dd_template = VFLUI.Dropdown:new(er, RDX.IconTemplatesFunc);
 		dd_template:SetWidth(250); dd_template:Show();
-		if desc and desc.template then 
-			dd_template:SetSelection(desc.template); 
+		if desc and desc.template then
+			dd_template:SetSelection(desc.template);
 		else
 			dd_template:SetSelection("RDXAB30x30Template");
 		end
 		er:EmbedChild(dd_template); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Point"));
 		local dd_point = VFLUI.Dropdown:new(er, RDXUI.AnchorPointSelectionFunc);
 		dd_point:SetWidth(150); dd_point:Show();
-		if desc and desc.point then 
-			dd_point:SetSelection(desc.point); 
+		if desc and desc.point then
+			dd_point:SetSelection(desc.point);
 		else
 			dd_point:SetSelection("TOPLEFT");
 		end
 		er:EmbedChild(dd_point); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Orientation"));
 		local dd_orientation = VFLUI.Dropdown:new(er, RDXUI.OrientationDropdownFunction);
 		dd_orientation:SetWidth(75); dd_orientation:Show();
-		if desc and desc.orientation then 
-			dd_orientation:SetSelection(desc.orientation); 
+		if desc and desc.orientation then
+			dd_orientation:SetSelection(desc.orientation);
 		else
 			dd_orientation:SetSelection("RIGHT");
 		end
 		er:EmbedChild(dd_orientation); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local ed_wrapafter = VFLUI.LabeledEdit:new(ui, 50); ed_wrapafter:Show();
 		ed_wrapafter:SetText(VFLI.i18n("Wrap After"));
 		if desc and desc.wrapafter then ed_wrapafter.editBox:SetText(desc.wrapafter); else ed_wrapafter.editBox:SetText("10"); end
 		ui:InsertFrame(ed_wrapafter);
-		
+
 		local ed_maxwraps = VFLUI.LabeledEdit:new(ui, 50); ed_maxwraps:Show();
 		ed_maxwraps:SetText(VFLI.i18n("Max Wraps"));
 		if desc and desc.maxwraps then ed_maxwraps.editBox:SetText(desc.maxwraps); else ed_maxwraps.editBox:SetText("1"); end
 		ui:InsertFrame(ed_maxwraps);
-		
+
 		local ed_xoffset = VFLUI.LabeledEdit:new(ui, 50); ed_xoffset:Show();
 		ed_xoffset:SetText(VFLI.i18n("Offset x"));
 		if desc and desc.xoffset then ed_xoffset.editBox:SetText(desc.xoffset); else ed_xoffset.editBox:SetText("0"); end
 		ui:InsertFrame(ed_xoffset);
-		
+
 		local ed_yoffset = VFLUI.LabeledEdit:new(ui, 50); ed_yoffset:Show();
 		ed_yoffset:SetText(VFLI.i18n("Offset y"));
 		if desc and desc.yoffset then ed_yoffset.editBox:SetText(desc.yoffset); else ed_yoffset.editBox:SetText("0"); end
 		ui:InsertFrame(ed_yoffset);
-		
+
 		-------------- Display
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Skin parameters")));
-		
+
 		local driver = VFLUI.DisjointRadioGroup:new();
-		
+
 		local driver_NS = driver:CreateRadioButton(ui);
 		driver_NS:SetText(VFLI.i18n("No Skin"));
 		local driver_BS = driver:CreateRadioButton(ui);
@@ -461,36 +461,36 @@ RDX.RegisterFeature({
 		local driver_BD = driver:CreateRadioButton(ui);
 		driver_BD:SetText(VFLI.i18n("Use Backdrop"));
 		driver:SetValue(desc.driver or 1);
-		
+
 		ui:InsertFrame(driver_NS);
-		
+
 		ui:InsertFrame(driver_BS);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("ButtonSkin"));
 		local dd_buttonskin = VFLUI.MakeButtonSkinSelectButton(er, desc.bs);
 		dd_buttonskin:Show();
 		er:EmbedChild(dd_buttonskin); er:Show();
 		ui:InsertFrame(er);
-		
+
 		ui:InsertFrame(driver_BD);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Backdrop"));
 		local dd_backdrop = VFLUI.MakeBackdropSelectButton(er, desc.bkd);
 		dd_backdrop:Show();
 		er:EmbedChild(dd_backdrop); er:Show();
 		ui:InsertFrame(er);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Shader parameters")));
-		
+
 		--local chk_hidebs = VFLUI.Checkbox:new(ui); chk_hidebs:Show();
 		--chk_hidebs:SetText(VFLI.i18n("Hide empty button"));
 		--if desc and desc.hidebs then chk_hidebs:SetChecked(true); else chk_hidebs:SetChecked(); end
 		--ui:InsertFrame(chk_hidebs);
-		
+
 		-- Shader stuff
-		
+
 		local shader = VFLUI.DisjointRadioGroup:new();
-		
+
 		local shader_key = shader:CreateRadioButton(ui);
 		shader_key:SetText(VFLI.i18n("Use Key Shader"));
 		local shader_border = shader:CreateRadioButton(ui);
@@ -498,65 +498,65 @@ RDX.RegisterFeature({
 		local shader_icon = shader:CreateRadioButton(ui);
 		shader_icon:SetText(VFLI.i18n("Use Icon Shader"));
 		shader:SetValue(desc.shader or 2);
-		
+
 		ui:InsertFrame(shader_key);
-		
+
 		ui:InsertFrame(shader_border);
-		
+
 		ui:InsertFrame(shader_icon);
-		
+
 		-------------- CooldownDisplay
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Cooldown parameters")));
 		local ercd = VFLUI.EmbedRight(ui, VFLI.i18n("Cooldown"));
 		local cd = VFLUI.MakeCooldownSelectButton(ercd, desc.cd); cd:Show();
 		ercd:EmbedChild(cd); ercd:Show();
 		ui:InsertFrame(ercd);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Font parameters")));
-		
+
 		local er_st = VFLUI.EmbedRight(ui, VFLI.i18n("Font stack"));
 		local fontsel2 = VFLUI.MakeFontSelectButton(er_st, desc.fontst); fontsel2:Show();
 		er_st:EmbedChild(fontsel2); er_st:Show();
 		ui:InsertFrame(er_st);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Smooth show hide")));
 		local chk_smooth = VFLUI.Checkbox:new(ui); chk_smooth:Show();
 		chk_smooth:SetText(VFLI.i18n("Use smooth on show and hide"));
 		if desc and desc.smooth then chk_smooth:SetChecked(true); else chk_smooth:SetChecked(); end
 		ui:InsertFrame(chk_smooth);
-		
+
 		------------ Sort
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Sort parameters")));
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Sort Method:"));
 		local dd_sortMethod = VFLUI.Dropdown:new(er, RDX.SortMethodFunc);
 		dd_sortMethod:SetWidth(75); dd_sortMethod:Show();
-		if desc and desc.sortmethod then 
-			dd_sortMethod:SetSelection(desc.sortmethod); 
+		if desc and desc.sortmethod then
+			dd_sortMethod:SetSelection(desc.sortmethod);
 		else
 			dd_sortMethod:SetSelection("INDEX");
 		end
 		er:EmbedChild(dd_sortMethod); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_sortDir = VFLUI.Checkbox:new(ui); chk_sortDir:Show();
 		chk_sortDir:SetText(VFLI.i18n("Sort Direction -"));
 		if desc and desc.sortdir then chk_sortDir:SetChecked(true); else chk_sortDir:SetChecked(); end
 		ui:InsertFrame(chk_sortDir);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Separate Own:"));
 		local dd_separateOwn = VFLUI.Dropdown:new(er, RDX.SeparateOwnFunc);
 		dd_separateOwn:SetWidth(75); dd_separateOwn:Show();
-		if desc and desc.separateown then 
-			dd_separateOwn:SetSelection(desc.separateown); 
+		if desc and desc.separateown then
+			dd_separateOwn:SetSelection(desc.separateown);
 		else
 			dd_separateOwn:SetSelection("NONE");
 		end
 		er:EmbedChild(dd_separateOwn); er:Show();
 		ui:InsertFrame(er);
-		
+
 		function ui:GetDescriptor()
-			return { 
+			return {
 				feature = "sec_aura_icons"; version = 1;
 				name = ed_name.editBox:GetText();
 				auraType = dd_auraType:GetSelection();
@@ -587,8 +587,8 @@ RDX.RegisterFeature({
 				separateown = dd_separateOwn:GetSelection();
 			};
 		end
-		
-		ui.Destroy = VFL.hook(function(s) 
+
+		ui.Destroy = VFL.hook(function(s)
 			driver:Destroy(); driver = nil;
 			shader:Destroy(); shader = nil;
 		end, ui.Destroy);
@@ -596,8 +596,8 @@ RDX.RegisterFeature({
 		return ui;
 	end;
 	CreateDescriptor = function()
-		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "CENTER"; font.justifyH = "CENTER";
-		return { 
+		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "MIDDLE"; font.justifyH = "CENTER";
+		return {
 			feature = "sec_aura_icons";
 			version = 1;
 			name = "sai1";

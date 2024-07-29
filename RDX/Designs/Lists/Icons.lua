@@ -3,6 +3,7 @@
 --
 
 local ShowAuraTooltip = RDXDAL.ShowAuraTooltip;
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 function __AuraIconOnEnter(self)
 	if self.meta then ShowAuraTooltip(self.meta, self, "RIGHT"); end
@@ -165,7 +166,7 @@ RDXDB.GetObjectInstance(]] .. string.format("%q", desc.externalNameFilter) .. [[
 							end
 							local testnumber = tonumber(name);
 							if testnumber then
-								local auname = GetSpellInfo(name);
+								local auname = GetSpellInfoName(name);
 								if not auname then auname = name; end
 								if flag then
 									auname = "!" .. auname;
@@ -243,7 +244,7 @@ RDXDB.GetObjectInstance(]] .. string.format("%q", desc.externalNameFiltercd) .. 
 							end
 							local testnumber = tonumber(name);
 							if testnumber then
-								local auname = GetSpellInfo(name);
+								local auname = GetSpellInfoName(name);
 								if flag then
 									auname = "!" .. auname;
 									closureCode = closureCode .. objname .. "_fnames[" .. string.format("%q", auname) .. "] = true; ";
@@ -984,13 +985,13 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 
 		local le_names = VFLUI.ListEditor:new(ui, desc.filterNameList or {}, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -1038,13 +1039,13 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 
 		local le_namescd = VFLUI.ListEditor:new(ui, desc.filterNameListcd or {}, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -1252,7 +1253,7 @@ color]] .. objname .. [[[5] = ]] .. Serialize(desc.color5) .. [[;
 		return ui;
 	end;
 	CreateDescriptor = function()
-		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "CENTER"; font.justifyH = "CENTER";
+		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "MIDDLE"; font.justifyH = "CENTER";
 		return {
 			feature = "listicons";
 			version = 1;

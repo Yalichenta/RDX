@@ -38,7 +38,7 @@ local function UpdateFRS()
 			local inrange, checkok = UnitInRange(uid)
 			if(checkok and not inrange) then
 				frs_70:_Set(i, true); frs_30:_Set(i, false); frs_10:_Set(i, false);
-			elseif TA_auratracker_helpclose_spellid and not IsSpellInRange(TA_auratracker_helpclose_spellid, uid) then
+			elseif TA_auratracker_helpclose_spellid and not C_Spell.IsSpellInRange(TA_auratracker_helpclose_spellid, uid) then
 				frs_70:_Set(i, true); frs_30:_Set(i, true); frs_10:_Set(i, false);
 			else
 				frs_70:_Set(i, true); frs_30:_Set(i, true); frs_10:_Set(i, true);
@@ -172,7 +172,7 @@ local function UpdateSRS()
 	for i=1,40 do
 		unit = GetUnitByNumber(i); uid = unit.uid;
 		for k,v in pairs(srs) do
-			if unit:IsCacheValid() and (IsSpellInRange(k, uid) == 1) then
+			if unit:IsCacheValid() and (C_Spell.IsSpellInRange(k, uid) == 1) then
 				v:_Set(i, true);
 			else
 				v:_Set(i, false);
@@ -185,7 +185,7 @@ local function UpdateIRS()
 	for i=1,40 do
 		unit = GetUnitByNumber(i); uid = unit.uid;
 		for k,v in pairs(irs) do
-			if unit:IsCacheValid() and (IsItemInRange(k, uid) == 1) then
+			if unit:IsCacheValid() and (C_Item.IsItemInRange(k, uid) == 1) then
 				v:_Set(i, true);
 			else
 				v:_Set(i, false);
@@ -214,7 +214,7 @@ VFLT.AdaptiveSchedule2("Rangefinding", frsTickLength, UpdateRS);
 function RDXRF.GetSpellRangeSet(spell)
 	-- If we already have a range set for this spell, return it.
 	if type(spell) == "number" then
-		spell = GetSpellInfo(spell);
+		spell = VFLUI.GetSpellInfo_name(spell);
 	end
 	if srs[spell] then return srs[spell]; end
 	-- Create a range set for this spell.
@@ -228,7 +228,7 @@ end
 --- Get an exact range set for the given item.
 function RDXRF.GetItemRangeSet(item)
 	if type(item) == "number" then
-		local itemtmp = GetItemInfo(item);
+		local itemtmp = C_Item.GetItemInfo(item);
 		if itemtmp then item = itemtmp; end
 	end
 	if irs[item] then return irs[item]; end

@@ -18,10 +18,10 @@ function __SetRunes(btn, dur, tl, hide)
 end
 
 function __RuneOnEnter(self)
-	if self.tooltipText then 
+	if self.tooltipText then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 		GameTooltip:SetText(self.tooltipText);
-		GameTooltip:Show(); 
+		GameTooltip:Show();
 	end
 end
 function __RuneOnLeave()
@@ -43,7 +43,7 @@ for i=1,6 do
 	btn:SetID(i);
 	btn:SetScript("OnEnter", __RuneOnEnter);
 	btn:SetScript("OnLeave", __RuneOnLeave);
-	
+
 	btn.texrune = VFLUI.CreateTexture(btn);
 	btn.texrune:SetDrawLayer("]] .. (desc.drawLayer or "ARTWORK") .. [[", ]] .. (desc.sublevel or "2") .. [[);
 	btn.texrune:SetPoint("TOPLEFT", btn, "TOPLEFT");
@@ -61,7 +61,7 @@ for i=1,6 do
 		btn.texrune:Hide();
 		btn.tooltipText = nil;
 	end
-	
+
 	btn.cd = VFLUI.CooldownCounter:new(btn, ]] .. Serialize(desc.cd) .. [[);
 	btn.cd:SetPoint("TOPLEFT", btn.texrune, "TOPLEFT", 2, -2);
 	btn.cd:SetPoint("BOTTOMRIGHT", btn.texrune, "BOTTOMRIGHT", -2, 2);
@@ -113,7 +113,7 @@ RDX.RegisterFeature({
 	end;
 	ApplyFeature = function(desc, state)
 		local objname = "Frame_" .. desc.name;
-		
+
 		-- Event hinting.
 		local wstate = state:GetContainingWindowState();
 		if wstate then
@@ -123,7 +123,7 @@ RDX.RegisterFeature({
 			mux:Event_UnitMask("UNIT_RUNE_POWER_UPDATE", smask);
 			mux:Event_UnitMask("UNIT_RUNE_TYPE_UPDATE", umask);
 		end
-		
+
 		------------ Closure
 		local closureCode = [[
 local mddata_]] .. objname .. [[ = RDXDB.GetObjectInstance(]] .. Serialize(desc.externalButtonSkin) .. [[);
@@ -213,31 +213,31 @@ end
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Orientation"));
 		local dd_orientation = VFLUI.Dropdown:new(er, RDXUI.OrientationDropdownFunction);
 		dd_orientation:SetWidth(75); dd_orientation:Show();
-		if desc and desc.orientation then 
-			dd_orientation:SetSelection(desc.orientation); 
+		if desc and desc.orientation then
+			dd_orientation:SetSelection(desc.orientation);
 		else
 			dd_orientation:SetSelection("RIGHT");
 		end
 		er:EmbedChild(dd_orientation); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local ed_iconspx = VFLUI.LabeledEdit:new(ui, 50); ed_iconspx:Show();
 		ed_iconspx:SetText(VFLI.i18n("Width spacing"));
 		if desc and desc.iconspx then ed_iconspx.editBox:SetText(desc.iconspx); else ed_iconspx.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspx);
-		
+
 		local ed_iconspy = VFLUI.LabeledEdit:new(ui, 50); ed_iconspy:Show();
 		ed_iconspy:SetText(VFLI.i18n("Height spacing"));
 		if desc and desc.iconspy then ed_iconspy.editBox:SetText(desc.iconspy); else ed_iconspy.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspy);
-		
+
 		local ed_size = VFLUI.LabeledEdit:new(ui, 50); ed_size:Show();
 		ed_size:SetText(VFLI.i18n("Icon Size"));
 		if desc and desc.size then ed_size.editBox:SetText(desc.size); end
 		ui:InsertFrame(ed_size);
-		
+
 		function ui:GetDescriptor()
-			return { 
+			return {
 				feature = "runes_bar"; version = 1;
 				name = ed_name.editBox:GetText();
 				owner = owner:GetSelection();
@@ -253,9 +253,9 @@ end
 		return ui;
 	end;
 	CreateDescriptor = function()
-		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "CENTER"; font.justifyH = "CENTER";
-		return { 
-			feature = "runes_bar"; 
+		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "MIDDLE"; font.justifyH = "CENTER";
+		return {
+			feature = "runes_bar";
 			version = 1;
 			name = "rune_bar";
 			owner = "Frame_decor";
@@ -269,7 +269,7 @@ end
 
 -------------------------------------
 -- Runes Bar Skin
--- 
+--
 -- UnitFrameFeature to create custom Deathknight RuneElements
 -- Cripsii Kirin Tor EU
 -------------------------------------
@@ -277,7 +277,7 @@ end
 --------------- Code emitter helpers
 local function _EmitCreateCode2(objname, desc)
 	if not desc.nIcons then desc.nIcons = 6; end
-	
+
 	local ebsflag, ebs, ebsos = "false", "bs_default", 0;
 	if desc.externalButtonSkin then
 		ebsflag = "true";
@@ -287,14 +287,14 @@ local function _EmitCreateCode2(objname, desc)
 		if not desc.bkd then desc.bkd = {}; end
 		if desc.bkd.edgeSize then ebsos = desc.bkd.edgeSize/3; end
 	end
-	
+
 	if not desc.cd then desc.cd = VFL.copy(VFLUI.defaultCooldown); end
-	
+
 	local createCode = [[
 	frame.]] .. objname .. [[ = {};
 	local btn, btnOwner = nil, ]] .. RDXUI.ResolveFrameReference(desc.owner) .. [[;
 	for i=1,6 do
-		if ]] .. ebsflag .. [[ then 
+		if ]] .. ebsflag .. [[ then
 			btn = VFLUI.SkinButton:new();
 			btn:SetButtonSkin("]] .. ebs ..[[", true, true, false, true, true, true, false, true, true, true);
 		else
@@ -303,7 +303,7 @@ local function _EmitCreateCode2(objname, desc)
 		btn:SetParent(btnOwner);
 		btn:SetFrameLevel(btnOwner:GetFrameLevel());
 		btn:SetWidth(]] .. desc.sizew .. [[); btn:SetHeight(]] .. desc.sizeh .. [[);
-		
+
 		btn:SetScript("OnEnter", __RuneOnEnter);
 		btn:SetScript("OnLeave", __RuneOnLeave);
 
@@ -325,21 +325,21 @@ local function _EmitCreateCode2(objname, desc)
 				]];
 			else
 				createCode = createCode .. [[
-				btn.tex:SetTexture(RDXMD.GetRuneIconTexturesOn(runeType));]]; 
+				btn.tex:SetTexture(RDXMD.GetRuneIconTexturesOn(runeType));]];
 			end
-			
-			createCode = createCode ..[[   
+
+			createCode = createCode ..[[
 			btn.tex:Show();
 			btn.tooltipText = _G["COMBAT_TEXT_RUNE_"..RDXMD.GetRuneMapping(runeType)];
 		end
-		
+
 		btn.cd = VFLUI.CooldownCounter:new(btn, ]] .. Serialize(desc.cd) .. [[);
 		btn.cd:SetAllPoints(btn.tex);
 		btn.cd:Show();
-		
+
 		]];
 		createCode = createCode .. VFLUI.GenerateSetFontCode("btn.cd.fs", desc.cdFont, nil, true);
-		
+
 		createCode = createCode .. [[
 		frame.]] .. objname .. [[[i] = btn;
 	end
@@ -380,7 +380,7 @@ RDX.RegisterFeature({
 			mux:Event_UnitMask("UNIT_RUNE_POWER_UPDATE", mask);
 			mux:Event_UnitMask("UNIT_RUNE_TYPE_UPDATE", mask);
 		end
-		
+
 		------------ Closure
 		local closureCode = [[
 local runecolo_cl = {};
@@ -390,11 +390,11 @@ runecolo_cl[3] = ]] .. Serialize(desc.frostColor) .. [[;
 runecolo_cl[4] = ]] .. Serialize(desc.deathColor) .. [[;
 ]];
 		state:Attach("EmitClosure", true, function(code) code:AppendCode(closureCode); end);
-		
+
 		----------------- Creation
 		local createCode = _EmitCreateCode2(objname, desc);
 		state:Attach("EmitCreate", true, function(code) code:AppendCode(createCode); end);
-	
+
 		------------------- Destruction
       		local destroyCode = [[
 local btn = nil;
@@ -410,7 +410,7 @@ frame.]] .. objname .. [[ = nil;
 		state:Attach("EmitDestroy", true, function(code) code:AppendCode(destroyCode); end);
 
 		------------------- Paint
-		
+
 		local paintCode = [[
 local hide = false;
 local classMnemonic = unit:GetClassMnemonic();
@@ -423,7 +423,7 @@ for i=1,6 do
 	start, duration = GetRuneCooldown(i);
 	timeleft = duration - (GetTime() - start);
 	runeType = GetRuneType(i);
-	if (runeType) then 
+	if (runeType) then
 	]];
 		if desc.customtexture then
 			paintCode = paintCode .. VFLUI.GenerateSetTextureCode("_runes[i].tex", desc.runetexture);
@@ -435,7 +435,7 @@ for i=1,6 do
 			_runes[i].tex:SetTexture(RDXMD.GetRuneIconTexturesOn(runeType));
 			]];
 		end
-	
+
 		paintCode = paintCode .. [[
 		_runes[i].tooltipText = _G["COMBAT_TEXT_RUNE_"..RDXMD.GetRuneMapping(runeType)];
 	end
@@ -445,34 +445,34 @@ end
 		state:Attach("EmitPaint", true, function(code) code:AppendCode(paintCode); end);
 		return true;
 	end;
-	
+
 	UIFromDescriptor = function(desc, parent, state)
 		local ui = VFLUI.CompoundFrame:new(parent);
-		
+
 		------------- Core
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Core Parameters")));
-		
+
 		local ed_name = VFLUI.LabeledEdit:new(ui, 100); ed_name:Show();
 		ed_name:SetText(VFLI.i18n("Name"));
 		ed_name.editBox:SetText(desc.name);
 		ui:InsertFrame(ed_name);
-		
+
 		------------- Layout
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Layout parameters")));
-		
+
 		local owner = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Owner"), state, {"Frame_", "Button_", "Cooldown_", });
 		if desc and desc.owner then owner:SetSelection(desc.owner); end
-		
+
 		local anchor = RDXUI.UnitFrameAnchorSelector:new(ui); anchor:Show();
 		anchor:SetAFArray(RDXUI.ComposeAnchorList(state));
 		if desc and desc.anchor then anchor:SetAnchorInfo(desc.anchor); end
 		ui:InsertFrame(anchor);
-		
+
 		local ed_rows = VFLUI.LabeledEdit:new(ui, 50); ed_rows:Show();
 		ed_rows:SetText(VFLI.i18n("Row number"));
 		if desc and desc.rows then ed_rows.editBox:SetText(desc.rows); end
 		ui:InsertFrame(ed_rows);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Orientation"));
 		local dd_orientation = VFLUI.Dropdown:new(er, RDXUI.OrientationDropdownFunction);
 		dd_orientation:SetWidth(75); dd_orientation:Show();
@@ -483,58 +483,58 @@ end
 		end
 		er:EmbedChild(dd_orientation); er:Show();
 		ui:InsertFrame(er);
-	
+
 		local ed_iconspx = VFLUI.LabeledEdit:new(ui, 50); ed_iconspx:Show();
 		ed_iconspx:SetText(VFLI.i18n("Width spacing"));
 		if desc and desc.iconspx then ed_iconspx.editBox:SetText(desc.iconspx); else ed_iconspx.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspx);
-		
+
 		local ed_iconspy = VFLUI.LabeledEdit:new(ui, 50); ed_iconspy:Show();
 		ed_iconspy:SetText(VFLI.i18n("Height spacing"));
 		if desc and desc.iconspy then ed_iconspy.editBox:SetText(desc.iconspy); else ed_iconspy.editBox:SetText("0"); end
 		ui:InsertFrame(ed_iconspy);
-		
+
 		local ed_sizew = VFLUI.LabeledEdit:new(ui, 50); ed_sizew:Show();
 		ed_sizew:SetText(VFLI.i18n("Icon width"));
 		if desc and desc.sizew then ed_sizew.editBox:SetText(desc.sizew); end
 		ui:InsertFrame(ed_sizew);
-		
+
 		local ed_sizeh = VFLUI.LabeledEdit:new(ui, 50); ed_sizeh:Show();
 		ed_sizeh:SetText(VFLI.i18n("Icon height"));
 		if desc and desc.sizeh then ed_sizeh.editBox:SetText(desc.sizeh); end
 		ui:InsertFrame(ed_sizeh);
-	
+
 		-------------- ButtonSkin or Frame
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Button Skin parameters")));
-		
+
 		local chk_bs = VFLUI.CheckEmbedRight(ui, VFLI.i18n("Use Button Skin"));
 		local dd_buttonSkin = VFLUI.Dropdown:new(chk_bs, VFLUI.GetButtonSkinList);
 		dd_buttonSkin:SetWidth(150); dd_buttonSkin:Show();
 		if desc and desc.externalButtonSkin then
 			chk_bs:SetChecked(true);
-			dd_buttonSkin:SetSelection(desc.externalButtonSkin); 
+			dd_buttonSkin:SetSelection(desc.externalButtonSkin);
 		else
 			chk_bs:SetChecked();
 			dd_buttonSkin:SetSelection("bs_default");
 		end
 		chk_bs:EmbedChild(dd_buttonSkin); chk_bs:Show();
 		ui:InsertFrame(chk_bs);
-	
+
 		local ed_bs = VFLUI.LabeledEdit:new(ui, 50); ed_bs:Show();
 		ed_bs:SetText(VFLI.i18n("Button Skin Size Offset"));
 		if desc and desc.ButtonSkinOffset then ed_bs.editBox:SetText(desc.ButtonSkinOffset); end
 		ui:InsertFrame(ed_bs);
-		
+
 		local chk_texture = VFLUI.Checkbox:new(ui); chk_texture:Show();
 		chk_texture:SetText(VFLI.i18n("Use Custom Texture"));
 		if desc and desc.customtexture then chk_texture:SetChecked(true); else chk_texture:SetChecked(); end
 		ui:InsertFrame(chk_texture);
-	
+
 		local er_btx = VFLUI.EmbedRight(ui, VFLI.i18n("Rune Texture"));
 		local runetexsel = VFLUI.MakeTextureSelectButton(er_btx, desc.runetexture); runetexsel:Show();
 		er_btx:EmbedChild(runetexsel); er_btx:Show();
 		ui:InsertFrame(er_btx);
-		
+
 		local sw_blood = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Blood rune color"));
 		if desc and desc.bloodColor then sw_blood:SetColor(VFL.explodeRGBA(desc.bloodColor)); end
 		local sw_unholy = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Unholy rune color"));
@@ -543,14 +543,14 @@ end
 		if desc and desc.frostColor then sw_frost:SetColor(VFL.explodeRGBA(desc.frostColor)); end
 		local sw_death = RDXUI.GenerateColorSwatch(ui, VFLI.i18n("Death rune color"));
 		if desc and desc.deathColor then sw_death:SetColor(VFL.explodeRGBA(desc.deathColor)); end
-		
+
 		-------------- Cooldown Display
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Cooldown parameters")));
 		local ercd = VFLUI.EmbedRight(ui, VFLI.i18n("Cooldown"));
 		local cd = VFLUI.MakeCooldownSelectButton(ercd, desc.cd); cd:Show();
 		ercd:EmbedChild(cd); ercd:Show();
 		ui:InsertFrame(ercd);
-		
+
 		function ui:GetDescriptor()
 			local ebs = nil;
 			if chk_bs:GetChecked() then ebs = dd_buttonSkin:GetSelection(); end
@@ -565,7 +565,7 @@ end
 				iconspy = VFL.clamp(ed_iconspy.editBox:GetNumber(), 0, 200);
 				sizew = VFL.clamp(ed_sizew.editBox:GetNumber(), 1, 50);
 				sizeh = VFL.clamp(ed_sizeh.editBox:GetNumber(), 1, 50);
-				
+
 				customtexture = chk_texture:GetChecked();
 				runetexture = runetexsel:GetSelectedTexture();
 				externalButtonSkin = ebs;
@@ -574,7 +574,7 @@ end
 				unholyColor = sw_unholy:GetColor();
 				frostColor = sw_frost:GetColor();
 				deathColor = sw_death:GetColor();
-				
+
 				cd = cd:GetSelectedCooldown();
 				cdTimerType = nil;
 				cdGfxReverse = nil;
@@ -588,9 +588,9 @@ end
 		return ui;
 	end;
 	CreateDescriptor = function()
-		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "CENTER"; font.justifyH = "CENTER";
+		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "MIDDLE"; font.justifyH = "CENTER";
 		return {
-			feature = "runes_bar_vars"; 
+			feature = "runes_bar_vars";
 			version = 1;
 			name = "rune_bar_skin";
 			owner = "Frame_decor";

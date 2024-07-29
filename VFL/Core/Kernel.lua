@@ -56,8 +56,8 @@ end
 ----------------------------------------------
 -- MODULE OBJECT
 ----------------------------------------------
-if not Module then 
-	Module = {}; 
+if not Module then
+	Module = {};
 else
 	error("VFL: Module class already exists. Load aborted.");
 end
@@ -72,7 +72,7 @@ function Module:new(x)
 	-- Verify and create
 	if not x.name then error("cannot create a module with no name"); end
 	local self = x or {};
-	
+
 	-- Patriate this module
 	self.children = {};
 	if not self.parent then self.parent = Root; end
@@ -138,7 +138,7 @@ end
 
 --- Get a module's version number by loading and parsing a string from a WoW toc file.
 function Module:LoadVersionFromTOC(addon)
-	local str = GetAddOnMetadata(addon, "Version"); if not str then self.version = {0,0,0}; return; end
+	local str = C_AddOns.GetAddOnMetadata(addon, "Version"); if not str then self.version = {0,0,0}; return; end
 	local x,y,z = str:match("^(%d+)%.(%d+)%.(%d+)");
 	if not x then self.version = {0,0,0}; return; end
 	self.version = {tonumber(x), tonumber(y), tonumber(z)};

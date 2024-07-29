@@ -1,7 +1,7 @@
 
 RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
-	
-	if IsAddOnLoaded("QuestKing") then
+
+	if C_AddOns.IsAddOnLoaded("QuestKing") then
 		RDXDK.RegisterWindowLess({
 			name = "desktop_questking",
 			Init = function(id)
@@ -11,9 +11,9 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 			end,
 			Open = function(id)
 				local a = QuestKing_Tracker;
-				if a then 
-					a:Show(); 
-					return a; 
+				if a then
+					a:Show();
+					return a;
 				else
 					return nil;
 				end

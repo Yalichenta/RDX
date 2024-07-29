@@ -79,7 +79,12 @@ function VFLUI.SetFont(obj, descr, sz, justify, extra)
 		obj:SetTextColor(descr.cr or 1, descr.cg or 1, descr.cb or 1, descr.ca or 1);
 	end
 	if justify then
-		obj:SetJustifyH(descr.justifyH or "LEFT"); obj:SetJustifyV(descr.justifyV or "MIDDLE");
+		obj:SetJustifyH(descr.justifyH or "LEFT");
+		local jv = justifyV
+		if(jv == "BOTTOM" or jv == "TOP") then
+			obj:SetJustifyV(jv);
+		end
+		obj:SetJustifyV("MIDDLE");
 	end
 end
 

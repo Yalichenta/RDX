@@ -1,6 +1,6 @@
 
 RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
-	if IsAddOnLoaded("Recount") then
+	if C_AddOns.IsAddOnLoaded("Recount") then
 		RDXDK.RegisterWindowLess({
 			name = "Recount_MainWindow",
 			Init = function(id)
@@ -15,9 +15,9 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 			end,
 			Open = function(id)
 				local a = Recount_MainWindow;
-				if a then 
-					a:Show(); 
-					return a; 
+				if a then
+					a:Show();
+					return a;
 				else
 					return nil;
 				end

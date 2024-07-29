@@ -18,7 +18,7 @@ RDX.RegisterFeature({
 		flg = flg and RDXUI.UFAnchorCheck(desc.anchor, state, errs);
 		flg = flg and RDXUI.UFOwnerCheck(desc.owner, state, errs);
 		if not desc.timerVar or desc.timerVar == "" then VFL.AddError(errs, VFLI.i18n("Missing variable Timer")); flg = nil; end
-		if flg then 
+		if flg then
 			state:AddSlot("Cooldown_" .. desc.name);
 			if desc.driver == 3 then
 				state:AddSlot("Bkdp_" .. desc.name);
@@ -29,25 +29,25 @@ RDX.RegisterFeature({
 	ApplyFeature = function(desc, state)
 		local objname = "Cooldown_" .. desc.name;
 		local texIcondata = desc.tex or "";
-		
+
 		local driver = desc.driver or 1;
 		local bs = desc.bs or VFLUI.defaultButtonSkin;
 		local bkd = desc.bkd or VFLUI.defaultBackdrop;
-		
-		local os = 0; 
+
+		local os = 0;
 		if driver == 2 then
 			if desc.bs and desc.bs.insets then os = desc.bs.insets or 0; end
 		elseif driver == 3 then
 			if desc.bkd and desc.bkd.insets and desc.bkd.insets.left then os = desc.bkd.insets.left or 0; end
 		end
-		
+
 		if not desc.cd then desc.cd = VFL.copy(VFLUI.defaultCooldown); end
-		
+
 		----------------- Creation
 		local createCode = [[
 	local btn, btnOwner = nil, ]] .. RDXUI.ResolveFrameReference(desc.owner) .. [[;
 ]];
-		if driver == 1 then 
+		if driver == 1 then
 			createCode = createCode .. [[
 	btn = VFLUI.AcquireFrame("Button");
 ]];
@@ -138,12 +138,12 @@ RDX.RegisterFeature({
 	end;
 	UIFromDescriptor = function(desc, parent, state)
 		local ui = VFLUI.CompoundFrame:new(parent);
-		
+
 		------------- Core
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Core parameters")));
-		
+
 		local ed_name, ed_width, ed_height = RDXUI.GenNameWidthHeightPortion(ui, desc, state);
-		
+
 		local owner = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Owner"), state, {"Frame_", "Button_", "Cooldown_", });
 		if desc and desc.owner then owner:SetSelection(desc.owner); end
 
@@ -151,17 +151,17 @@ RDX.RegisterFeature({
 		anchor:SetAFArray(RDXUI.ComposeAnchorList(state));
 		if desc and desc.anchor then anchor:SetAnchorInfo(desc.anchor); end
 		ui:InsertFrame(anchor);
-		
+
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Timer parameters")));
-		
+
 		local timerVar = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Timer variable"), state, "TimerVar_");
 		if desc and desc.timerVar then timerVar:SetSelection(desc.timerVar); end
-		
+
 		------------- ButtonSkin
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Skin parameters")));
-		
+
 		local driver = VFLUI.DisjointRadioGroup:new();
-		
+
 		local driver_NS = driver:CreateRadioButton(ui);
 		driver_NS:SetText(VFLI.i18n("No Skin"));
 		local driver_BS = driver:CreateRadioButton(ui);
@@ -169,55 +169,55 @@ RDX.RegisterFeature({
 		local driver_BD = driver:CreateRadioButton(ui);
 		driver_BD:SetText(VFLI.i18n("Use Backdrop"));
 		driver:SetValue(desc.driver or 1);
-		
+
 		ui:InsertFrame(driver_NS);
-		
+
 		ui:InsertFrame(driver_BS);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("ButtonSkin"));
 		local dd_buttonskin = VFLUI.MakeButtonSkinSelectButton(er, desc.bs);
 		dd_buttonskin:Show();
 		er:EmbedChild(dd_buttonskin); er:Show();
 		ui:InsertFrame(er);
-		
+
 		ui:InsertFrame(driver_BD);
-		
+
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Backdrop"));
 		local dd_backdrop = VFLUI.MakeBackdropSelectButton(er, desc.bkd);
 		dd_backdrop:Show();
 		er:EmbedChild(dd_backdrop); er:Show();
 		ui:InsertFrame(er);
-		
+
 		-------------- Texture
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Texture parameters")));
 		local er = VFLUI.EmbedRight(ui, VFLI.i18n("Texture"));
 		local tsel = VFLUI.MakeTextureSelectButton(er, desc.texture); tsel:Show();
 		er:EmbedChild(tsel); er:Show();
 		ui:InsertFrame(er);
-		
+
 		local chk_dyntexture = VFLUI.Checkbox:new(ui); chk_dyntexture:Show();
 		chk_dyntexture:SetText(VFLI.i18n("Use texture variable"));
 		if desc and desc.dyntexture then chk_dyntexture:SetChecked(true); else chk_dyntexture:SetChecked(); end
 		ui:InsertFrame(chk_dyntexture);
-		
+
 		local tex = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("Texture variable"), state, "TexVar_");
 		if desc and desc.tex then tex:SetSelection(desc.tex); end
-		
+
 		-------------- Cooldown Display
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("Cooldown parameters")));
 		local ercd = VFLUI.EmbedRight(ui, VFLI.i18n("Cooldown"));
 		local cd = VFLUI.MakeCooldownSelectButton(ercd, desc.cd); cd:Show();
 		ercd:EmbedChild(cd); ercd:Show();
 		ui:InsertFrame(ercd);
-		
+
 		-------------- Game Tooltip Display
 		ui:InsertFrame(VFLUI.Separator:new(ui, VFLI.i18n("GameTooltip parameters")));
 		local gt = RDXUI.MakeSlotSelectorDropdown(ui, VFLI.i18n("GameTooltip"), state, "GameTooltips_");
 		if desc and desc.gt then gt:SetSelection(desc.gt); end
-		
+
 		function ui:GetDescriptor()
-			return { 
-				feature = "texture_cooldown"; 
+			return {
+				feature = "texture_cooldown";
 				version = 1;
 				name = ed_name.editBox:GetText();
 				w = ed_width:GetSelection();
@@ -237,16 +237,16 @@ RDX.RegisterFeature({
 				gt = gt:GetSelection();
 			};
 		end
-		
-		ui.Destroy = VFL.hook(function(s) 
+
+		ui.Destroy = VFL.hook(function(s)
 			driver:Destroy(); driver = nil;
 		end, ui.Destroy);
 
 		return ui;
 	end;
 	CreateDescriptor = function()
-		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "CENTER"; font.justifyH = "CENTER";
-		return { 
+		local font = VFL.copy(Fonts.Default); font.size = 8; font.justifyV = "MIDDLE"; font.justifyH = "CENTER";
+		return {
 			feature = "texture_cooldown";
 			version = 1;
 			name = "cooldown1";

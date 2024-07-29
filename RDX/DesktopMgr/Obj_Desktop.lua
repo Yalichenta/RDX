@@ -17,7 +17,7 @@ DesktopEvents = DispatchTable:new();
 local currentDesktop = nil;
 local currentpath = nil;
 
---[[ 
+--[[
 DESKTOP events
 To open a desktop
 DesktopEvents:Dispatch("DESKTOP_OPEN", name);
@@ -97,7 +97,7 @@ RDXDK.Desktop = {};
 function RDXDK.Desktop:new(parent)
 	local self = VFLUI.AcquireFrame("Frame");
 	self:SetParent(RDXParent);
-	
+
 	-------------------------------------------------
 	-- frameList contain all windows of the desktop.
 	-- framePropsList properties of each window.
@@ -107,10 +107,10 @@ function RDXDK.Desktop:new(parent)
 	function self:_GetFrameList() return frameList; end
 	function self:_GetFrameProps(name) return framePropsList[name]; end
 	function self:_GetFramePropsList() return framePropsList; end
-	
-	-- will containe the root frameprops 
+
+	-- will containe the root frameprops
 	local framepropsroot = nil;
-	
+
 	-----------------------------------------------------------------------
 	-- When a window is closed, his position is stored in the root context
 	-----------------------------------------------------------------------
@@ -136,13 +136,13 @@ function RDXDK.Desktop:new(parent)
 			framepropsroot.sp[name].dgp = nil;
 		end
 	end
-	
+
 	----------------------------------------------
 	-- Lock/Unlock the desktop
 	----------------------------------------------
 	local lockstate = true;
 	function self:_IsLocked() return lockstate; end
-	
+
 	local function LockDesktop()
 		RDXDK:Debug(6, "LockDesktop");
 		for name, frame in pairs(frameList) do
@@ -150,7 +150,7 @@ function RDXDK.Desktop:new(parent)
 		end
 		lockstate = true;
 	end
-	
+
 	local function UnlockDesktop()
 		RDXDK:Debug(6, "UnlockDesktop");
 		for name, frame in pairs(frameList) do
@@ -158,46 +158,46 @@ function RDXDK.Desktop:new(parent)
 		end
 		lockstate = nil;
 	end
-	
+
 	-- GAMETOOLTIP
 	local function UpdateGameTooltip(desc)
-		RDXDK.SetGameTooltip(desc);
+		--RDXDK.SetGameTooltip(desc);
 	end
-	
+
 	local function UpdateRealid(desc)
-		RDXDK.SetRealid(desc);
+		--RDXDK.SetRealid(desc);
 	end
-	
+
 	local function UpdateBlizzMenu(desc)
-		RDXDK.SetBlizzMenu(desc);
+		--RDXDK.SetBlizzMenu(desc);
 	end
-	
+
 	local function LockGameTooltip()
 		RDXDK:Debug(6, "LockGameTooltip");
-		local desc = RDXDK.GetLockGameTooltip();
-		local desc2 = RDXDK.GetLockRealid();
-		local desc3 = RDXDK.GetLockBlizzMenu();
-		if framepropsroot then
-			framepropsroot.gametooltip = desc;
-			framepropsroot.realid = desc2;
-			framepropsroot.blizzmenu = desc3;
-		end
+		--local desc = RDXDK.GetLockGameTooltip();
+		--local desc2 = RDXDK.GetLockRealid();
+		--local desc3 = RDXDK.GetLockBlizzMenu();
+		--if framepropsroot then
+		--	framepropsroot.gametooltip = desc;
+		--	framepropsroot.realid = desc2;
+		--	framepropsroot.blizzmenu = desc3;
+		--end
 	end
-	
+
 	local function UnlockGameTooltip()
 		RDXDK:Debug(6, "UnlockGameTooltip");
-		RDXDK.SetUnlockGameTooltip();
-		RDXDK.SetUnlockRealid();
-		RDXDK.SetUnlockBlizzMenu();
+		--RDXDK.SetUnlockGameTooltip();
+		--RDXDK.SetUnlockRealid();
+		--RDXDK.SetUnlockBlizzMenu();
 	end
-	
+
 	-- ALERT
 	local function UpdateAlerts(topstack_props, bottomstack_props)
 		if topstack_props then
 			--RDXBM.SetAlertsLocation(topstack_props, bottomstack_props);
 		end
 	end
-	
+
 	local function LockAlerts()
 		--local topstack_props, bottomstack_props = RDXBM.GetStackProps();
 		--local ctffont = RDXDK.GetLockCombatTextFont();
@@ -207,11 +207,11 @@ function RDXDK.Desktop:new(parent)
 		--	framepropsroot.ctffont = ctffont;
 		--end
 	end
-	
+
 	local function UnlockAlerts()
 		--RDXBM.SetUnlockAlerts();
 	end
-	
+
 	----------------------------------------------
 	-- Viewport management
 	----------------------------------------------
@@ -240,10 +240,10 @@ function RDXDK.Desktop:new(parent)
 			froot.offsetbottom = bottom;
 		end
 	end
-	
+
 	-- call by desktop_basic
 	-- call by update
-	
+
 	local function UpdateRDXIconPosition(anchorx, anchory, save)
 		if save then
 			if framepropsroot then
@@ -254,7 +254,7 @@ function RDXDK.Desktop:new(parent)
 			RDX.SetRDXIconLocation(anchorx, anchory);
 		end
 	end
-	
+
 	local function UpdateRDXIconType(mtxt, save)
 		if save then
 			if framepropsroot then
@@ -264,13 +264,13 @@ function RDXDK.Desktop:new(parent)
 			RDX.ToggleRDXIcon(mtxt);
 		end
 	end
-	
-	
+
+
 	-- TEXT
 	local function UpdateCombatText(font)
 		RDXDK.SetCombatTextFont(font or Fonts.Default10);
 	end
-	
+
 	-- NAMEPLATE
 	local function UpdateNameplate(desc, flag)
 		RDXDK.SetNameplate(desc);
@@ -279,12 +279,12 @@ function RDXDK.Desktop:new(parent)
 			framepropsroot.nameplates = desc;
 		end
 	end
-	
+
 	--
 	local function UpdateBlizzard(desc)
 		RDXDK.SetBlizzard(desc);
 	end
-	
+
 	local function LockBlizzard()
 		RDXDK:Debug(6, "LockBlizzard");
 		local desc = RDXDK.GetLockBlizzard();
@@ -293,12 +293,12 @@ function RDXDK.Desktop:new(parent)
 			framepropsroot.blizzard = desc;
 		end
 	end
-	
+
 	local function UnlockBlizzard()
 		RDXDK:Debug(6, "UnlockBlizzard");
 		RDXDK.SetUnlockBlizzard();
 	end
-	
+
 	--
 	DesktopEvents:Bind("DESKTOP_LOCK", nil, LockDesktop, "desktop");
 	DesktopEvents:Bind("DESKTOP_UNLOCK", nil, UnlockDesktop, "desktop");
@@ -318,18 +318,18 @@ function RDXDK.Desktop:new(parent)
 	DesktopEvents:Bind("DESKTOP_BLIZZARD", nil, UpdateBlizzard, "desktop");
 	DesktopEvents:Bind("DESKTOP_BLIZZARD_LOCK", nil, LockBlizzard, "desktop");
 	DesktopEvents:Bind("DESKTOP_BLIZZARD_UNLOCK", nil, UnlockBlizzard, "desktop");
-	
+
 	local function LayoutFrame(name, noanim)
 		local frame, frameprops = frameList[name], framePropsList[name];
 		RDXDK:Debug(9, " -- LayoutFrame(".. name ..")");
 		-- If this window doesn't need to be laid out, don't.
 		if frame._dk_nolayout or frame._dk_layout then return true; end
-		
+
 		if not frame:WMGetPositionalFrame() then return nil; end
-		
+
 		-- Don't layout secure windows during ICLD
 		if frame.secure and InCombatLockdown() then return true; end
-		
+
 		-- Apply scale, alpha, stratum, level
 		if name ~= "root" then
 			frame:SetScale(frameprops.scale);
@@ -341,13 +341,13 @@ function RDXDK.Desktop:new(parent)
 		else
 			frame:WMGetPositionalFrame():SetFrameStrata("LOW");
 		end
-		
+
 		-- deprecated
 		--DesktopEvents:Dispatch("EMBEDDEDWINDOW_UPDATE", name, frameprops.scale, frameprops.alpha, frameprops.strata);
-		
+
 		-- Clear preexisting layout.
 		frame:WMGetPositionalFrame():ClearAllPoints();
-		
+
 		-- If we're docked...
 		local di = RDXDK.GetDockPoints(frameprops);
 		if di and (not RDXDK.IsDGP(frameprops)) and name ~= "root" then
@@ -394,18 +394,18 @@ function RDXDK.Desktop:new(parent)
 				local l,t,r,b = VFLUI.GetUniversalBoundary(rgn);
 				frameprops.l = l; frameprops.t = t; frameprops.r = r; frameprops.b = b; frameprops.ap = "TOPLEFT";
 				RDXDK:Debug(9, "   -- LayoutFrame CENTER(RDXParent)");
-				
+
 			end
-			frame._dk_layout = true; 
+			frame._dk_layout = true;
 		end
-		
+
 		frame:Show();
 		--RDX:Debug(5, "Show WindowObject<", frame._dk_name, ">");
 		frame:UpdateUnlockOverlay(frameprops);
-		
+
 		return true;
 	end
-	
+
 	local function LayoutDockGroup(name, noanim)
 		RDXDK:Debug(8, "LayoutDockGroup(".. name ..")");
 		local frame, frameprops = frameList[name], framePropsList[name];
@@ -416,12 +416,12 @@ function RDXDK.Desktop:new(parent)
 			if not dgpframeprops then
 				--RDXDK:Debug(8, " -- LayoutDockGroup doesn't have a DGP");
 				dgpframeprops = frameprops;
-				RDXDK.MakeDockGroupParent(dgpframeprops); 
+				RDXDK.MakeDockGroupParent(dgpframeprops);
 			end
 			local fplist, fplistmissed = RDXDK.GetlistDockGroup(dgpframeprops);
 			for _,fp in pairs(fplist) do
 				RDXDK:Debug(8, " -- LayoutDockGroup DOCK FRAME(".. fp.name ..")");
-				if frameList[fp.name] then 
+				if frameList[fp.name] then
 					LayoutFrame(fp.name, noanim);
 				end
 			end
@@ -435,7 +435,7 @@ function RDXDK.Desktop:new(parent)
 			LayoutFrame(name, noanim);
 		end
 	end
-	
+
 	local function LayoutAll()
 		for name,frame in pairs(frameList) do
 			if (not frame._dk_nolayout) and (not frame._dk_layout) then
@@ -443,13 +443,13 @@ function RDXDK.Desktop:new(parent)
 			end
 		end
 	end
-	
-	
+
+
 	function self:LayoutDesktop()
 		RDXDK:Debug(7, "LayoutDesktop");
 		LayoutAll();
 	end
-	
+
 	local function UnlayoutFrame(name, noanim)
 		RDXDK:Debug(9, "UnlayoutFrame(".. name ..")");
 		local frame, frameprops = frameList[name], framePropsList[name];
@@ -463,7 +463,7 @@ function RDXDK.Desktop:new(parent)
 			return true;
 		end
 	end
-	
+
 	local function UnlayoutDockGroup(name)
 		RDXDK:Debug(8, "UnlayoutDockGroup(".. name ..")");
 		local frame, frameprops = frameList[name], framePropsList[name];
@@ -476,7 +476,7 @@ function RDXDK.Desktop:new(parent)
 		end
 		return true;
 	end
-	
+
 	local function UnlayoutAll()
 		for name,frame in pairs(frameList) do
 			if (not frame._dk_nolayout) and (not frame._dk_layout) then
@@ -484,7 +484,7 @@ function RDXDK.Desktop:new(parent)
 			end
 		end
 	end
-	
+
 	function self:UnlayoutDesktop()
 		RDXDK:Debug(7, "UnlayoutDesktop");
 		UnlayoutAll();
@@ -497,7 +497,7 @@ function RDXDK.Desktop:new(parent)
 				local wtype = framePropsList[name].feature;
 				if wtype == "desktop_window" or wtype == "desktop_statuswindow" then
 					RDXDB._RemoveInstance(name);
-				elseif wtype == "desktop_windowless" then 
+				elseif wtype == "desktop_windowless" then
 					local wless = RDXDK.GetWindowLess(name);
 					wless.Close(frame, name);
 				end
@@ -506,10 +506,10 @@ function RDXDK.Desktop:new(parent)
 			frameList[name] = nil;
 		end
 	end
-	
+
 	-----------------------------------------
 	-- WINDOW
-	
+
 	local function windowUpdate(name, key, value, value2)
 		RDXDK:Debug(6, "windowUpdate " .. name);
 		local frame = frameList[name];
@@ -562,7 +562,7 @@ function RDXDK.Desktop:new(parent)
 			RDX.printE("Window " .. name .. " is not in the desktop");
 		end
 	end
-	
+
 	local function windowUpdateAll(key, value)
 		RDXDK:Debug(6, "windowUpdateAll " .. key);
 		for name, frameProps in pairs(framePropsList) do
@@ -597,7 +597,7 @@ function RDXDK.Desktop:new(parent)
 			end
 		end
 	end
-	
+
 	local function windowOpen(name)
 		local wtype = "";
 		if name == "root" then
@@ -612,13 +612,13 @@ function RDXDK.Desktop:new(parent)
 				wtype = "desktop_windowless";
 			end
 		end
-	
+
 		RDXDK:Debug(6, "windowOpen " .. name .. ":" .. wtype);
 		if not frameList[name] then
 			local frame;
 			if wtype == "desktop_window" or wtype == "desktop_statuswindow" then
 				frame = RDXDB.GetObjectInstance(name);
-			elseif wtype == "desktop_windowless" then 
+			elseif wtype == "desktop_windowless" then
 				local wless = RDXDK.GetWindowLess(name);
 				if wless then
 					frame = wless.Open(name);
@@ -659,7 +659,7 @@ function RDXDK.Desktop:new(parent)
 				RDXDK.ImbueManagedFrame(frame, name);
 				frameList[name] = frame;
 				framePropsList[name] = frameprops;
-				if dolayout then 
+				if dolayout then
 					LayoutFrame(name);
 				end
 				if not lockstate then frame:Unlock(frameprops); end
@@ -668,7 +668,7 @@ function RDXDK.Desktop:new(parent)
 			--RDX.printE("Window " .. name .. " already add");
 		end
 	end
-	
+
 	local function windowClose(name)
 		local wtype = "";
 		if name == "root" then
@@ -683,7 +683,7 @@ function RDXDK.Desktop:new(parent)
 				wtype = "desktop_windowless";
 			end
 		end
-		
+
 		RDXDK:Debug(6, "windowClose " .. name);
 		-- store the position in root feature
 		local frame = frameList[name];
@@ -699,7 +699,7 @@ function RDXDK.Desktop:new(parent)
 			RDXDK.UnimbueManagedFrame(frame);
 			if wtype == "desktop_window" or wtype == "desktop_statuswindow" then
 				RDXDB._RemoveInstance(name);
-			elseif wtype == "desktop_windowless" then 
+			elseif wtype == "desktop_windowless" then
 				local wless = RDXDK.GetWindowLess(name);
 				wless.Close(frame, name);
 			end
@@ -711,7 +711,7 @@ function RDXDK.Desktop:new(parent)
 			--RDX.printE("Window " .. name .. " is not in the desktop");
 		end
 	end
-	
+
 	local function windowRebuild(name)
 		local wtype = "";
 		if name == "root" then
@@ -726,7 +726,7 @@ function RDXDK.Desktop:new(parent)
 				wtype = "desktop_windowless";
 			end
 		end
-		
+
 		RDXDK:Debug(6, "windowRebuild " .. name);
 		local frame = frameList[name];
 		if frame then
@@ -751,7 +751,7 @@ function RDXDK.Desktop:new(parent)
 			--RDX.printE("Window " .. name .. " is not in the desktop");
 		end
 	end
-	
+
 	local function windowRebuildAll()
 		RDXDK:Debug(6, "windowRebuildAll");
 		for name, frameProps in pairs(framePropsList) do
@@ -778,7 +778,7 @@ function RDXDK.Desktop:new(parent)
 			end
 		end
 	end
-	
+
 	local function windowResetPosition()
 		RDXDK:Debug(6, "windowResetPosition");
 		for name, frameProps in pairs(framePropsList) do
@@ -787,7 +787,7 @@ function RDXDK.Desktop:new(parent)
 			frameProps["l"] = nil; frameProps["t"] = nil; frameProps["r"] = nil; frameProps["b"] = nil;
 		end
 	end
-	
+
 	DesktopEvents:Bind("WINDOW_OPEN", nil, windowOpen, "desktop");
 	DesktopEvents:Bind("WINDOW_CLOSE", nil, function(name, wtype) windowClose(name, wtype); end, "desktop");
 	DesktopEvents:Bind("WINDOW_REBUILD", nil, windowRebuild, "desktop");
@@ -795,7 +795,7 @@ function RDXDK.Desktop:new(parent)
 	DesktopEvents:Bind("WINDOW_UPDATE", nil, windowUpdate, "desktop");
 	DesktopEvents:Bind("WINDOW_UPDATE_ALL", nil, windowUpdateAll, "desktop");
 	DesktopEvents:Bind("WINDOW_ResetPosition", nil, windowUpdateAll, "desktop");
-	
+
 	local function windowdock(src, srcpt, tgt, tgtpt, offset)
 		if RDXDK.Check2Dock(src, srcpt, tgt, tgtpt) then
 			if offset then
@@ -815,7 +815,7 @@ function RDXDK.Desktop:new(parent)
 			windowUpdateAll("OVERLAY");
 		end
 	end
-	
+
 	local function windowundock(src, srcpt)
 		if RDXDK.IsDockedPoint(src, srcpt) then
 			UnlayoutDockGroup(src.name);
@@ -825,13 +825,13 @@ function RDXDK.Desktop:new(parent)
 			windowUpdateAll("OVERLAY");
 		end
 	end
-	
+
 	local function windowparentdock(src)
 		RDXDK.MakeDockGroupParent(src);
 		UnlayoutDockGroup(src.name);
 		LayoutDockGroup(src.name, true);
 	end
-	
+
 	local function windowdockoffset(src, srcpt, x, y)
 		local di = RDXDK.GetDockPoints(src);
 		local ri = di[srcpt];
@@ -843,16 +843,16 @@ function RDXDK.Desktop:new(parent)
 			windowUpdateAll("OVERLAY");
 		end
 	end
-	
+
 	DesktopEvents:Bind("WINDOW_DOCK", nil, windowdock, "desktop");
 	DesktopEvents:Bind("WINDOW_UNDOCK", nil, windowundock, "desktop");
 	DesktopEvents:Bind("WINDOW_PARENTDOCK", nil, windowparentdock, "desktop");
 	DesktopEvents:Bind("WINDOW_DOCKOFFSET", nil, windowdockoffset, "desktop");
-	
+
 	----------------------------------------------
 	-- States manager
 	----------------------------------------------
-	
+
 	--Frameprops.states = {}
 	--Frameprops.states.SOLO = {};
 	--Frameprops.states.SOLO.OnSelect = {};
@@ -865,13 +865,13 @@ function RDXDK.Desktop:new(parent)
 	--Frameprops.states.SOLO.OnSelect["bb"].srcpt
 	--Frameprops.states.SOLO.OnSelect["bb"].tgtname
 	--Frameprops.states.SOLO.OnSelect["bb"].tgtpt
-	
+
 	if not RDXU.currentstate then RDXU.currentstate = "SOLO"; end
-	
+
 	local function ChangeState(value)
 		if framepropsroot then
 			--RDX.printI(VFLI.i18n("Leave mode: ") .. RDXU.currentstate);
-		
+
 			--local tbl = framepropsroot.states[RDXU.currentstate].OnUnselect;
 			-- close windows
 			--for k,v in pairs(tbl) do
@@ -879,7 +879,7 @@ function RDXDK.Desktop:new(parent)
 			--		windowClose(v.name);
 			--	end
 			--end
-			
+
 			local tbl = framepropsroot.states[value].OnSelect;
 			-- open windows
 			for k,v in pairs(tbl) do
@@ -890,7 +890,7 @@ function RDXDK.Desktop:new(parent)
 					end
 				end
 			end
-			
+
 			for k,v in pairs(tbl) do
 				if v.action == "WINDOW_CLOSE" then
 					if frameList[v.name] then
@@ -899,7 +899,7 @@ function RDXDK.Desktop:new(parent)
 					end
 				end
 			end
-			
+
 			-- dock windows
 			for k,v in pairs(tbl) do
 				if v.action == "WINDOW_DOCK" then
@@ -907,30 +907,30 @@ function RDXDK.Desktop:new(parent)
 					--DesktopEvents:Dispatch(k, v.srcname, v.srcpt, v.tgtname, v.tgtpt);
 				end
 			end
-			
+
 			RDXU.currentstate = value;
 			RDX.printI(VFLI.i18n("Enter mode: ") .. RDXU.currentstate);
 		end
 	end
-	
+
 	local newvalue;
 	local function SecuredChangeState(value)
-		if not InCombatLockdown() then 
-			ChangeState(value); 
+		if not InCombatLockdown() then
+			ChangeState(value);
 		else
 			newvalue = value;
 		end
 	end
-	
+
 	VFLEvents:Bind("PLAYER_COMBAT", nil, function(flag)
 		if not flag and newvalue then
 			ChangeState(newvalue);
 			newvalue = nil;
 		end
 	end, "desktop");
-	
+
 	DesktopEvents:Bind("DESKTOP_STATE", nil, SecuredChangeState, "desktop");
-	
+
 	DesktopEvents:Bind("DESKTOP_RESETSTATE", nil, function()
 		local _, _, auiname = RDXDB.ParsePath(RDXU.AUI);
 		VFL.empty(framepropsroot.states);
@@ -1021,25 +1021,25 @@ function RDXDK.Desktop:new(parent)
 		framepropsroot.states.ARENA.OnSelect.boss.action = "WINDOW_CLOSE";
 		ReloadUI();
 	end, "desktop");
-	
+
 	-- RDX ROSTER
 	--RDXEvents:Bind("ROSTER_STATE", nil, SecuredChangeState, "desktop");
-	
+
 	-- BETA nameplate
 	--local nstate = RDX.GenericWindowState:new();
 	--local dstate = RDX.DesignState:new();
 	--dstate:SetContainingWindowState(nstate);
-	
+
 	local function nameplate(path)
 		if path == nil then
 			self.nameplate = nil;
 		else
-			self.nameplate = RDX.DesignGeneratingFunctor(dstate, path);	
+			self.nameplate = RDX.DesignGeneratingFunctor(dstate, path);
 		end
 	end
-	
+
 	--DesktopEvents:Bind("NAMEPLATE", nil, nameplate, "desktop");
-	
+
 	self.Destroy = VFL.hook(function(s)
 		RDXEvents:Unbind("desktop");
 		DesktopEvents:Unbind("desktop");
@@ -1055,10 +1055,10 @@ function RDXDK.Desktop:new(parent)
 		VFL.empty(framePropsList); framePropsList = nil;
 		s.LayoutDesktop = nil; s.UnlayoutDesktop = nil;
 		s._IsLocked = nil;
-		s._GetFrame = nil; s._GetFrameList = nil; 
+		s._GetFrame = nil; s._GetFrameList = nil;
 		s._GetFrameProps = nil; s._GetFramePropsList = nil;
 	end, self.Destroy);
-	
+
 	return self;
 end
 
@@ -1068,13 +1068,13 @@ end
 RDXDK.DesktopState = {};
 function RDXDK.DesktopState:new()
 	local st = RDXDB.ObjectState:new();
-	
+
 	st.OnResetSlots = function(state)
 		state:AddSlot("Desktop", nil);
 	end;
-	
+
 	st.Code = VFL.Snippet:new();
-	
+
 	st:Clear();
 	return st;
 end
@@ -1084,15 +1084,15 @@ local dkState = RDXDK.DesktopState:new();
 RDXDK._GetdkState = function() return dkState; end;
 
 ----------------------------------------------------------------------
--- Desktop meta-control 
+-- Desktop meta-control
 ----------------------------------------------------------------------
 local function SetupDesktop(path, dk, desc)
 	if (not path) or (not dk) or (not desc) then return nil; end
-	
+
 	-- init
 	dkState:Clear();
 	dkState:ResetSlots();
-	
+
 	-- Load the features
 	dkState:LoadDescriptor(desc, path);
 	local _errs = VFL.Error:new();
@@ -1101,9 +1101,9 @@ local function SetupDesktop(path, dk, desc)
 		return nil;
 	end
 	_errs = nil;
-	
+
 	local code = dkState.Code:GetCode();
-	
+
 	if RDXM_Debug.IsStoreCompilerActive() then
 		RDXM_Debug.StoreCompiledObject(path, code);
 	end
@@ -1128,7 +1128,7 @@ RDX.IsDesktopEditorOpen = RDXIE.IsFeatureEditorOpen;
 function RDX.DesktopEditor(state, callback, augText, parent)
 	local dlg = RDXIE.FeatureEditor(state, callback, augText, parent);
 	if not dlg then return nil; end
-	
+
 
 	------ Close procedure
 	dlg.Destroy = VFL.hook(function(s)
@@ -1139,7 +1139,7 @@ end
 local function EditDesktop(parent, path, md)
 	if RDX.IsDesktopEditorOpen() then return; end
 	dkState:LoadDescriptor(md.data, path);
-	RDX.DesktopEditor(dkState, function(x) 
+	RDX.DesktopEditor(dkState, function(x)
 		md.data = x:GetDescriptor();
 		RDXDB.NotifyUpdate(path);
 	end, path, parent);
@@ -1255,7 +1255,7 @@ RDXDB.RegisterObjectType({
 				RDXDB.OpenObject(path, "Edit", dlg);
 			end
 		});
-		--if RDXDK.GetCurrentDesktopPath() ~= path then 
+		--if RDXDK.GetCurrentDesktopPath() ~= path then
 		--	table.insert(mnu, {
 		--		text = VFLI.i18n("Open"),
 		--		func = function()
@@ -1300,7 +1300,7 @@ RDXDB.RegisterObjectType({
 function RDXDK.CopyDesktopDefault()
 	local pkg = RDXDB.GetPackage("RDXDiskSystem", "desktops")
 	for objName, obj in pairs(pkg) do
-		if type(obj) == "table" and obj.ty == "Desktop" then 
+		if type(obj) == "table" and obj.ty == "Desktop" then
 			local _, _, a, b, c = string.find(objName, "^(.*)_(.*)_(.*)$");
 			if b and RDXDB.GetDisk(a) and c == "default" then
 				--VFL.print("RDXDiskSystem:desktops:" .. a .. "_" .. b .. "_" .. c);
@@ -1312,7 +1312,7 @@ function RDXDK.CopyDesktopDefault()
 end
 
 ---------------------------
--- 
+--
 ---------------------------
 
 function RDXDK.GetCurrentDesktop()
@@ -1374,7 +1374,7 @@ end
 --	end
 --end);
 
---RDXDBEvents:Bind("OBJECT_UPDATED", nil, function(dk, pkg, file) 
+--RDXDBEvents:Bind("OBJECT_UPDATED", nil, function(dk, pkg, file)
 --	local path = RDXDB.MakePath(dk,pkg,file);
 --	local _,_,_,ty = RDXDB.GetObjectData(path)
 --	if ty == "Desktop" and path == RDXDK.GetCurrentDesktopPath() then RDXDK.SecuredChangeDesktop(path); end
@@ -1388,7 +1388,7 @@ end
 
 local caq = {};
 function RDXDK.QueueLockdownAction(method, a1, a2, a3, a4)
-	if not InCombatLockdown() then 
+	if not InCombatLockdown() then
 		method(a1, a2, a3, a4);
 	else
 		--if not caq[object] then caq[object] = method; end
@@ -1437,17 +1437,17 @@ local function ChangeDesktop(path, nosave)
 		DesktopEvents:Dispatch("DESKTOP_STATE", RDXU.currentstate);
 		--currentDesktop:ShowAll();
 	end
-	
+
 	--RDXPM.RemoveAllButtonsWB();
-	
+
 	--if RDX.smooth then
-	--	VFLT.schedule(RDX.smooth + 0.1, function() 
+	--	VFLT.schedule(RDX.smooth + 0.1, function()
 			--RDXPM.GetMainPane():SetDesktopName("|cFFFF0000" .. path .. "|r", path);
 			--currentpath = path;
 			-- open
 			--currentDesktop = RDXDB.GetObjectInstance(path);
-			
-			--if currentDesktop then 
+
+			--if currentDesktop then
 			--	if not RDXDK.IsDesktopLocked() then RDXDK.LockDesktop(); RDXDK.CloseMiniWindowList(); end
 			--else
 			--	RDXPM.SetStatusText("|cFFFF0000ERROR|r");
@@ -1457,16 +1457,16 @@ local function ChangeDesktop(path, nosave)
 	--	currentpath = path;
 		-- open
 	--	currentDesktop = RDXDB.GetObjectInstance(path);
-		
-		--if currentDesktop then 
+
+		--if currentDesktop then
 		--	if not RDXDK.IsDesktopLocked() then RDXDK.LockDesktop(); RDXDK.CloseMiniWindowList(); end
 		--else
 		--	RDXPM.SetStatusText("|cFFFF0000ERROR|r");
 		--end
 	--end
-	
+
 	-- state
-	
+
 end
 RDXDK._ChangeDesktop = ChangeDesktop;
 
@@ -1478,11 +1478,11 @@ RDXDK._ChangeDesktop = ChangeDesktop;
 local newpath;
 function RDXDK.SecuredChangeDesktop(path, nosave)
 	RDXDK:Debug(4, "RDXDK.SecuredChangeDesktop(".. path ..")");
-	
+
 	if not path or path == "" then RDX.printE("No desktop Open AUI Manager"); return; end
 	--VFL.print(path);
-	if not InCombatLockdown() then 
-		ChangeDesktop(path, nosave); 
+	if not InCombatLockdown() then
+		ChangeDesktop(path, nosave);
 	else
 		newpath = path;
 	end

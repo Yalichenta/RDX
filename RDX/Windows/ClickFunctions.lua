@@ -22,6 +22,8 @@
 --   UnitFrame appropriately. If a ClickAction does not provide this, it will be considered
 --   "insecure" and will not apply to secure frames.
 
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
+
 -- Do nothing
 RDX.RegisterClickAction({
 	name = "none";
@@ -33,7 +35,7 @@ RDX.RegisterClickAction({
 -- Target unit
 local function target_rdx_unit(u) u:Target(); end
 RDX.RegisterClickAction({
-	name = "target"; 
+	name = "target";
 	title = "Target Unit";
 	GetUI = VFL.Nil;
 	GetClickFunc = function() return VFL.Noop; end;
@@ -44,7 +46,7 @@ RDX.RegisterClickAction({
 
 -- Assist unit
 RDX.RegisterClickAction({
-	name = "assist"; 
+	name = "assist";
 	title = "Assist Unit";
 	GetUI = VFL.Nil;
 	GetClickFunc = function() return VFL.Noop; end;
@@ -58,7 +60,7 @@ local function menuFunc(frame, unit)
 	local blizz_func = nil;
 	local mode = "normal"
 	if UnitIsUnit("pet","vehicle") then mode= "vehicle" ; end
- 
+
 	if (unit == "player" and mode=="normal") then
 		blizz_func = PlayerFrameDropDown;
 	elseif (unit == "player" and mode=="vehicle") then
@@ -102,10 +104,10 @@ local function menuFunc(frame, unit)
 end
 
 RDX.RegisterClickAction({
-	name = "menu"; 
+	name = "menu";
 	title = "Open Unit Menu";
 	GetUI = VFL.Nil;
-	GetClickFunc = function() 
+	GetClickFunc = function()
 		return VFL.Noop;
 	end;
 	ApplySecureAttributes = function(desc, uf, pfx, id)
@@ -119,10 +121,10 @@ local menuCompact = function()
 end
 
 RDX.RegisterClickAction({
-	name = "rdxmenu"; 
+	name = "rdxmenu";
 	title = "Open RDX Compact Menu";
 	GetUI = VFL.Nil;
-	GetClickFunc = function() 
+	GetClickFunc = function()
 		return VFL.Noop;
 	end;
 	ApplySecureAttributes = function(desc, uf, pfx, id)
@@ -156,10 +158,10 @@ end
 
 local function spellGetUI(parent, desc)
 	-- Get current spell
-	local csp = "(none)"; 
+	local csp = "(none)";
 	if desc and desc.spell then
 		if type(desc.spell) == "number" then
-			csp = GetSpellInfo(desc.spell);
+			csp = GetSpellInfoName(desc.spell);
 			if not csp then csp = "tochange"; end
 		else
 			csp = desc.spell;
@@ -175,16 +177,16 @@ local function spellGetUI(parent, desc)
 	ui:InsertFrame(spellEdit);
 
 	local btn = VFLUI.Button:new(spellEdit);
-	btn:SetHeight(25); btn:SetWidth(25); 
+	btn:SetHeight(25); btn:SetWidth(25);
 	btn:SetText("...");	btn:SetPoint("RIGHT", spellEdit.editBox, "LEFT");
 	btn:Show();
 	btn:SetScript("OnClick", function()
 		local qq = { };
 		for spell,_ in pairs(RDXSS.GetAllSpells()) do
 			local retVal = spell;
-			table.insert(qq, { 
-				text = retVal, 
-				func = function() 
+			table.insert(qq, {
+				text = retVal,
+				func = function()
 					VFL.poptree:Release();
 					spellEdit.editBox:SetText(retVal);
 				end
@@ -194,11 +196,11 @@ local function spellGetUI(parent, desc)
 		VFL.poptree:Begin(200, 12, btn, "CENTER");
 		VFL.poptree:Expand(nil, qq, 20);
 	end);
-		
+
 	ui.Destroy = VFL.hook(function(s) btn:Destroy(); s.GetDescriptor = nil; end, ui.Destroy);
 	ui.GetDescriptor = function(s)
 		local spelltmp = spellEdit.editBox:GetText();
-		return { spell = RDXSS.GetSpellIdByLocalName(spelltmp) or spelltmp }; 
+		return { spell = RDXSS.GetSpellIdByLocalName(spelltmp) or spelltmp };
 	end;
 
 	return ui;
@@ -215,7 +217,7 @@ RDX.RegisterClickAction({
 		uf:SetAttribute(pfx .. "type" .. id, "spell");
 		local spell;
 		if type(desc.spell) == "number" then
-			spell = GetSpellInfo(desc.spell);
+			spell = GetSpellInfoName(desc.spell);
 		else
 			spell = desc.spell;
 		end
@@ -234,7 +236,7 @@ RDX.RegisterClickAction({
 		uf:SetAttribute(pfx .. "type" .. id, "macro");
 		local spell;
 		if type(desc.spell) == "number" then
-			spell = GetSpellInfo(desc.spell);
+			spell = GetSpellInfoName(desc.spell);
 		else
 			spell = desc.spell;
 		end
@@ -271,7 +273,7 @@ RDX.RegisterClickAction({
 -- A SetFocus click action. (made by superraider)
 ----------------------------------------------------------------------
 RDX.RegisterClickAction({
-	name = "focus"; 
+	name = "focus";
 	title = "Set Unit Focus";
 	GetUI = VFL.Nil;
 	GetClickFunc = function() return VFL.Noop; end;

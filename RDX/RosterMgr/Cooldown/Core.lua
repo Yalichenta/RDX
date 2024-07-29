@@ -73,11 +73,12 @@ end
 function RDXCD.RegisterCooldown(race, boss, class, talent, spellid, duration, group, event, gicon, gtext)
 	if not spellid then VFL.print(VFLI.i18n("|cFFFF0000[RDX]|r Info : Attempt to register an anonymous omni cooldown.")); return; end
 	if cd[spellid] then VFL.print(VFLI.i18n("|cFFFF0000[RDX]|r Info : Attempt to register duplicate object type ") .. spellid .. "."); return; end
-	local spellname, _, icon = GetSpellInfo(spellid);
+	local rsi = C_Spell.GetSpellInfo(spellid);
+	local spellname, icon = rsi and rsi.name, rsi and rsi.iconID
 	if gicon then icon = gicon; end
 	if gtext then spellname = gtext; end
-	if not spellname then 
-		--VFL.print(VFLI.i18n("|cFFFF0000[RDX]|r Info : unknown spellid ") .. spellid .. "."); 
+	if not spellname then
+		--VFL.print(VFLI.i18n("|cFFFF0000[RDX]|r Info : unknown spellid ") .. spellid .. ".");
 		return;
 	end
 	local text = "";

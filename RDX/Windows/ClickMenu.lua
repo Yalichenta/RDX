@@ -3,7 +3,6 @@
 -- Taelnia Perenolde US
 
 -- I cleaned up all the repetetive code into this function that can be called from anywhere to add a button to the unitpopup menu
--- When I get time, I'll see about making this add the buttons into a cascading RDX submenu button to clean up the actual in game interface.
 
 local buttonList = {};
 
@@ -11,43 +10,41 @@ RDX.AddPopupButton = function(label, _func)
 	local button = {};
 
 	button.text = label;
-	button.func = function()
-	  local dropdownFrame = UIDropDownMenu_GetCurrentDropDown();
-	  local unit = dropdownFrame.unit;
-	  local name = dropdownFrame.name;
-	  if UnitExists(unit) then
-	    name = UnitName(unit);
-	  end
-	  _func(dropdownFrame, unit, name);
-  end;
-	button.dist = 0;
-	button.notCheckable = true;
+	button.func = _func
 
 	table.insert(buttonList, button);
 end
 
-local function _RDX_UnitPopup(dropdownMenu, which, unit, name, userData)
-	if( UIDROPDOWNMENU_MENU_LEVEL > 1) then
-		-- only add button when adding main menu, not in submenus
-		return
-	end
-
-	if(dropdownMenu.which == "RAID" or dropdownMenu.which == "SELF" or dropdownMenu.which == "PLAYER" or dropdownMenu.which == "PARTY") then
-		for k, button in pairs(buttonList) do
-			UIDropDownMenu_AddButton(button);
-		end
-	end
+local function _RDX_OnMenuClick_wrapper(button)
+	return (function(contextData) button.func(contextData.unit, contextData.name) end)
 end
-hooksecurefunc("UnitPopup_ShowMenu", _RDX_UnitPopup);
 
+-- add all buttons in buttonList in a RDX submenu for the given menu
+local function _RDX_ModifyMenu_Unit(menu)
+	Menu.ModifyMenu(menu, function(owner, rootDescription, contextData)
+		rootDescription:CreateDivider();
+		local submenu = rootDescription:CreateButton("RDX");
+		for k, button in pairs(buttonList) do
+			submenu:CreateButton(button.text,_RDX_OnMenuClick_wrapper(button) , contextData);
+		end
+	end);
+end
 
-RDX.AddPopupButton(VFLI.i18n("RDX: Add to Assists"), function(frame, unit, name) Logistics.AddAssist(name); end);
-RDX.AddPopupButton(VFLI.i18n("RDX: Remove from Assists"), function(frame, unit, name) Logistics.DropAssist(name); end);
-RDX.AddPopupButton(VFLI.i18n("RDX: Add to Auto-Promote"), function(frame, unit, name) Logistics.AddPromote(name); end);
-RDX.AddPopupButton(VFLI.i18n("RDX: Remove from Auto-Promote"), function(frame, unit, name) Logistics.DropPromote(name); end);
-RDX.AddPopupButton(VFLI.i18n("RDX: View Character Sheet"), function(frame, unit, name) Omni.CS_Ask(name); end);
-RDX.AddPopupButton(VFLI.i18n("RDX: Request CombatLogs"), function(frame, unit, name) Omni.PredefinedQuery(string.lower(name)); end);
-RDX.AddPopupButton(VFLI.i18n("RDX: Request Packages"), function(frame, unit, name) RDXDB.RAU_SeeAddons_Ask(name); end);
+_RDX_ModifyMenu_Unit("MENU_UNIT_SELF")
+_RDX_ModifyMenu_Unit("MENU_UNIT_PARTY")
+_RDX_ModifyMenu_Unit("MENU_UNIT_RAID_PLAYER")
+-- old code was not modifying those two dropdown, but in case one wish to add them just uncomment them
+--_RDX_ModifyMenu_Unit("MENU_UNIT_TARGET")
+--_RDX_ModifyMenu_Unit("MENU_UNIT_FOCUS")
+
+-- note : I'm not sure any of these actually do anything, but adding them should work as expected
+RDX.AddPopupButton(VFLI.i18n("RDX: Add to Assists"), function(unit, name) Logistics.AddAssist(name); end);
+RDX.AddPopupButton(VFLI.i18n("RDX: Remove from Assists"), function(unit, name) Logistics.DropAssist(name); end);
+RDX.AddPopupButton(VFLI.i18n("RDX: Add to Auto-Promote"), function(unit, name) Logistics.AddPromote(name); end);
+RDX.AddPopupButton(VFLI.i18n("RDX: Remove from Auto-Promote"), function(unit, name) Logistics.DropPromote(name); end);
+RDX.AddPopupButton(VFLI.i18n("RDX: View Character Sheet"), function(unit, name) Omni.CS_Ask(name); end);
+RDX.AddPopupButton(VFLI.i18n("RDX: Request CombatLogs"), function(unit, name) Omni.PredefinedQuery(string.lower(name)); end);
+RDX.AddPopupButton(VFLI.i18n("RDX: Request Packages"), function(unit, name) RDXDB.RAU_SeeAddons_Ask(name); end);
 
 --[[
 ----------------------------------------

@@ -1,6 +1,10 @@
 -- GameTooltip.lua
 
--------------------------------------
+
+--[[  Disable the whole file for now. It silently broke for a while but caused erros in TWW
+--    I tried fixing the whole file but kinda failed for now
+
+------------------------------------
 -- Gametooltip
 -------------------------------------
 local opt;
@@ -56,7 +60,7 @@ local function SetGameTooltipFont()
 		--VFLUI.SetFont(ShoppingTooltip3TextLeft1, font, nil, true);
 		--VFLUI.SetFont(ShoppingTooltip3TextLeft2, font, nil, true);
 		--VFLUI.SetFont(ShoppingTooltip3TextLeft3, font, nil, true);
-		
+
 		for i = 1, ShoppingTooltip1:NumLines() do
 			VFLUI.SetFont(_G["ShoppingTooltip1TextRight"..i], font, nil, true);
 		end
@@ -66,7 +70,7 @@ local function SetGameTooltipFont()
 		--for i = 1, ShoppingTooltip3:NumLines() do
 		--	VFLUI.SetFont(_G["ShoppingTooltip3TextRight"..i], font, nil, true);
 		--end
-		
+
 		if GameTooltipMoneyFrame1 then
 			VFLUI.SetFont(GameTooltipMoneyFrame1PrefixText, font, nil, true);
 			VFLUI.SetFont(GameTooltipMoneyFrame1SuffixText, font, nil, true);
@@ -238,11 +242,11 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 		--hack
 		-- Blizzard is repainting the backdrop color in dark blue. only rdx can change the color of the backdrop now.
 		for i, v in ipairs (TooltipsList) do
-			v._SetBackdropColor = v.SetBackdropColor;
+			v._SetBackdropColor = v.SetBackdropColor or VFL.Noop;
 			v.SetBackdropColor = VFL.Noop;
-			v._SetBackdropBorderColor = v.SetBackdropBorderColor;
+			v._SetBackdropBorderColor = v.SetBackdropBorderColor or VFL.Noop;
 			v.SetBackdropBorderColor = VFL.Noop;
-			v._SetBackdrop = v.SetBackdrop;
+			v._SetBackdrop = v.SetBackdrop or VFL.Noop;
 			v.SetBackdrop = VFL.Noop;
 		end
 		-- doesn't work 6.0 ?
@@ -256,7 +260,7 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 				GameTooltip:SetPoint("CENTER", btn, "CENTER");
 			--end
 		end);
-		
+
 		local unit, class, level, classif, item, quality, r, g, b, colortable, requestguid, _;
 		local talents = {};
 		-- for unknown reason, item on world map are blue.
@@ -268,7 +272,7 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 				GameTooltip:_SetBackdropColor(1,1,1,1);
 			end
 		end
-		
+
 		-- Show the target
 		local function setTargetText()
 			if descg.showTarget then
@@ -303,15 +307,15 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 							end
 						end
 						GameTooltip:Show();
-					else 
+					else
 						targetLine = false;
 					end
 				end
 			end
 		end
-		
+
 		VFLT.AdaptiveSchedule2("GameTooltipUpdate", 0.5, setTargetText);
-		
+
 		--GameTooltip:HookScript("OnShow", fix);
 		GameTooltip:HookScript("OnShow", function(self)
 			if descg.hideInCombat and InCombatLockdown() then
@@ -327,30 +331,31 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 		GameTooltip:HookScript("OnHide", function(self)
 			self:_SetBackdropBorderColor(1,1,1,1);
 		end);
-		GameTooltip:HookScript("OnTooltipSetItem", function(self)
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self)
 			--fix();
 			--if descg.hideInCombat and InCombatLockdown() then
 			--	return self:Hide();
 			--end
-			_,item = self:GetItem();
+			_,item = GameTooltip:GetItem();
 			if item then
-				_,_,quality = GetItemInfo(item);
+				_,_,quality = C_Item.GetItemInfo(item);
 				if quality then
 					r, g, b = GetItemQualityColor(quality);
 					if r then
-						self:_SetBackdropBorderColor(r,g,b,1);
+						GameTooltip:_SetBackdropBorderColor(r,g,b,1);
 					end
 				end
 			end
 		end);
-		GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(self)
 			--fix();
-			
+
 			--if descg.hideInCombat and InCombatLockdown() then
 			--	return self:Hide();
 			--end
-			
-			_, unit = self:GetUnit();
+
+			_, unit = GameTooltip:GetUnit();
+			print("rdx tooltip : ",unit)
 			if unit then
 				classif = UnitClassification(unit);
 				_,class = UnitClass(unit);
@@ -358,12 +363,12 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 				if class then
 					-- color BackdropBorder
 					if UnitIsDead(unit) or not UnitIsConnected(unit) then
-						self:_SetBackdropBorderColor(_grey.r, _grey.g, _grey.b, _grey.a);
+						GameTooltip:_SetBackdropBorderColor(_grey.r, _grey.g, _grey.b, _grey.a);
 					-- TODO
 					--elseif not UnitPlayerControlled(unit) and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
 					--	self:_SetBackdropBorderColor(_grey.r, _grey.g, _grey.b, _grey.a);
 					elseif UnitIsFriend("player", unit) then
-						self:_SetBackdropBorderColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b, 1);
+						GameTooltip:_SetBackdropBorderColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b, 1);
 					elseif descg.showDiffColor and level then
 						if level == -1 then
 							level = 85
@@ -373,93 +378,93 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 							level = level + 5
 						end
 						colortable = GetQuestDifficultyColor(level);
-						self:_SetBackdropBorderColor(colortable.r, colortable.g, colortable.b, 1);
+						GameTooltip:_SetBackdropBorderColor(colortable.r, colortable.g, colortable.b, 1);
 					else
-						self:_SetBackdropBorderColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b, 1);
+						GameTooltip:_SetBackdropBorderColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b, 1);
 					end
 				end
-				
+
 				-- append text classif or AFK DND
 				if UnitIsAFK(unit) then
-					self:AppendText(" (AFK)")
+					GameTooltip:AppendText(" (AFK)")
 				elseif UnitIsDND(unit) then
-					self:AppendText(" (DND)")
+					GameTooltip:AppendText(" (DND)")
 				else
 					if classif then
-						self:AppendText(" (" .. classif .. ")");
+						GameTooltip:AppendText(" (" .. classif .. ")");
 					end
 				end
-				
+
 				-- add Talent
 				-- By TipTop
-				--[[ disable no authorization yet
-				if CanInspect(unit) and descg.showTalent then
-					if UnitName(unit) ~= UnitName("player") and UnitLevel(unit) > 9 then
-						local talentline = nil;
-						for i=1, GameTooltip:NumLines() do
-							local left, leftText;
-							left = _G["GameTooltipTextLeft"..i];
-							leftText = left:GetText();
-							if leftText == "Talents:" then
-								talentline = 1;
-							end
-						end
-						if not talentline then
-							if InspectFrame and InspectFrame:IsShown() then	--to not step on default UI's toes
-								GameTooltip:AddDoubleLine("Talents:", "Inspect Frame is open", nil,nil,nil, 1,0,0);
-							elseif Examiner and Examiner:IsShown() then		--same thing with Examiner
-								GameTooltip:AddDoubleLine("Talents:", "Examiner frame is open", nil,nil,nil, 1,0,0);
-							else
-								requestguid = UnitGUID(unit);
-								NotifyInspect(unit);
-								GameTooltip:AddDoubleLine("Talents:", "...");
-							end
-							GameTooltip:Show();
-						end
-					end
-				end]]
+				-- disable no authorization yet
+				--if CanInspect(unit) and descg.showTalent then
+				--	if UnitName(unit) ~= UnitName("player") and UnitLevel(unit) > 9 then
+				--		local talentline = nil;
+				--		for i=1, GameTooltip:NumLines() do
+				--			local left, leftText;
+				--			left = _G["GameTooltipTextLeft"..i];
+				--			leftText = left:GetText();
+				--			if leftText == "Talents:" then
+				--				talentline = 1;
+				--			end
+				--		end
+				--		if not talentline then
+				--			if InspectFrame and InspectFrame:IsShown() then	--to not step on default UI's toes
+				--				GameTooltip:AddDoubleLine("Talents:", "Inspect Frame is open", nil,nil,nil, 1,0,0);
+				--			elseif Examiner and Examiner:IsShown() then		--same thing with Examiner
+				--				GameTooltip:AddDoubleLine("Talents:", "Examiner frame is open", nil,nil,nil, 1,0,0);
+				--			else
+				--				requestguid = UnitGUID(unit);
+				--				NotifyInspect(unit);
+				--				GameTooltip:AddDoubleLine("Talents:", "...");
+				--			end
+				--			GameTooltip:Show();
+				--		end
+				--	end
+				--end
 			end
 		end);
-		
+
 		-- By TipTop
-		--[[ disable no authorization yet
-		local maxtree,pnts,tree,active,left,leftText,right;
-		local function TalentText()
-			if UnitExists("mouseover") then
-				active = GetActiveSpecGroup(1);
-				maxtree = GetPrimaryTalentTree(true);
-				for i=1,3 do
-					_,tree,_,_,pnts = GetTalentTabInfo(i, 1, nil, active);
-					if not tree then break end
-					talents[i] = pnts;
-					if i == maxtree then
-						maxtree = tree;
-					end
-				end
-				for i=1, GameTooltip:NumLines() do
-					left = _G[GameTooltip:GetName().."TextLeft"..i];
-					leftText = left:GetText();
-					if leftText == "Talents:" then	--finds the Talents line and updates with info
-						right = _G[GameTooltip:GetName().."TextRight"..i];
-						right:SetFormattedText("%s (%s)", maxtree or "", table.concat(talents,"/"));
-					end
-					GameTooltip:Show();
-				end
-			end
-			maxtree,pnts,tree = nil	--reset these variables;
-		end]]
-		
+		-- disable no authorization yet
+		--local maxtree,pnts,tree,active,left,leftText,right;
+		--local function TalentText()
+		--	if UnitExists("mouseover") then
+		--		active = GetActiveSpecGroup(1);
+		--		maxtree = GetPrimaryTalentTree(true);
+		--		for i=1,3 do
+		--			_,tree,_,_,pnts = GetTalentTabInfo(i, 1, nil, active);
+		--			if not tree then break end
+		--			talents[i] = pnts;
+		--			if i == maxtree then
+		--				maxtree = tree;
+		--			end
+		--		end
+		--		for i=1, GameTooltip:NumLines() do
+		--			left = _G[GameTooltip:GetName().."TextLeft"..i];
+		--			leftText = left:GetText();
+		--			if leftText == "Talents:" then	--finds the Talents line and updates with info
+		--				right = _G[GameTooltip:GetName().."TextRight"..i];
+		--				right:SetFormattedText("%s (%s)", maxtree or "", table.concat(talents,"/"));
+		--			end
+		--			GameTooltip:Show();
+		--		end
+		--	end
+		--	maxtree,pnts,tree = nil	--reset these variables;
+		--end
+
 		-- By TipTop
-		--[[ disable no authorization yet
-		WoWEvents:Bind("INSPECT_READY", nil, function(guid)
-			if requestguid == guid then
-				TalentText();
-			end
-		end);]]
-		
+		-- disable no authorization yet
+		--WoWEvents:Bind("INSPECT_READY", nil, function(guid)
+		--	if requestguid == guid then
+		--		TalentText();
+		--	end
+		--end);
+
 		local min, max, txt;
 		local kay = VFL.Kay;
-		
+
 		GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
 			if not self.text then
 				self.text = VFLUI.CreateFontString(self);
@@ -485,10 +490,11 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 				self.text:SetText("");
 			end
 		end)
-		
+
 		BNToastFrame_UpdateAnchor = VFL.noop;
 		BNToastFrame:ClearAllPoints();
 		BNToastFrame:SetPoint("CENTER", btnrid, "CENTER");
 	end
 end);
 
+--]]

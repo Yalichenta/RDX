@@ -1,13 +1,14 @@
 ﻿local a, o, myunit, plZX, plZY, x, y, zName, szName, isIndoor, IndoorFlag, indoorMapFileName, mapId, cmaId, gcmd, tmDif, lvl, ang, moveDist, tm
 
 local mapIdsave; -- when entering mini dungeon
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 local RidingSpells = {
-	[75] = GetSpellInfo (33389) or "",
-	[150] = GetSpellInfo (33392) or "",
-	[225] = GetSpellInfo (34092) or "",		-- Expert
-	[300] = GetSpellInfo (34093) or "",		-- Artisan
-	[375] = GetSpellInfo (90265) or "",		-- Master
+	[75] = GetSpellInfoName (33389) or "",
+	[150] = GetSpellInfoName (33392) or "",
+	[225] = GetSpellInfoName (34092) or "",		-- Expert
+	[300] = GetSpellInfoName (34093) or "",		-- Artisan
+	[375] = GetSpellInfoName (90265) or "",		-- Master
 }
 
 function SSS()
@@ -263,7 +264,7 @@ RDXEvents:Bind("INIT_POST_VARIABLES_LOADED", nil, function()
 	VFLP.RegisterFunc("RDXDAL: UnitDB", "ProcessMyUnit", ProcessMyUnit, true);
 
 	for skill, name in pairs (RidingSpells) do
-		if GetSpellInfo (name) then
+		if GetSpellInfoName (name) then
 			myunit.SkillRiding = skill
 			break
 		end

@@ -2,6 +2,7 @@
 -- The SpellFilter object type.
 -----------------------------------
 local dlg = nil;
+local GetSpellInfoName = VFLUI.GetSpellInfo_name;
 
 local function WriteFilter(dest, src)
 	VFL.empty(dest);
@@ -15,7 +16,7 @@ local function WriteFilter(dest, src)
 		end
 		local testnumber = tonumber(v);
 		if testnumber then
-			auname = GetSpellInfo(v);
+			auname = GetSpellInfoName(v);
 			if flag then
 				dest["!" .. auname] = true;
 			else
@@ -51,19 +52,19 @@ RDXDB.RegisterObjectType({
 		dlg:SetWidth(310); dlg:SetHeight(270);
 		dlg:SetText(VFLI.i18n("Edit SpellFilter: ") .. path);
 		dlg:SetClampedToScreen(true);
-		
+
 		VFLUI.Window.StdMove(dlg, dlg:GetTitleBar());
 		if RDXPM.Ismanaged("Spellfilter") then RDXPM.RestoreLayout(dlg, "Spellfilter"); end
 
-		local le_names = VFLUI.ListEditor:new(dlg, md.data, function(cell,data) 
+		local le_names = VFLUI.ListEditor:new(dlg, md.data, function(cell,data)
 			if type(data) == "number" then
-				local name = GetSpellInfo(data);
+				local name = GetSpellInfoName(data);
 				cell.text:SetText(name);
 			else
 				local test = string.sub(data, 1, 1);
 				if test == "!" then
 					local uname = string.sub(data, 2);
-					local vname = GetSpellInfo(uname);
+					local vname = GetSpellInfoName(uname);
 					if vname then
 						cell.text:SetText("!" .. vname);
 					else
@@ -91,7 +92,7 @@ RDXDB.RegisterObjectType({
 			--end);
 		end
 		VFL.AddEscapeHandler(esch);
-		
+
 		local function Save()
 			local desc = le_names:GetList();
 			if desc then
@@ -129,11 +130,11 @@ RDXDB.RegisterObjectType({
 			end
 			VFL.EscapeTo(esch);
 		end
-	
+
 		local savebtn = VFLUI.SaveButton:new()
 		savebtn:SetScript("OnClick", Save);
 		dlg:AddButton(savebtn);
-		
+
 		local closebtn = VFLUI.CloseButton:new(dlg);
 		closebtn:SetScript("OnClick", function() VFL.EscapeTo(esch); end);
 		dlg:AddButton(closebtn);

@@ -25,14 +25,14 @@ local function ParseSpellSuccessCD(timestamp, event, sourceGUID, sourceName, sou
 			VFL.print(RDXCD.SPEN);
 			local i=1;
 			while true do
-				local name = GetSpellBookItemName(i, BOOKTYPE_SPELL);
+				local name = C_SpellBook.GetSpellBookItemName(i, Enum.SpellBookSpellBank.Player);
 				if not name then break; end
 				if RDXCD.SPEN == name then spell_id = i; end
 				i=i+1;
 			end
 			--spell_id = RDXSS.GetSpellIdBook(RDXCD.SPEN); --spell_id from the book, not from spellid log.
 			if spell_id then
-				start, duration = GetSpellCooldown(RDXCD.SPEN, BOOKTYPE_SPELL);
+				start, duration = GetSpellCooldown(RDXCD.SPEN, Enum.SpellBookSpellBank.Player);
 				if duration and duration > 1 then
 					SetCooldownValue(RDXCD.SPEI, duration);
 					VFL.print("found cd " .. RDXCD.SPEN .. " " .. duration);
@@ -56,7 +56,7 @@ RDXEvents:Bind("INIT_SPELL", nil, function()
 	local name, start, duration, enabled;
 	local i=1;
 	while true do
-		local name = GetSpellBookItemName(i, BOOKTYPE_SPELL);
+		local name = C_SpellBook.GetSpellBookItemName(i, BOOKTYPE_SPELL);
 		if not name then break; end
 		for k,v in pairs(cds) do
 			if v.spellname == name then
@@ -70,7 +70,7 @@ RDXEvents:Bind("INIT_SPELL", nil, function()
 			end
 		end
 		i=i+1;
-	end		
+	end
 end);
 ]]
 
@@ -84,7 +84,7 @@ end
 
 function RDXCD.DebugCooldownDB()
 	for k,v in pairs(RDXU.CooldownDB) do
-		local name = GetSpellInfo(k);
+		local name = VFLUI.GetSpellInfo_name(k);
 		if name then
 			VFL.print(name .. ":" .. v);
 		else

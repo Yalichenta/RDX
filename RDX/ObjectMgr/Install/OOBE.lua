@@ -22,8 +22,8 @@ end
 -- Get the version of an OOBE object.
 function RDX.GetOOBEObjectVersion(x)
 	--local v = IsLocalObject(x);
-	--if v then return v; else 
-		return IsGlobalObject(x); 
+	--if v then return v; else
+		return IsGlobalObject(x);
 	--end
 end
 
@@ -114,7 +114,7 @@ local function ShowInstallerDialog(title, text, onOK, onCancel, onDecline)
 	VFLUI.Window.SetDefaultFraming(dlg, 22);
 	dlg:SetPoint("CENTER", RDXParent, "CENTER");
 	dlg:SetWidth(260); dlg:SetHeight(285);
-	dlg:SetTitleColor(0,0,0.6); dlg:SetText(VFLI.i18n("RDX Installer")); 
+	dlg:SetTitleColor(0,0,0.6); dlg:SetText(VFLI.i18n("RDX Installer"));
 	dlg:SetClampedToScreen(true);
 	dlg:Show();
 	VFLUI.Window.StdMove(dlg, dlg:GetTitleBar());
@@ -365,8 +365,8 @@ local function StartInstaller(force)
 	end;
 
 	RDX.RegisterOOBEOption = function(tbl)
-		if (type(tbl) ~= "table") or (type(tbl.name) ~= "string") then 
-			error(VFLI.i18n("Invalid OOBE option registration.")); 
+		if (type(tbl) ~= "table") or (type(tbl.name) ~= "string") then
+			error(VFLI.i18n("Invalid OOBE option registration."));
 		end
 		if(not tbl.heading) then tbl.heading = "Default"; end
 		if(not tbl.text) then tbl.text = VFLI.i18n("(Missing text)"); end
@@ -422,17 +422,17 @@ local function StartInstaller(force)
 	-- Step 2: Dynaload OOBE addons. Load only the installers the user hasn't seen on the current character.
 	--local installers, instName = RDXU.installers, nil;
 	local installers, instName = RDXG.installers, nil;
-	for i=1,GetNumAddOns() do
-		instName = GetAddOnMetadata(i, "X-RDX-OOBEName");
-		instVersion = tonumber(GetAddOnMetadata(i, "X-RDX-OOBEVersion"));
+	for i=1,C_AddOns.GetNumAddOns() do
+		instName = C_AddOns.GetAddOnMetadata(i, "X-RDX-OOBEName");
+		instVersion = tonumber(C_AddOns.GetAddOnMetadata(i, "X-RDX-OOBEVersion"));
 		-- If we've encountered an OOBE addon...
 		if(instName and instVersion) then
 			-- If we haven't seen this installer, or only seen an older version...
 			if (not installers[instName]) or (installers[instName] < instVersion) or force then
 				cur_oobe_version = instVersion;
 				-- Load it up
-				local n, title = GetAddOnInfo(i);
-				local loaded, reason = LoadAddOn(i);
+				local n, title = C_AddOns.GetAddOnInfo(i);
+				local loaded, reason = C_AddOns.LoadAddOn(i);
 				if loaded then
 					if not loadedOOBEs then loadedOOBEs = {}; end
 					loadedOOBEs[instName] = instVersion
