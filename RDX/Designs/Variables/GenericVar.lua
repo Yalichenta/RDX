@@ -40,7 +40,7 @@ RDX.RegisterFeature({
 	ApplyFeature = function(desc, state)
 		state:Attach(state:Slot("EmitPaintPreamble"), true, function(code, state)
 			code:AppendCode("local "..desc.name..";\n");
-			code:AppendCode(desc.editor);
+			code:AppendCode(desc.editor.."\n");
 		end);
 		local wstate = state:GetContainingWindowState();
 		if wstate then
