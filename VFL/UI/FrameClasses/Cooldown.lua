@@ -17,24 +17,25 @@ function VFLUI.CooldownCounter:new(parent, cooldown)
 		s.cd = VFLUI.AcquireFrame("Cooldown");
 		s.cd:SetParent(parent); s.cd:SetFrameLevel(parent:GetFrameLevel() + 1);
 		s.cd:SetReverse(cooldown.GfxReverse);
+		s.cd:SetHideCountdownNumbers(true);
 		s.cd:SetAllPoints(s); s.cd:Hide();
 	end
-	
+
 	-- Create a FontString subcontrol for number display.
 	s.fs = VFLUI.CreateFontString(s);
 	s.fs:SetPoint("CENTER", s, "CENTER", cooldown.Offsetx, cooldown.Offsety);
 	s.fs:SetWidth(parent:GetWidth() + 50); s.fs:SetHeight(parent:GetHeight() + 50);
 	s.fs:Show();
 	VFLUI.SetFont(s.fs, cooldown.Font);
-	
-	function s:SetCooldown(start, duration, enable, charges, maxCharges, forceShowDrawEdge)	
+
+	function s:SetCooldown(start, duration, enable, charges, maxCharges, forceShowDrawEdge)
 		if start == 0 then
 			self.expiration = 0;
 			if self.cd then self.cd:Hide(); end
 			return;
 		end
 		self.expiration = start + duration;
-		if self.cd then 
+		if self.cd then
 			self.cd:Show();
 			if (enable ~= 0) then
 				local drawEdge = false;
